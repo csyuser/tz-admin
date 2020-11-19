@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/Login'
 import NavMenu from '@/views/NavMenu'
+import Test from '@/views/Test'
+import HomePage from '@/views/HomePage'
 
 Vue.use(VueRouter)
 
@@ -14,7 +16,24 @@ const routes = [
   {
     path: '/navMenu',
     name: 'NavMenu',
-    component: NavMenu
+    component: NavMenu,
+    children:[
+      {
+        path: '/HomePage',
+        name: 'HomePage',
+        component: HomePage,
+      },
+      {
+        path: '/Test',
+        name: 'Test',
+        component: Test,
+      },
+      {
+        path: '/1-1',
+        name: 'Test',
+        component: Test,
+      }
+    ],
   },
 
   // {

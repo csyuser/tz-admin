@@ -4,19 +4,24 @@
       <div class="logo">
         天正管理系统
       </div>
-      <el-menu default-active="1" class="el-menu-vertical-demo sidebar" @open="handleOpen" @close="handleClose"
+      <el-menu :default-active="$route.path" class="el-menu-vertical-demo sidebar" router unique-opened
                background-color="#304156" text-color="#fff" active-text-color="#409eff">
-        <el-submenu index="1">
-          <template slot="title">
+        <el-menu-item index="/HomePage">
+          <i class="el-icon-menu"></i>
+          <span slot="title">首页</span>
+        </el-menu-item>
+        <el-submenu :index="lists.id" v-for="lists in menuList" :key="lists.id">
+          <template slot="title" >
             <i class="el-icon-location"></i>
-            <span>导航一</span>
+            <span>{{ lists.title }}</span>
           </template>
-          <el-menu-item index="1-2">选项1</el-menu-item>
+          <el-menu-item v-for="list in lists.list" :key="list.id" :index="list.path">{{list.menuName}}</el-menu-item>
         </el-submenu>
       </el-menu>
     </div>
     <div class="right">
       <header>首页 / 权限管理</header>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -24,14 +29,19 @@
 <script>
 export default {
   name: 'NavMenu',
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath)
+  data(){
+    return{
+      selected:'HomePage',
+      menuList:[
+        {id:'1',title:'权限管理',icon:'',list:[{menuName:'用户管理',id:'1-1',path:'/Test'},{menuName:'岗位管理',id:'1-2',path:'/1-2'},{menuName:'操作权限管理',id:'1-3',path:'/1-3'},{menuName:'功能菜单管理',id:'1-4',path:'/1-4'}]},
+        {id:'2',title:'系统工具',icon:'',list:[{menuName:'生成代码',id:'2-1',path:'/2-1'},{menuName:'存储管理',id:'2-2',path:'/2-1'}]}
+      ]
     }
-  }
+  },
+  mounted() {
+    console.log(this.$route.path)
+  },
+  methods: {}
 }
 </script>
 
@@ -39,11 +49,13 @@ export default {
 .nav-menu {
   display: flex;
   height: 100%;
+
   > .sidebar-wrap {
     width: 205px;
     height: 100%;
     overflow: hidden;
-    > .logo{
+
+    > .logo {
       height: 50px;
       background: #304156;
       display: flex;
@@ -52,9 +64,10 @@ export default {
       color: rgb(255, 255, 255);
       font-weight: 600;
     }
-    > .sidebar{
+
+    > .sidebar {
       height: calc(100% - 50px);
-      border-right:none
+      border-right: none
     }
   }
 

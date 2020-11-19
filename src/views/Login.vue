@@ -9,7 +9,7 @@ export default {
   name: 'Login',
   methods: {
     login() {
-      this.$router.push('/navMenu')
+      this.$router.push('/HomePage')
     }
   }
 }
