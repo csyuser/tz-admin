@@ -11,16 +11,18 @@
           <span slot="title">首页</span>
         </el-menu-item>
         <el-submenu :index="lists.id" v-for="lists in menuList" :key="lists.id">
-          <template slot="title" >
+          <template slot="title">
             <i class="el-icon-location"></i>
             <span>{{ lists.title }}</span>
           </template>
-          <el-menu-item v-for="list in lists.list" :key="list.id" :index="list.path">{{list.menuName}}</el-menu-item>
+          <el-menu-item v-for="list in lists.list" :key="list.id" :index="list.path">{{ list.menuName }}</el-menu-item>
         </el-submenu>
       </el-menu>
     </div>
     <div class="right">
-      <header>首页 / 权限管理</header>
+      <header>
+        <router-link to="/Homepage" class="homeLink">首页</router-link> /
+        <span>{{ selected }}</span></header>
       <router-view></router-view>
     </div>
   </div>
@@ -29,12 +31,26 @@
 <script>
 export default {
   name: 'NavMenu',
-  data(){
-    return{
-      selected:'HomePage',
-      menuList:[
-        {id:'1',title:'权限管理',icon:'',list:[{menuName:'用户管理',id:'1-1',path:'/Test'},{menuName:'岗位管理',id:'1-2',path:'/1-2'},{menuName:'操作权限管理',id:'1-3',path:'/1-3'},{menuName:'功能菜单管理',id:'1-4',path:'/1-4'}]},
-        {id:'2',title:'系统工具',icon:'',list:[{menuName:'生成代码',id:'2-1',path:'/2-1'},{menuName:'存储管理',id:'2-2',path:'/2-1'}]}
+  data() {
+    return {
+      selected: '首页',
+      menuList: [
+        {
+          id: '1',
+          title: '权限管理',
+          icon: '',
+          list: [{menuName: '用户管理', id: '1-1', path: '/Test'}, {
+            menuName: '岗位管理',
+            id: '1-2',
+            path: '/1-2'
+          }, {menuName: '操作权限管理', id: '1-3', path: '/1-3'}, {menuName: '功能菜单管理', id: '1-4', path: '/1-4'}]
+        },
+        {
+          id: '2',
+          title: '系统工具',
+          icon: '',
+          list: [{menuName: '生成代码', id: '2-1', path: '/2-1'}, {menuName: '存储管理', id: '2-2', path: '/2-1'}]
+        }
       ]
     }
   },
@@ -46,17 +62,21 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+$headerHeight: 50px;
+$sideWidth: 205px;
+$mainBlue:#409eff;
+
 .nav-menu {
   display: flex;
   height: 100%;
 
   > .sidebar-wrap {
-    width: 205px;
+    width: $sideWidth;
     height: 100%;
     overflow: hidden;
 
     > .logo {
-      height: 50px;
+      height: $headerHeight;
       background: #304156;
       display: flex;
       justify-content: center;
@@ -66,22 +86,30 @@ export default {
     }
 
     > .sidebar {
-      height: calc(100% - 50px);
+      height: calc(100% - #{$headerHeight});
       border-right: none
     }
   }
 
   > .right {
-    width: calc(100% - 205px);
+    width: calc(100% - #{$sideWidth});
 
     > header {
       width: 100%;
-      height: 50px;
+      height: calc(#{$headerHeight} + 10px);
       padding-left: 15px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid #d8dce5;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+      >a{
+        padding-right: 0.5em;
+        &:hover{ color: $mainBlue;}
+      }
+      >span{
+        padding: 0.5em;
+        color: #97a8be;
+      }
     }
   }
 }
