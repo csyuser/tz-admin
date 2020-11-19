@@ -8,15 +8,6 @@
 
 export default {
   name: 'Home',
-  data() {
-    return {
-      data1111: '你好'
-    }
-  },
-  methods:{
-
-  }
-
 }
 </script>
 
