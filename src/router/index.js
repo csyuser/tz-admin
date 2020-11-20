@@ -4,6 +4,7 @@ import Login from '@/views/Login'
 import NavMenu from '@/views/NavMenu'
 import Test from '@/views/Test'
 import HomePage from '@/views/HomePage'
+import UserManage from '@/views/userManage'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
         path: '/HomePage',
         name: 'HomePage',
         component: HomePage,
+      },
+      {
+        path: '/UserManage',
+        name: 'UserManage',
+        component: UserManage,
       },
       {
         path: '/Test',

@@ -5,7 +5,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    selectedMenu:''
+    selectedMenu:'',
+    cellStyle:{
+      'font-size':'12px',
+      'padding':'11px 0'
+    }
   },
   mutations: {
     fetch(state){
