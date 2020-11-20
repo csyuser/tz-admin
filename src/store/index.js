@@ -5,8 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    selectedMenu:''
   },
   mutations: {
+    fetch(state){
+      state.selectedMenu =  window.localStorage.getItem('selectedMenu')
+    },
   },
   actions: {
   },

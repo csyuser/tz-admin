@@ -6,7 +6,7 @@
       </div>
       <el-menu :default-active="$route.path" class="el-menu-vertical-demo sidebar" router unique-opened
                background-color="#304156" text-color="#fff" active-text-color="#409eff">
-        <el-menu-item index="/HomePage">
+        <el-menu-item index="/HomePage" @click="selectMenu()">
           <i class="el-icon-menu"></i>
           <span slot="title">首页</span>
         </el-menu-item>
@@ -15,14 +15,18 @@
             <i class="el-icon-location"></i>
             <span>{{ lists.title }}</span>
           </template>
-          <el-menu-item v-for="list in lists.list" :key="list.id" :index="list.path">{{ list.menuName }}</el-menu-item>
+          <el-menu-item v-for="list in lists.list" :key="list.id" :index="list.path" @click="selectMenu(list)">
+            {{ list.menuName }}
+          </el-menu-item>
         </el-submenu>
       </el-menu>
     </div>
     <div class="right">
       <header>
-        <router-link to="/Homepage" class="homeLink">首页</router-link> /
-        <span>{{ selected }}</span></header>
+        <span class="link" :class="unClickable" @click="toHomePage()">首页
+          <!--          <router-link to="/Homepage" class="homeLink" :class="unClickable">首页</router-link>-->
+        </span>
+        <span class="pathName">{{ selected }}</span></header>
       <router-view></router-view>
     </div>
   </div>
@@ -33,38 +37,70 @@ export default {
   name: 'NavMenu',
   data() {
     return {
-      selected: '首页',
+      selected: '',
       menuList: [
         {
-          id: '1',
-          title: '权限管理',
-          icon: '',
-          list: [{menuName: '用户管理', id: '1-1', path: '/Test'}, {
+          id: '1', title: '权限管理', icon: '',
+          list: [{menuTitle: '权限管理', menuName: '用户管理', id: '1-1', path: '/Test'}, {
+            menuTitle: '权限管理',
             menuName: '岗位管理',
             id: '1-2',
             path: '/1-2'
-          }, {menuName: '操作权限管理', id: '1-3', path: '/1-3'}, {menuName: '功能菜单管理', id: '1-4', path: '/1-4'}]
+          }, {menuTitle: '权限管理', menuName: '操作权限管理', id: '1-3', path: '/1-3'}, {
+            menuTitle: '权限管理',
+            menuName: '功能菜单管理',
+            id: '1-4',
+            path: '/1-4'
+          }]
         },
         {
-          id: '2',
-          title: '系统工具',
-          icon: '',
-          list: [{menuName: '生成代码', id: '2-1', path: '/2-1'}, {menuName: '存储管理', id: '2-2', path: '/2-1'}]
+          id: '2', title: '系统工具', icon: '',
+          list: [{menuTitle: '系统工具', menuName: '生成代码', id: '2-1', path: '/2-1'}, {
+            menuTitle: '系统工具',
+            menuName: '存储管理',
+            id: '2-2',
+            path: '/2-1'
+          }]
         }
       ]
     }
   },
   mounted() {
     console.log(this.$route.path)
+    this.$store.commit('fetch')
+    this.selected = this.$store.state.selectedMenu
   },
-  methods: {}
+  computed: {
+    unClickable() {
+      return {unClickable: this.selected === ''}
+    }
+  },
+  methods: {
+    selectMenu(list) {
+      console.log('点击啦')
+      console.log(this.$route.path)
+      if (list) {
+        this.selected = ' / ' + list.menuTitle + ' / ' + list.menuName
+      } else {
+        this.selected = ''
+      }
+      window.localStorage.setItem('selectedMenu', this.selected)
+    },
+    toHomePage() {
+      if (this.selected!=''){
+        this.selected = ''
+        window.localStorage.setItem('selectedMenu', this.selected)
+        this.$router.push('/HomePage')
+      }
+    }
+  }
 }
 </script>
 
 <style scoped lang='scss'>
 $headerHeight: 50px;
 $sideWidth: 205px;
-$mainBlue:#409eff;
+$mainBlue: #409eff;
 
 .nav-menu {
   display: flex;
@@ -102,11 +138,22 @@ $mainBlue:#409eff;
       align-items: center;
       border-bottom: 1px solid #d8dce5;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
-      >a{
-        padding-right: 0.5em;
-        &:hover{ color: $mainBlue;}
+
+      > .link {
+        &:hover {
+          color: $mainBlue;
+          cursor: pointer;
+        }
+        &.unClickable {
+          color: #97a8be;
+          cursor: default;
+          &:hover {
+            color: #97a8be;
+          }
+        }
       }
-      >span{
+
+      > .pathName {
         padding: 0.5em;
         color: #97a8be;
       }
