@@ -1,11 +1,12 @@
 <template>
   <div class="table-wrap">
     <div class="buttons">
-      <el-button type="primary" size="small" class="add"><i class="el-icon-plus icon"></i>新增</el-button>
+      <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增</el-button>
       <el-button size="small" class="update"><i class="el-icon-edit icon"></i>编辑</el-button>
       <el-button size="small" class="delete"><i class="el-icon-delete icon"></i>删除</el-button>
       <el-popover placement="bottom" trigger="click" class="popover-button">
-        <el-checkbox-group v-model="checkedLabels" :style="{display:'flex','flex-direction':'column'}">
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+        <el-checkbox-group v-model="checkedLabels" :style="{display:'flex','flex-direction':'column'}" @change="handleCheckedChange">
           <el-checkbox v-for="option in checkedOptions" :label="option" :key="option">{{ option }}</el-checkbox>
         </el-checkbox-group>
         <el-button size="small" icon="el-icon-s-grid" class="checkbox-button" slot="reference"></el-button>
@@ -49,9 +50,12 @@ export default {
   name: 'Table',
   props: {
     colsHead: {type: Array},
+    tableDatas: {type: Object},
   },
   data() {
     return {
+      checkAll: true,
+      isIndeterminate: false,
       checkedLabels: [],
       checkedOptions: [],
       checkedProps: [],
@@ -62,109 +66,14 @@ export default {
     }
   },
   mounted() {
-    console.log(this.tableDatas)
     this.cols = this.colsHead
     this.cols.forEach(col => {
       this.checkedProps.push(col.prop)
       this.checkedOptions.push(col.label)
       this.checkedLabels.push(col.label)
     })
-    const tableDatas = {
-      count: 30,
-      tableData: [{
-        id: 1,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 2,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: false,
-        date: '2016-05-02',
-      }, {
-        id: 3,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 4,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 4,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 4,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 4,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 4,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 4,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }, {
-        id: 4,
-        name: '王小虎',
-        post: '前端开发',
-        gender: '男',
-        phone: '13425014531',
-        mail: '13425014531@qq.com',
-        type: true,
-        date: '2016-05-02',
-      }],
-    }
-    this.tableData = tableDatas.tableData
-    this.total = tableDatas.count
+    this.tableData = this.tableDatas.tableData
+    this.total = this.tableDatas.count
   },
   watch: {
 //表头复选框控制表格的列
@@ -182,6 +91,9 @@ export default {
     }
   },
   methods: {
+    xxx(){
+      this.$emit('xxx','sss')
+    },
     handleClick(row) {
       console.log(row)
       this.$refs.multipleTable.clearSelection()
@@ -191,6 +103,15 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+    },
+    handleCheckAllChange(val) {
+      this.checkedLabels = val ? this.checkedOptions : [];
+      this.isIndeterminate = false;
+    },
+    handleCheckedChange(value){
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.checkedOptions.length;
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedOptions.length;
     },
 //切换type时对话框确认
     changeType(row) {
