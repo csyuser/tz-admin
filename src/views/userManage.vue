@@ -19,14 +19,31 @@
       <el-button size="small" class="update"><i class="el-icon-edit icon"></i>编辑</el-button>
       <el-button size="small" class="delete"><i class="el-icon-delete icon"></i>删除</el-button>
     </div>
-    <el-table :data="tableData" style="width: 100%" :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}" :cell-style="$store.state.cellStyle" row-class-name="yyy">
-      <el-table-column prop="date" label="日期" width="180">
-      </el-table-column>
-      <el-table-column prop="name" label="姓名" width="180">
-      </el-table-column>
-      <el-table-column prop="address" label="地址">
-      </el-table-column>
-    </el-table>
+    <div class="table-wrap">
+      <el-table :data="tableData" style="width: 100%"  ref="multipleTable"
+                :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
+                :cell-style="$store.state.cellStyle">
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="date" label="日期" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="姓名" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+        <el-table-column fixed="right" label="操作" width="150">
+          <template slot-scope="scope">
+            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="handleClick(scope.row)" type="text" size="small">编辑</el-button>
+            <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="currentPage"
+                     :page-sizes="[10, 20, 30, 40]"
+                     :page-size="10"
+                     layout="total, sizes, prev, pager, next"
+                     :total="totalPage">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -35,6 +52,8 @@ export default {
   name: 'userManage',
   data() {
     return {
+      currentPage: 4,
+      totalPage: 40,
       formInline: {
         user: '',
         region: ''
@@ -61,7 +80,17 @@ export default {
   methods: {
     onSubmit() {
       console.log('submit!')
-    }
+    },
+    handleClick(row) {
+      console.log(row)
+      this.$refs.multipleTable.clearSelection();
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+    },
   }
 }
 </script>
@@ -78,11 +107,19 @@ export default {
 
   > .buttons {
     margin-bottom: 10px;
+
     .icon {
       margin-right: 1em;
     }
-    .xxx{
+
+    .xxx {
       font-size: 12px;
+    }
+  }
+
+  > .table-wrap {
+    > .pagination {
+      margin-top: 8px;
     }
   }
 
