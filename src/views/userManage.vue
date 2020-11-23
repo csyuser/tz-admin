@@ -25,9 +25,18 @@
                 :cell-style="$store.state.cellStyle">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column prop="date" label="日期" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="name" label="姓名" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="用户名" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="post" label="岗位" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="gender" label="性别" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="phone" label="电话" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="mail" label="邮箱" show-overflow-tooltip></el-table-column>
+        <el-table-column label="状态" show-overflow-tooltip>
+          <template slot-scope="scope">
+          <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949" @click.native="changeType(scope.row)">
+          </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column prop="date" label="创建日期" show-overflow-tooltip></el-table-column>
         <el-table-column fixed="right" label="操作" width="150">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
@@ -59,21 +68,41 @@ export default {
         region: ''
       },
       tableData: [{
+        id:1,
+        name: '王小虎',
+        post:'前端开发',
+        gender:'男',
+        phone:'13425014531',
+        mail:'13425014531@qq.com',
+        type:true,
         date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
       }, {
-        date: '2016-05-04',
+        id:2,
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
+        post:'前端开发',
+        gender:'男',
+        phone:'13425014531',
+        mail:'13425014531@qq.com',
+        type:false,
+        date: '2016-05-02',
       }, {
-        date: '2016-05-01',
+        id:3,
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
+        post:'前端开发',
+        gender:'男',
+        phone:'13425014531',
+        mail:'13425014531@qq.com',
+        type:true,
+        date: '2016-05-02',
       }, {
-        date: '2016-05-03',
+        id:4,
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
+        post:'前端开发',
+        gender:'男',
+        phone:'13425014531',
+        mail:'13425014531@qq.com',
+        type:true,
+        date: '2016-05-02',
       }]
     }
   },
@@ -90,6 +119,23 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+    },
+    changeType(row){
+      this.$confirm(`此操作将${!row ? '开启' : '关闭'}验证, 是否继续？`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        this.tableData.forEach(data=>{
+          if (data.id === row.id){data.type = row.type}
+        })
+      }).catch(() => {
+        this.tableData.forEach(data=>{
+          if (data.id === row.id){data.type = !row.type}
+        })
+        this.$message('取消操作')
+      })
+
     },
   }
 }
