@@ -4,7 +4,8 @@ import Login from '@/views/Login'
 import NavMenu from '@/views/NavMenu'
 import Test from '@/views/Test'
 import HomePage from '@/views/HomePage'
-import UserManage from '@/views/userManage'
+import UserManage from '@/views/UserManage'
+import PostManage from '@/views/PostManage'
 
 Vue.use(VueRouter)
 
@@ -23,22 +24,23 @@ const routes = [
         path: '/HomePage',
         name: 'HomePage',
         component: HomePage,
-      },
-      {
+      }, {
         path: '/UserManage',
         name: 'UserManage',
         component: UserManage,
-      },
-      {
+      }, {
         path: '/Test',
         name: 'Test',
         component: Test,
-      },
-      {
+      }, {
         path: '/1-1',
         name: 'Test',
         component: Test,
-      }
+      }, {
+        path: '/PostManage',
+        name: 'PostManage',
+        component: PostManage,
+      },
     ],
   },
 
