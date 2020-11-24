@@ -3,8 +3,8 @@
     <div class="buttons">
       <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增
       </el-button>
-      <el-button size="small" class="update"><i class="el-icon-edit icon"></i>编辑</el-button>
-      <el-button size="small" class="delete"><i class="el-icon-delete icon"></i>删除</el-button>
+      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑</el-button>
+      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除</el-button>
       <el-popover placement="bottom" trigger="click" class="popover-button">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
         <el-checkbox-group v-model="checkedLabels" :style="{display:'flex','flex-direction':'column'}"
@@ -17,7 +17,7 @@
         <div class="table-wrap">
           <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id"
                     :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
-                    :cell-style="$store.state.cellStyle" @select="selectRow"
+                    :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
                     :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
@@ -155,6 +155,7 @@ export default {
     //选中父元素，全选子元素
     selectRow(val) {
       console.log('选择')
+      this.$emit('postSelect',val)
       let xxx = []
       val.forEach(item=>{
         xxx.push(item)
@@ -167,6 +168,9 @@ export default {
       xxx.forEach(item=>{
         this.$refs.multipleTable.toggleRowSelection(item,true);
       })
+    },
+    dblclick(row){
+      this.$emit('dblclick',row)
     }
   }
 }
