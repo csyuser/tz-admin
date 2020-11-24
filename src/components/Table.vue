@@ -153,15 +153,16 @@ export default {
       })
     },
     //选中父元素，全选子元素
-    selectRow(val) {
+    selectRow(val,row) {
       console.log('选择')
+      console.log(row)
       this.$emit('postSelect',val)
       let xxx = []
       val.forEach(item=>{
         xxx.push(item)
         if (item.children){
           item.children.forEach(child=>{
-            console.log(child)
+            xxx.push(child)
           })
         }
       })
