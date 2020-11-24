@@ -39,8 +39,8 @@ export default {
     return {
       selected: '',
       menuList: [
-        {id: '1', title: '权限管理', icon: '',
-          list: [{menuTitle: '权限管理', menuName: '用户管理', id: '1-1', path: '/UserManage'}, {menuTitle: '权限管理', menuName: '岗位管理', id: '1-2', path: '/PostManage'}, {menuTitle: '权限管理', menuName: '操作权限管理', id: '1-3', path: '/1-3'}, {menuTitle: '权限管理', menuName: '功能菜单管理', id: '1-4', path: '/1-4'}]},
+        {id: '1', title: '权限管理', icon: '',order:'1',
+          list: [{order:'1-1',menuTitle: '权限管理', menuName: '用户管理', id: '1-1', path: '/UserManage'}, {order:'1-2',menuTitle: '权限管理', menuName: '岗位管理', id: '1-2', path: '/PostManage'}, {order:'1-3',menuTitle: '权限管理', menuName: '操作权限管理', id: '1-3', path: '/1-3'}, {order:'1-4',menuTitle: '权限管理', menuName: '功能菜单管理', id: '1-4', path: '/1-4'}]},
         {id: '2', title: '系统工具', icon: '',
           list: [{menuTitle: '系统工具', menuName: '生成代码', id: '2-1', path: '/2-1'}, {menuTitle: '系统工具', menuName: '存储管理', id: '2-2', path: '/2-1'}]
         }
