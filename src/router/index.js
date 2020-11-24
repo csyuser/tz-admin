@@ -6,6 +6,7 @@ import Test from '@/views/Test'
 import HomePage from '@/views/HomePage'
 import UserManage from '@/views/UserManage'
 import PostManage from '@/views/PostManage'
+import MenuManage from '@/views/MenuManage'
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,10 @@ const routes = [
         path: '/PostManage',
         name: 'PostManage',
         component: PostManage,
+      }, {
+        path: '/MenuManage',
+        name: 'MenuManage',
+        component: MenuManage,
       },
     ],
   },

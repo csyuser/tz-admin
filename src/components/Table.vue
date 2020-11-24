@@ -1,47 +1,43 @@
 <template>
   <div class="table-wrap">
     <div class="buttons">
-      <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增</el-button>
+      <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增
+      </el-button>
       <el-button size="small" class="update"><i class="el-icon-edit icon"></i>编辑</el-button>
       <el-button size="small" class="delete"><i class="el-icon-delete icon"></i>删除</el-button>
       <el-popover placement="bottom" trigger="click" class="popover-button">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-        <el-checkbox-group v-model="checkedLabels" :style="{display:'flex','flex-direction':'column'}" @change="handleCheckedChange">
+        <el-checkbox-group v-model="checkedLabels" :style="{display:'flex','flex-direction':'column'}"
+                           @change="handleCheckedChange">
           <el-checkbox v-for="option in checkedOptions" :label="option" :key="option">{{ option }}</el-checkbox>
         </el-checkbox-group>
         <el-button size="small" icon="el-icon-s-grid" class="checkbox-button" slot="reference"></el-button>
       </el-popover>
     </div>
-    <div class="table-wrap">
-      <el-table :data="tableData" style="width: 100%" ref="multipleTable"
-                :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
-                :cell-style="$store.state.cellStyle" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
-          <template slot-scope="scope">
-            <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"
-                       v-if="col.prop === 'type'"
-                       @click.native="changeType(scope.row)">
-            </el-switch>
-            <span v-else>{{ scope.row[col.prop] }} </span>
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" width="150">
-          <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button @click="handleClick(scope.row)" type="text" size="small">编辑</el-button>
-            <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page="currentPage"
-                     :page-sizes="[10, 20, 30, 40]"
-                     :page-size="10"
-                     layout="total, prev, pager, next"
-                     :total="total">
-      </el-pagination>
-    </div>
+        <div class="table-wrap">
+          <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id"
+                    :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
+                    :cell-style="$store.state.cellStyle" @select="selectRow"
+                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
+              <template slot-scope="scope">
+                <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"
+                           v-if="col.prop === 'type'"
+                           @click.native="changeType(scope.row)">
+                </el-switch>
+                <span v-else>{{ scope.row[col.prop] }} </span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                         :current-page="currentPage"
+                         :page-sizes="[10, 20, 30, 40]"
+                         :page-size="10"
+                         layout="total, prev, pager, next"
+                         :total="total">
+          </el-pagination>
+        </div>
   </div>
 </template>
 
@@ -63,6 +59,39 @@ export default {
       total: 40,
       tableData: [],
       cols: [],
+      selectedRow:[],
+      xxx: [{
+        id: 1,
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        id: 2,
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        id: 3,
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄',
+        children: [{
+          id: 31,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          id: 32,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }]
+      }, {
+        id: 4,
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }]
     }
   },
   mounted() {
@@ -91,13 +120,6 @@ export default {
     }
   },
   methods: {
-    xxx(){
-      this.$emit('xxx','sss')
-    },
-    handleClick(row) {
-      console.log(row)
-      this.$refs.multipleTable.clearSelection()
-    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
     },
@@ -105,13 +127,13 @@ export default {
       console.log(`当前页: ${val}`)
     },
     handleCheckAllChange(val) {
-      this.checkedLabels = val ? this.checkedOptions : [];
-      this.isIndeterminate = false;
+      this.checkedLabels = val ? this.checkedOptions : []
+      this.isIndeterminate = false
     },
-    handleCheckedChange(value){
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.checkedOptions.length;
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedOptions.length;
+    handleCheckedChange(value) {
+      let checkedCount = value.length
+      this.checkAll = checkedCount === this.checkedOptions.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedOptions.length
     },
 //切换type时对话框确认
     changeType(row) {
@@ -130,8 +152,21 @@ export default {
         this.$message('取消操作')
       })
     },
-    handleSelectionChange(val) {
-      console.log(val)
+    //选中父元素，全选子元素
+    selectRow(val) {
+      console.log('选择')
+      let xxx = []
+      val.forEach(item=>{
+        xxx.push(item)
+        if (item.children){
+          item.children.forEach(child=>{
+            console.log(child)
+          })
+        }
+      })
+      xxx.forEach(item=>{
+        this.$refs.multipleTable.toggleRowSelection(item,true);
+      })
     }
   }
 }

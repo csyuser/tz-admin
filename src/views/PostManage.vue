@@ -116,6 +116,11 @@ export default {
 <style scoped lang='scss'>
 .post-manage-wrap {
   padding: 20px;
+  > .searchForm {
+    > .selectInput {
+      width: 100px;
+    }
+  }
 
   .addForm {
     > .el-form-item {
