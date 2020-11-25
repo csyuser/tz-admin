@@ -61,38 +61,6 @@ export default {
       tableData: [],
       cols: [],
       selectedRow:[],
-      xxx: [{
-        id: 1,
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        id: 2,
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        id: 3,
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄',
-        children: [{
-          id: 31,
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          id: 32,
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }]
-      }, {
-        id: 4,
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
     }
   },
   mounted() {
@@ -102,8 +70,6 @@ export default {
       this.checkedOptions.push(col.label)
       this.checkedLabels.push(col.label)
     })
-    this.tableData = this.tableDatas.tableData
-    this.total = this.tableDatas.count
   },
   watch: {
 //表头复选框控制表格的列
@@ -118,6 +84,15 @@ export default {
         }
       })
       this.cols = result.sort((a, b) => a.order - b.order)
+    },
+//监听表格数据传递
+    tableDatas:{
+      handler(newVal) {
+        this.tableData = newVal.tableData
+        this.total = newVal.count
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {

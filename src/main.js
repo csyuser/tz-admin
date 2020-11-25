@@ -13,8 +13,8 @@ Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-Vue.prototype.prefixAddr = 'http://192.168.99.132:8080'
-
+Vue.prototype.prefixAddr = 'http://192.168.99.132:8080';
+// Vue.prototype.prefixAddr = '/api';
 
 new Vue({
   router,

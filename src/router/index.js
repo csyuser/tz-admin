@@ -2,12 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/Login'
 import NavMenu from '@/views/NavMenu'
-import Test from '@/views/Test'
 import HomePage from '@/views/HomePage'
 import UserManage from '@/views/permission/UserManage'
 import PostManage from '@/views/permission/PostManage'
 import MenuManage from '@/views/permission/MenuManage'
 import Staff from '@/views/permission/Staff'
+import Department from '@/views/permission/Department'
 
 Vue.use(VueRouter)
 
@@ -30,10 +30,6 @@ const routes = [
         path: '/UserManage',
         name: 'UserManage',
         component: UserManage,
-      }, {
-        path: '/Test',
-        name: 'Test',
-        component: Test,
       },{
         path: '/PostManage',
         name: 'PostManage',
@@ -46,6 +42,10 @@ const routes = [
         path: '/Staff',
         name: 'Staff',
         component: Staff,
+      },{
+        path: '/Department',
+        name: 'Department',
+        component: Department,
       },
     ],
   },

@@ -14,7 +14,7 @@
         <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="addStaff"></Table>
+    <Table :colsHead="colsHead" :tableDatas="tableDatas"></Table>
     <el-dialog title="添加岗位" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="postInfo" size="small" class="addForm"
                :disabled="editDialogDisabled">
@@ -60,7 +60,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
+        <el-button type="primary" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -121,6 +121,13 @@ export default {
   },
   methods: {
     onSubmit() {console.log(this.formInline)},
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(() => {
+            done()
+          })
+          .catch(() => {})
+    },
 
   }
 }
