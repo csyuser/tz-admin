@@ -46,8 +46,8 @@
 </template>
 
 <script>
-import Table from '@/components/Table'
-import DeleteRow from '@/components/DeleteRow'
+import Table from '@/components/permission/Table'
+import DeleteRow from '@/components/permission/DeleteRow'
 
 export default {
   name: 'PostManage',

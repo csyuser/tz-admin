@@ -16,12 +16,27 @@
           </el-input>
         </el-form-item>
         <el-form-item class="button-item">
-          <el-button type="primary" @click="onSubmit" size="small" class="login-button" :class="{clickable}"
+          <el-button type="primary" @click="loginSubmit" size="small" class="login-button" :class="{clickable}"
                      :disabled="!clickable">登录
           </el-button>
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog title="请选择用户岗位" :visible.sync="selectDialogVisible" width="486px" :before-close="handleClose"
+               class="selectPostDialog">
+      <div class="select-user-wrap">
+        <el-radio-group v-model="radio1" class="radio-wrap" @change="radioChange">
+          <el-radio :label="post.id" border class="radio" v-for="post in posts" :key="post.id">{{ post.name }}
+          </el-radio>
+          <el-radio label="2" border class="radio">备选项2</el-radio>
+          <el-radio label="3" border class="radio">备选项3</el-radio>
+        </el-radio-group>
+        <p slot="footer" class="footer">
+          <el-button @click="selectDialogVisible = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="selectedUser" size="small">确 定</el-button>
+        </p>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -42,6 +57,10 @@ export default {
       focusUser: false,
       focusKey: false,
       clickable: false,
+      selectDialogVisible: false,
+      radio1: '',
+      posts: [],
+      userId: '',
     }
   },
   watch: {
@@ -51,9 +70,6 @@ export default {
       },
       immediate: true,
       deep: true
-    },
-    mounted() {
-      this.isLogin(this.loginInfo)
     },
   },
   methods: {
@@ -74,14 +90,49 @@ export default {
       }
       val.username.length > 0 && val.password.length > 0 ? this.clickable = true : this.clickable = false
     },
-    onSubmit() {
-      this.axios.post(this.prefixAddr + '/topcheer/login',
+    loginSubmit() {
+      this.axios.post(this.prefixAddr + '/login',
           Qs.stringify({...this.loginInfo})
       ).then(res => {
         console.log(res)
+        if (res.data.code === 200) {
+          if (res.data.data.length <= 1) {
+            this.selectDialogVisible = true
+            this.posts = res.data.data
+          } else {this.userId = res.data.data[0].id}
+        }else {this.$message.error(res.data.msg)}
       })
           .catch()
-      this.$router.push('/HomePage')
+      // this.$router.push('/SelectUser')
+    },
+    radioChange(value) {
+      this.userId = value
+    },
+    selectedUser() {
+      if (this.userId !== ''){
+        this.selectDialogVisible = false
+        this.daveUser()
+      }else {
+        this.$message.error('请选择一个用户')
+      }
+    },
+    daveUser() {
+        this.axios.post(this.prefixAddr + '/user/saveUserPower',
+            Qs.stringify({userId: this.userId})
+        ).then(res=>{
+          console.log(res)
+          if (res.data.code === 200) {
+            this.$router.push('/HomePage')
+          }else {this.$message.error(res.data.msg)}
+        })
+            .catch()
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(() => {
+            done()
+          })
+          .catch(() => {})
     },
   }
 }
@@ -162,6 +213,57 @@ export default {
         > input {
           border-bottom: 1px solid #1890FF;
         }
+      }
+    }
+  }
+
+  > .selectPostDialog {
+    &::v-deep {
+      .el-dialog__body {
+        padding: 0;
+      }
+    }
+
+    &::v-deep {
+      .el-dialog__header {
+        background: #F9FAFB;
+      }
+    }
+
+    .select-user-wrap {
+      width: 486px;
+      height: 360px;
+      background: #F9FAFB;
+      border-radius: 8px;
+      padding: 0 51px 32px;
+      overflow: auto;
+
+      > .radio-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        > .radio {
+          width: 100%;
+          height: 60px;
+          margin: 16px 0 0;
+          display: flex;
+          flex-direction: row-reverse;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 0;
+          background: #F7F7F7;
+
+          &:first-child {
+            margin-top: 20px;
+          }
+        }
+      }
+
+      > .footer {
+        margin-top: 40px;
+        text-align: center;
       }
     }
   }

@@ -67,8 +67,8 @@
 </template>
 
 <script>
-import Table from '@/components/Table'
-import DeleteRow from '@/components/DeleteRow'
+import Table from '@/components/permission/Table'
+import DeleteRow from '@/components/permission/DeleteRow'
 
 export default {
   name: 'Department',
@@ -92,7 +92,7 @@ export default {
     }
   },
   mounted() {
-    this.axios.get(this.prefixAddr + '/topcheer/department/page',{
+    this.axios.get(this.prefixAddr + '/department/page',{
       params:{}
     }).then(res=>{
       console.log(res)

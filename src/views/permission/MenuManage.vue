@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import Table from '@/components/Table'
+import Table from '@/components/permission/Table'
 export default {
   name: 'MenuManage',
   components:{Table},
