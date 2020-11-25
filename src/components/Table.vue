@@ -5,6 +5,7 @@
       </el-button>
       <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑</el-button>
       <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除</el-button>
+      <slot></slot>
       <el-popover placement="bottom" trigger="click" class="popover-button">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
         <el-checkbox-group v-model="checkedLabels" :style="{display:'flex','flex-direction':'column'}"
@@ -15,7 +16,7 @@
       </el-popover>
     </div>
         <div class="table-wrap">
-          <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id"
+          <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate = "false"
                     :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
                     :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
                     :tree-props="{children: 'children', hasChildren: 'hasChildren'}">

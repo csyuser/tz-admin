@@ -4,9 +4,10 @@ import Login from '@/views/Login'
 import NavMenu from '@/views/NavMenu'
 import Test from '@/views/Test'
 import HomePage from '@/views/HomePage'
-import UserManage from '@/views/UserManage'
-import PostManage from '@/views/PostManage'
-import MenuManage from '@/views/MenuManage'
+import UserManage from '@/views/permission/UserManage'
+import PostManage from '@/views/permission/PostManage'
+import MenuManage from '@/views/permission/MenuManage'
+import Staff from '@/views/permission/Staff'
 
 Vue.use(VueRouter)
 
@@ -33,11 +34,7 @@ const routes = [
         path: '/Test',
         name: 'Test',
         component: Test,
-      }, {
-        path: '/1-1',
-        name: 'Test',
-        component: Test,
-      }, {
+      },{
         path: '/PostManage',
         name: 'PostManage',
         component: PostManage,
@@ -45,6 +42,10 @@ const routes = [
         path: '/MenuManage',
         name: 'MenuManage',
         component: MenuManage,
+      },{
+        path: '/Staff',
+        name: 'Staff',
+        component: Staff,
       },
     ],
   },

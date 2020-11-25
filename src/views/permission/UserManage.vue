@@ -14,7 +14,11 @@
         <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas"></Table>
+    <Table :colsHead="colsHead" :tableDatas="tableDatas">
+      <el-button size="small" class="update"><i class="el-icon-edit icon"></i>关联部门</el-button>
+      <el-button size="small" class="update"><i class="el-icon-edit icon"></i>关联岗位</el-button>
+      <el-button size="small" class="update"><i class="el-icon-edit icon"></i>关联小组</el-button>
+    </Table>
   </div>
 </template>
 
