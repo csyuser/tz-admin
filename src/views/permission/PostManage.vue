@@ -40,21 +40,18 @@
       </span>
     </el-dialog>
     <el-dialog title="删除岗位" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
-      <span>确定删除所选岗位吗</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="deleteDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirmDelete" size="small">确 定</el-button>
-      </span>
+      <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import Table from '@/components/Table'
+import DeleteRow from '@/components/DeleteRow'
 
 export default {
   name: 'PostManage',
-  components: {Table},
+  components: {Table,DeleteRow},
   data() {
     return {
       selectedRow: [],
