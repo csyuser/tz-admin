@@ -117,15 +117,16 @@ export default {
       }
     },
     daveUser() {
-        this.axios.post(this.prefixAddr + '/user/saveUserPower',
-            Qs.stringify({userId: this.userId})
-        ).then(res=>{
+        this.axios.get(this.prefixAddr + '/user/selectUserPower', {
+          params: {userId: this.userId}
+        }).then(res=>{
           console.log(res)
           if (res.data.code === 200) {
-            this.$router.push('/HomePage')
+            // this.$router.push('/HomePage')
           }else {this.$message.error(res.data.msg)}
         })
             .catch()
+      this.$router.push('/HomePage')
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
