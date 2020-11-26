@@ -74,14 +74,15 @@ export default {
     },
   },
   mounted() {
-    // this.axios.get(this.prefixAddr + '/getCsrf',{})
-    //     .then(res=>{
-    //       if (res.data.code === 200){
-    //         // this.token = res.data.data.token
-    //         window.localStorage.setItem('token',res.data.data.token)
-    //       }
-    //     })
-    //     .catch()
+    this.axios.get(this.prefixAddr + '/getCsrf',{})
+        .then(res=>{
+          if (res.data.code === 200){
+            window.localStorage.setItem('token',res.data.data.token)
+            this.$store.commit('getToken')
+            this.axios.defaults.headers.common['X-CSRF-TOKEN'] = this.$store.state.token;
+          }
+        })
+        .catch()
   },
   methods: {
     isLogin(val) {
