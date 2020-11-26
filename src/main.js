@@ -12,15 +12,9 @@ Vue.use(ElementUI);
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
-axios.get('http://192.168.99.132:8080/topcheer' + '/getCsrf',{})
-  .then(res=>{
-    if (res.data.code === 200){
-      // window.localStorage.setItem('token',res.data.data.token)
-    }
-  })
-  .catch()
-let token = window.localStorage.getItem('token');
-axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+
+// let token = window.localStorage.getItem('token');
+// axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
 // Vue.prototype.prefixAddr = '/api';
