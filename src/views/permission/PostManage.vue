@@ -15,7 +15,11 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="addPost" @update="updatePost" @postSelect="selectPostRow"
-           @delete="deletePost" @dblclick="viewPost"></Table>
+           @delete="deletePost" @dblclick="viewPost">
+      <el-button size="small" class="update" @click="relatedPermission"><i class="el-icon-edit icon"></i>关联权限
+      </el-button>
+      <el-button size="small" class="update" @click="relatedUser"><i class="el-icon-edit icon"></i>关联用户</el-button>
+    </Table>
     <el-dialog title="添加岗位" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
       <el-form label-position="right" label-width="80px" :inline="true" :model="postInfo" size="small" class="addForm" :disabled="editDialogDisabled">
         <el-form-item label="岗位名称">
@@ -41,6 +45,19 @@
     </el-dialog>
     <el-dialog title="删除岗位" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
+    </el-dialog>
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
+      <el-transfer
+          filterable
+          :filter-method="filterMethod"
+          filter-placeholder="请输入"
+          v-model="value"
+          :data="transformData">
+      </el-transfer>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -104,6 +121,16 @@ export default {
         coding: '',
         type: false
       },
+      transformData:[],
+      value: [],
+      filterMethod(query, item) {
+        return item.label.indexOf(query) > -1;
+      },
+      relatedTitle:'',
+      relatedDialogVisible: false,
+      permissionVal:[],
+      userVal:[],
+      transformType:'',
     }
   },
   mounted() {
@@ -152,6 +179,32 @@ export default {
     },
     confirmDelete(){
       this.deleteDialogVisible = false
+    },
+//关联权限，范围
+    relatedPermission() {
+      this.transformType = 'permission'
+      this.value = this.permissionVal
+      this.relatedTitle = '关联权限'
+      this.relatedDialogVisible = true
+      this.transformData =  [{label: '上海00', key: 0},{label: '北京', key: 1}, {label: '广州', key: 2},
+        {label: '深圳', key: 3}, {label: '南京', key: 4}, {label: '西安', key: 5}, {label: '成都', key: 6}]
+    },
+    relatedUser(){
+      this.value = this.userVal
+      this.transformType = 'user'
+      this.relatedTitle = '关联用户'
+      this.relatedDialogVisible = true
+      this.transformData =  [{label: '小组1', key:'小组1',},{label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
+        {label: '小组4', key: '小组4'}]
+    },
+    confirmTransform(){
+      this.relatedDialogVisible = false
+      if (this.transformType === 'permission'){
+        this.permissionVal = this.value
+      }else if (this.transformType === 'user'){
+        this.userVal= this.value
+      }
+      console.log(this.value)
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
