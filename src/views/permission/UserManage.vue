@@ -44,11 +44,6 @@ export default {
   components: {Table},
   data() {
     return {
-      value: [],
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1;
-      },
-      transformData:[],
       colsHead: [{prop: 'name', label: '用户名'}, {prop: 'post', label: '岗位'}, {prop: 'gender', label: '性别'},
         {prop: 'phone', label: '电话'}, {prop: 'mail', label: '邮箱'}, {prop: 'type', label: '状态'}, {
           prop: 'date',
@@ -104,6 +99,11 @@ export default {
       },
       tableData: [],
       checkedProps: [],
+      transformData:[],
+      value: [],
+      filterMethod(query, item) {
+        return item.label.indexOf(query) > -1;
+      },
       relatedTitle:'',
       relatedDialogVisible: false,
       departmentVal:[],
@@ -118,6 +118,7 @@ export default {
     onSubmit() {
       console.log('submit!')
     },
+//关联部门，岗位，小组
     relatedDepartment() {
       this.transformType = 'department'
       this.value = this.departmentVal
