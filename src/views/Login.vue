@@ -61,6 +61,7 @@ export default {
       radio1: '',
       posts: [],
       userId: '',
+      token:''
     }
   },
   watch: {
@@ -71,6 +72,16 @@ export default {
       immediate: true,
       deep: true
     },
+  },
+  mounted() {
+    // this.axios.get(this.prefixAddr + '/getCsrf',{})
+    //     .then(res=>{
+    //       if (res.data.code === 200){
+    //         // this.token = res.data.data.token
+    //         window.localStorage.setItem('token',res.data.data.token)
+    //       }
+    //     })
+    //     .catch()
   },
   methods: {
     isLogin(val) {
@@ -91,6 +102,7 @@ export default {
       val.username.length > 0 && val.password.length > 0 ? this.clickable = true : this.clickable = false
     },
     loginSubmit() {
+      console.log('调用登录接口啦')
       this.axios.post(this.prefixAddr + '/login',
           Qs.stringify({...this.loginInfo})
       ).then(res => {
@@ -103,7 +115,7 @@ export default {
         }else {this.$message.error(res.data.msg)}
       })
           .catch()
-      // this.$router.push('/SelectUser')
+      this.$router.push('/HomePage')
     },
     radioChange(value) {
       this.userId = value
@@ -117,7 +129,7 @@ export default {
       }
     },
     daveUser() {
-        this.axios.get(this.prefixAddr + '/user/selectUserPower', {
+      this.axios.get(this.prefixAddr + '/user/selectUserPower', {
           params: {userId: this.userId}
         }).then(res=>{
           console.log(res)
