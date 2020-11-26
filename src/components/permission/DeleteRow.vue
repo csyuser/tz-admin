@@ -1,6 +1,6 @@
 <template>
   <div class="deleteRow">
-    <p class="title">确定删除所选岗位吗</p>
+    <p class="title">确定删除所选行吗</p>
     <p slot="footer" class="footer">
       <el-button @click="$emit('cancel',$event)" size="small">取 消</el-button>
       <el-button type="primary" @click="$emit('confirm',$event)" size="small">确 定</el-button>

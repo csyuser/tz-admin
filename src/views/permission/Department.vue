@@ -61,7 +61,7 @@
         <el-button type="primary" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="添加部门" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
+    <el-dialog title="删除部门" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
     <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
@@ -89,7 +89,6 @@ export default {
   components: {Table, DeleteRow},
   data() {
     return {
-      url: '/department/page',
       formInline: {
         user: '',
         region: ''
@@ -116,7 +115,8 @@ export default {
   },
   mounted() {
     this.axios.get(this.prefixAddr + '/department/page', {
-      params: {}
+      params: {},
+      // withCredentials:true,
     }).then(res => {
       console.log(res)
     })

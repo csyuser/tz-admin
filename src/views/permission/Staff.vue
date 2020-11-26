@@ -1,6 +1,5 @@
 <template>
   <div class="staff-wrap">
-    {{isFocus}}
     <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
       <el-form-item>
         <el-input v-model="formInline.user" placeholder="输入名称或邮箱搜索" size="small"></el-input>

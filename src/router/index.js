@@ -8,6 +8,7 @@ import PostManage from '@/views/permission/PostManage'
 import MenuManage from '@/views/permission/MenuManage'
 import Staff from '@/views/permission/Staff'
 import Department from '@/views/permission/Department'
+import Group from '@/views/permission/Group'
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,10 @@ const routes = [
         path: '/Department',
         name: 'Department',
         component: Department,
+      }, {
+        path: '/Group',
+        name: 'Group',
+        component: Group,
       },
     ],
   },

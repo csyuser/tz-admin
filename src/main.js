@@ -16,6 +16,7 @@ Vue.config.productionTip = false
 // let token = window.localStorage.getItem('token');
 // axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// axios.defaults.headers.common['Access-Control-Allow-Credentials'] = true;
 Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
 // Vue.prototype.prefixAddr = '/api';
 
