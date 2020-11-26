@@ -9,11 +9,15 @@ export default new Vuex.Store({
     cellStyle:{
       'font-size':'12px',
       'padding':'11px 0'
-    }
+    },
+    token:''
   },
   mutations: {
     fetch(state){
       state.selectedMenu =  window.localStorage.getItem('selectedMenu')
+    },
+    getToken(state){
+      state.token =  window.localStorage.getItem('token')
     },
   },
   actions: {
