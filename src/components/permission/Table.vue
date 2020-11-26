@@ -3,8 +3,10 @@
     <div class="buttons">
       <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增
       </el-button>
-      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑</el-button>
-      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除</el-button>
+      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑
+      </el-button>
+      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除
+      </el-button>
       <slot></slot>
       <el-popover placement="bottom" trigger="click" class="popover-button">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -15,30 +17,30 @@
         <el-button size="small" icon="el-icon-s-grid" class="checkbox-button" slot="reference"></el-button>
       </el-popover>
     </div>
-        <div class="table-wrap">
-          <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate = "false"
-                    :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
-                    :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
-                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
-              <template slot-scope="scope">
-                <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"
-                           v-if="col.prop === 'type'"
-                           @click.native="changeType(scope.row)">
-                </el-switch>
-                <span v-else>{{ scope.row[col.prop] }} </span>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                         :current-page="currentPage"
-                         :page-sizes="[10, 20, 30, 40]"
-                         :page-size="10"
-                         layout="total, prev, pager, next"
-                         :total="total">
-          </el-pagination>
-        </div>
+    <div class="table-wrap">
+      <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
+                :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
+                :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick" @select-all="selectAllRows"
+                :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"
+                       v-if="col.prop === 'type'"
+                       @click.native="changeType(scope.row)">
+            </el-switch>
+            <span v-else>{{ scope.row[col.prop] }} </span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="currentPage"
+                     :page-sizes="[10, 20, 30, 40]"
+                     :page-size="10"
+                     layout="total, prev, pager, next"
+                     :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -60,7 +62,8 @@ export default {
       total: 40,
       tableData: [],
       cols: [],
-      selectedRow:[],
+      selectedRow: [],
+      children:[]
     }
   },
   mounted() {
@@ -86,7 +89,7 @@ export default {
       this.cols = result.sort((a, b) => a.order - b.order)
     },
 //监听表格数据传递
-    tableDatas:{
+    tableDatas: {
       handler(newVal) {
         this.tableData = newVal.tableData
         this.total = newVal.count
@@ -129,25 +132,88 @@ export default {
       })
     },
     //选中父元素，全选子元素
-    selectRow(val,row) {
-      console.log('选择')
-      console.log(row)
-      this.$emit('postSelect',val)
-      let xxx = []
-      val.forEach(item=>{
-        xxx.push(item)
-        if (item.children){
-          item.children.forEach(child=>{
-            xxx.push(child)
+    selectRow(val, row) {
+      this.$emit('postSelect', val)
+      let parent = {}
+      if (val.indexOf(row) >= 0) {
+        this.selectedRow.push(row)
+        if (row.children) {
+          row.children.forEach(child => {
+            if (this.selectedRow.indexOf(child) < 0) {
+              this.selectedRow.push(child)
+            }
           })
         }
-      })
-      xxx.forEach(item=>{
-        this.$refs.multipleTable.toggleRowSelection(item,true);
+        if (row.previousMenu !== '') {
+          this.tableData.forEach(item => {
+            if (item.name === row.previousMenu) {
+              parent = item
+            }
+          })
+          let childSelected = true
+          parent.children.forEach(child=>{
+           if (this.selectedRow.indexOf(child) < 0) {childSelected = false}
+          })
+          if (childSelected === true){this.selectedRow.push(parent)}
+        }
+      }else {
+        let index = this.selectedRow.indexOf(row)
+        this.selectedRow.splice(index,1)
+        if (row.children) {
+          row.children.forEach(child => {
+            if (this.selectedRow.indexOf(child) >= 0) {
+              let index = this.selectedRow.indexOf(child)
+              this.selectedRow.splice(index,1)
+            }
+          })
+        }
+        if (row.previousMenu !== '') {
+          this.tableData.forEach(item => {
+            if (item.name === row.previousMenu) {
+              parent = item
+            }
+          })
+          if (this.selectedRow.indexOf(parent) >= 0){
+            let index = this.selectedRow.indexOf(parent)
+            this.selectedRow.splice(index,1)
+          }
+        }
+      }
+      console.log(this.selectedRow)
+      this.$refs.multipleTable.clearSelection()
+      this.selectedRow.forEach(item => {
+        this.$refs.multipleTable.toggleRowSelection(item, true)
       })
     },
-    dblclick(row){
-      this.$emit('dblclick',row)
+    selectAllRows(selection){
+      if (this.children.length>0){
+        this.children.forEach(child=>{
+          this.$refs.multipleTable.toggleRowSelection(child, false)
+        })}
+      console.log(selection.length)
+      if (selection.length>0){
+        selection.forEach(item=>{
+          this.selectedRow.push(item)
+          if (item.children) {
+            item.children.forEach(child => {
+              if (this.selectedRow.indexOf(child) < 0) {
+                this.selectedRow.push(child)
+                this.children.push(child)
+              }
+            })
+          }
+        })
+      }else {
+        this.selectedRow = []
+      }
+      this.$refs.multipleTable.clearSelection()
+      this.selectedRow.forEach(item => {
+        this.$refs.multipleTable.toggleRowSelection(item, true)
+      })
+      console.log(this.selectedRow)
+    },
+    dblclick(row) {
+      this.$emit('dblclick', row)
     }
   }
 }

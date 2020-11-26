@@ -75,8 +75,25 @@ export default {
         },  {
           id: 4,
           order:'4',
-          name:'用户管理',
-          previousMenu:'权限管理',
+          name:'其他',
+          previousMenu:'',
+          menuType:'功能菜单',
+          url:'/MenuManage',
+          date: '2016-05-02',
+          children:[{
+            id: '2-1',
+            order:'1',
+            name:'用户管理',
+            previousMenu:'其他',
+            menuType:'功能菜单',
+            url:'/MenuManage',
+            date: '2016-05-02',
+          }]
+        },{
+          id: 5,
+          order:'5',
+          name:'其他1',
+          previousMenu:'',
           menuType:'功能菜单',
           url:'/MenuManage',
           date: '2016-05-02',

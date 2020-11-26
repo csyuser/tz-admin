@@ -3,7 +3,7 @@ module.exports = {
   devServer: {
     // proxy:{
     //   '/api': {
-    //     target: 'http://192.168.99.132:8080',
+    //     target: 'http://192.168.99.132:8080/top',
     //     ws: true,
     //     changeOrigin: true,
     //     pathRewrite: {
