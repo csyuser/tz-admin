@@ -79,7 +79,8 @@ export default {
           if (res.data.code === 200){
             window.localStorage.setItem('token',res.data.data.token)
             this.$store.commit('getToken')
-            this.axios.defaults.headers.common['X-CSRF-TOKEN'] = this.$store.state.token;
+            // this.axios.defaults.headers.common['X-CSRF-TOKEN'] = this.$store.state.token;
+            this.axios.defaults.headers.post['X-CSRF-TOKEN'] = this.$store.state.token
             console.log(this.$store.state.token)
           }
         })
