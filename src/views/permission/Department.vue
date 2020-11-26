@@ -16,6 +16,7 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="addDepartment" @update="updateDepartment"
            @postSelect="selectRow" @delete="deleteDepartment" @dblclick="viewDepartment">
+      <el-button size="small" class="update" @click="relatedUser"><i class="el-icon-edit icon"></i>关联用户</el-button>
     </Table>
     <el-dialog title="添加部门" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="departmentInfo" size="small"
@@ -63,6 +64,19 @@
     <el-dialog title="添加部门" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
+      <el-transfer
+          filterable
+          :filter-method="filterMethod"
+          filter-placeholder="请输入"
+          v-model="value"
+          :data="transformData">
+      </el-transfer>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -72,7 +86,7 @@ import DeleteRow from '@/components/permission/DeleteRow'
 
 export default {
   name: 'Department',
-  components: {Table,DeleteRow},
+  components: {Table, DeleteRow},
   data() {
     return {
       url: '/department/page',
@@ -86,18 +100,27 @@ export default {
       tableDatas: {},
       editDialogVisible: false,
       deleteDialogVisible: false,
-      editDialogDisabled:false,
+      editDialogDisabled: false,
       selectedRow: [],
       departmentInfo: {},
+      transformData: [],
+      value: [],
+      filterMethod(query, item) {
+        return item.label.indexOf(query) > -1
+      },
+      relatedTitle: '',
+      relatedDialogVisible: false,
+      userVal: [],
+      transformType: '',
     }
   },
   mounted() {
-    this.axios.get(this.prefixAddr + '/department/page',{
-      params:{}
-    }).then(res=>{
+    this.axios.get(this.prefixAddr + '/department/page', {
+      params: {}
+    }).then(res => {
       console.log(res)
     })
-    .catch()
+        .catch()
 
     // const tableDatas = {
     //   count: 30,
@@ -139,7 +162,7 @@ export default {
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
-    updateDepartment(){
+    updateDepartment() {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.departmentInfo = this.selectedRow[0]
@@ -148,10 +171,10 @@ export default {
         this.$message.error('请选择一行数据')
       }
     },
-    confirmEdit(){
+    confirmEdit() {
       this.editDialogVisible = false
     },
-    viewDepartment(row){
+    viewDepartment(row) {
       this.departmentInfo = row
       this.editDialogVisible = true
       this.editDialogDisabled = true
@@ -163,8 +186,24 @@ export default {
         this.$message.error('请选择至少一行数据')
       }
     },
-    confirmDelete(){
+    confirmDelete() {
       this.deleteDialogVisible = false
+    },
+//关联用户
+    relatedUser() {
+      this.value = this.userVal
+      this.transformType = 'user'
+      this.relatedTitle = '关联用户'
+      this.relatedDialogVisible = true
+      this.transformData = [{label: '小组1', key: '小组1',}, {label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
+        {label: '小组4', key: '小组4'}]
+    },
+    confirmTransform() {
+      this.relatedDialogVisible = false
+      if (this.transformType === 'user') {
+        this.userVal = this.value
+      }
+      console.log(this.value)
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
