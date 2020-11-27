@@ -157,14 +157,14 @@ export default {
       })
     },
     add() {
-      this.staffInfo = {}
+      this.permissionInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
     update() {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
-        this.staffInfo = this.selectedRow[0]
+        this.permissionInfo = this.selectedRow[0]
         this.editDialogVisible = true
       } else {
         this.$message.error('请选择一行数据')
@@ -174,7 +174,7 @@ export default {
       this.editDialogVisible = false
     },
     view(row){
-      this.staffInfo = row
+      this.permissionInfo = row
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },

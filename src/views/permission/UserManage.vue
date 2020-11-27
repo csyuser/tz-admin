@@ -113,6 +113,13 @@ export default {
     }
   },
   mounted() {
+    this.axios.get(this.prefixAddr + '/user/page', {
+      params: {},
+      // withCredentials:true,
+    }).then(res => {
+      console.log(res)
+    })
+        .catch()
   },
   methods: {
     onSubmit() {

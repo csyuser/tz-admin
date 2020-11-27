@@ -78,8 +78,6 @@ export default {
         .then(res=>{
           if (res.data.code === 200){
             window.localStorage.setItem('token',res.data.data.token)
-            this.$store.commit('getToken')
-            this.axios.defaults.headers.post['X-CSRF-TOKEN'] = this.$store.state.token
           }
         })
         .catch()
@@ -106,7 +104,6 @@ export default {
       this.axios.post(this.prefixAddr + '/login',
           Qs.stringify({...this.loginInfo})
       ).then(res => {
-        console.log(res)
         if (res.data.code === 200) {
           if (res.data.data.length <= 1) {
             this.selectDialogVisible = true
@@ -115,7 +112,6 @@ export default {
         }else {this.$message.error(res.data.msg)}
       })
           .catch()
-      this.$router.push('/HomePage')
     },
     radioChange(value) {
       this.userId = value
@@ -134,7 +130,7 @@ export default {
         }).then(res=>{
           console.log(res)
           if (res.data.code === 200) {
-            // this.$router.push('/HomePage')
+            this.$router.push('/HomePage')
           }else {this.$message.error(res.data.msg)}
         })
             .catch()

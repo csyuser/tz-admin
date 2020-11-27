@@ -157,14 +157,14 @@ name: "Group",
       console.log(this.selectedRow)
     },
     add() {
-      this.staffInfo = {}
+      this.groupInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
     update() {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
-        this.staffInfo = this.selectedRow[0]
+        this.groupInfo = this.selectedRow[0]
         this.editDialogVisible = true
       } else {
         this.$message.error('请选择一行数据')
@@ -174,7 +174,7 @@ name: "Group",
       this.editDialogVisible = false
     },
     view(row){
-      this.staffInfo = row
+      this.groupInfo = row
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },
