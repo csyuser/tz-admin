@@ -80,7 +80,6 @@ export default {
             window.localStorage.setItem('token',res.data.data.token)
             this.$store.commit('getToken')
             this.axios.defaults.headers.post['X-CSRF-TOKEN'] = this.$store.state.token
-            console.log(this.$store.state.token)
           }
         })
         .catch()
@@ -104,10 +103,8 @@ export default {
       val.username.length > 0 && val.password.length > 0 ? this.clickable = true : this.clickable = false
     },
     loginSubmit() {
-      console.log('调用登录接口啦')
       this.axios.post(this.prefixAddr + '/login',
           Qs.stringify({...this.loginInfo})
-      // {...this.loginInfo}
       ).then(res => {
         console.log(res)
         if (res.data.code === 200) {
