@@ -1,5 +1,10 @@
 <template>
   <div class="permission-wrap">
+<!--    <svg class="icon" aria-hidden="true">-->
+<!--      <use xlink:href="#icon-group"></use>-->
+<!--    </svg>-->
+<!--    <svg-icon iconClass="group"/>-->
+
     <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
       <el-form-item>
         <el-input v-model="formInline.user" placeholder="输入名称或邮箱搜索" size="small"></el-input>
@@ -84,6 +89,7 @@
 
 <script>
 import Table from '@/components/permission/Table'
+// import '../../svg.js'
 
 export default {
   name: 'Permission',

@@ -15,10 +15,12 @@ Vue.config.productionTip = false
 Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
 // Vue.prototype.prefixAddr = '/api';
 
+
+
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('token');
-  config.headers.common['X-CSRF-TOKEN'] = token;
+  config.headers.post['X-CSRF-TOKEN'] = token;
   return config;
 }, function (error) {
   return Promise.reject(error);

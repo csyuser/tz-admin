@@ -125,8 +125,8 @@ export default {
       }
     },
     daveUser() {
-      this.axios.get(this.prefixAddr + '/user/selectUserPower', {
-          params: {userId: this.userId}
+      this.axios.post(this.prefixAddr + '/user/selectUserPower', {
+         userId: this.userId
         }).then(res=>{
           console.log(res)
           if (res.data.code === 200) {
