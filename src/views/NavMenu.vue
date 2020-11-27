@@ -44,7 +44,6 @@ export default {
             {order:'1-3',menuTitle: '权限管理', menuName: '人员管理', id: '1-3', path: '/Staff'}, {order:'1-4',menuTitle: '权限管理', menuName: '功能菜单管理', id: '1-4', path: '/MenuManage'},
             {order:'1-5',menuTitle: '权限管理', menuName: '部门管理', id: '1-5', path: '/Department'},{order:'1-6',menuTitle: '权限管理', menuName: '小组管理', id: '1-6', path: '/Group'},
             {order:'1-7',menuTitle: '权限管理', menuName: '权限管理', id: '1-7', path: '/Permission'},
-            {order:'1-8',menuTitle: '权限管理', menuName: 'icon', id: '1-8', path: '/SvgIcon'}
           ]},
         {id: '2', title: '系统工具', icon: '',
           list: [{menuTitle: '系统工具', menuName: '生成代码', id: '2-1', path: '/2-1'}, {menuTitle: '系统工具', menuName: '存储管理', id: '2-2', path: '/2-1'}]

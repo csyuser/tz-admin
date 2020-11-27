@@ -16,7 +16,7 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="addDepartment" @update="updateDepartment"
            @postSelect="selectRow" @delete="deleteDepartment" @dblclick="viewDepartment">
-      <el-button size="small" class="update" @click="relatedUser"><i class="el-icon-edit icon"></i>关联用户</el-button>
+      <el-button size="small" class="update" @click="relatedUser"><SvgIcon icon-name="user"></SvgIcon>关联用户</el-button>
     </Table>
     <el-dialog title="添加部门" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="departmentInfo" size="small"
@@ -83,10 +83,11 @@
 <script>
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
+import SvgIcon from '@/components/SvgIcon'
 
 export default {
   name: 'Department',
-  components: {Table, DeleteRow},
+  components: {SvgIcon, Table, DeleteRow},
   data() {
     return {
       formInline: {

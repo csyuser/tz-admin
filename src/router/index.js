@@ -10,7 +10,6 @@ import Staff from '@/views/permission/Staff'
 import Department from '@/views/permission/Department'
 import Group from '@/views/permission/Group'
 import Permission from '@/views/permission/Permission'
-import SvgIcon from '@/components/SvgIcon'
 
 Vue.use(VueRouter)
 
@@ -19,11 +18,6 @@ const routes = [
     path: '/',
     name: 'Login',
     component: Login
-  },
-  {
-    path: '/SvgIcon',
-    name: 'SvgIcon',
-    component: SvgIcon
   },
   {
     path: '/navMenu',

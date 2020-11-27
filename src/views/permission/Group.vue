@@ -16,8 +16,8 @@
   </el-form>
   <Table  :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
           @delete="deleteRows" @dblclick="view">
-    <el-button size="small" class="update" @click="relatedUser"><i class="el-icon-edit icon"></i>关联用户</el-button>
-    <el-button size="small" class="update" @click="relatedPermission"><i class="el-icon-edit icon"></i>关联权限</el-button>
+    <el-button size="small" class="update" @click="relatedUser"><SvgIcon icon-name="user"></SvgIcon>关联用户</el-button>
+    <el-button size="small" class="update" @click="relatedPermission"><SvgIcon icon-name="permission"></SvgIcon>关联权限</el-button>
   </Table>
   <el-dialog title="添加小组" :visible.sync="editDialogVisible" width="970px">
     <el-form label-position="right" label-width="85px" :inline="true" :model="groupInfo" size="small"
@@ -84,10 +84,11 @@
 <script>
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
+import SvgIcon from '@/components/SvgIcon'
 
 export default {
 name: "Group",
-  components:{Table,DeleteRow},
+  components:{Table,DeleteRow,SvgIcon},
   data(){
   return{
     formInline: {

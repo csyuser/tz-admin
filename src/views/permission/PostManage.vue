@@ -16,9 +16,9 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="addPost" @update="updatePost" @postSelect="selectPostRow"
            @delete="deletePost" @dblclick="viewPost">
-      <el-button size="small" class="update" @click="relatedPermission"><i class="el-icon-edit icon"></i>关联权限
+      <el-button size="small" class="update" @click="relatedPermission"><SvgIcon icon-name="permission"></SvgIcon>关联权限
       </el-button>
-      <el-button size="small" class="update" @click="relatedUser"><i class="el-icon-edit icon"></i>关联用户</el-button>
+      <el-button size="small" class="update" @click="relatedUser"><SvgIcon icon-name="user"></SvgIcon>关联用户</el-button>
     </Table>
     <el-dialog title="添加岗位" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
       <el-form label-position="right" label-width="80px" :inline="true" :model="postInfo" size="small" class="addForm" :disabled="editDialogDisabled">
@@ -65,10 +65,11 @@
 <script>
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
+import SvgIcon from '@/components/SvgIcon'
 
 export default {
   name: 'PostManage',
-  components: {Table,DeleteRow},
+  components: {Table,DeleteRow,SvgIcon},
   data() {
     return {
       selectedRow: [],
