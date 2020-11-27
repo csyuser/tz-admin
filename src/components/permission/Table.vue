@@ -133,7 +133,6 @@ export default {
     },
     //选中父元素，全选子元素
     selectRow(val, row) {
-      this.$emit('postSelect', val)
       let parent = {}
       if (val.indexOf(row) >= 0) {
         this.selectedRow.push(row)
@@ -144,14 +143,14 @@ export default {
             }
           })
         }
-        if (row.previousMenu !== '') {
+        if (row.previousMenu && row.previousMenu !== '') {
           this.tableData.forEach(item => {
             if (item.name === row.previousMenu) {
               parent = item
             }
           })
           let childSelected = true
-          parent.children.forEach(child=>{
+          parent.children && parent.children.forEach(child=>{
            if (this.selectedRow.indexOf(child) < 0) {childSelected = false}
           })
           if (childSelected === true){this.selectedRow.push(parent)}
@@ -167,7 +166,7 @@ export default {
             }
           })
         }
-        if (row.previousMenu !== '') {
+        if (row.previousMenu && row.previousMenu !== '') {
           this.tableData.forEach(item => {
             if (item.name === row.previousMenu) {
               parent = item
@@ -179,11 +178,14 @@ export default {
           }
         }
       }
-      console.log(this.selectedRow)
+
       this.$refs.multipleTable.clearSelection()
       this.selectedRow.forEach(item => {
         this.$refs.multipleTable.toggleRowSelection(item, true)
       })
+      console.log('table组件的选中行')
+      console.log(this.selectedRow)
+      this.$emit('postSelect', this.selectedRow)
     },
     selectAllRows(selection){
       if (this.children.length>0){

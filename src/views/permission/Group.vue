@@ -19,7 +19,7 @@
     <el-button size="small" class="update" @click="relatedUser"><i class="el-icon-edit icon"></i>关联用户</el-button>
     <el-button size="small" class="update" @click="relatedPermission"><i class="el-icon-edit icon"></i>关联权限</el-button>
   </Table>
-  <el-dialog title="添加部门" :visible.sync="editDialogVisible" width="970px">
+  <el-dialog title="添加小组" :visible.sync="editDialogVisible" width="970px">
     <el-form label-position="right" label-width="85px" :inline="true" :model="groupInfo" size="small"
              class="addForm"
              :disabled="editDialogDisabled">
@@ -62,7 +62,7 @@
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
   </el-dialog>
-  <el-dialog title="删除部门" :visible.sync="deleteDialogVisible" width="650px">
+  <el-dialog title="删除小组" :visible.sync="deleteDialogVisible" width="650px">
     <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
   </el-dialog>
   <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">

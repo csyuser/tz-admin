@@ -20,7 +20,7 @@
         <el-button type="primary" @click="submit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas"></Table>
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" @postSelect="selectRow"></Table>
   </div>
 </template>
 
@@ -104,7 +104,13 @@ export default {
   methods:{
     submit(){
       console.log(this.menuInfo)
-    }
+    },
+    selectRow(val) {
+      this.selectedRow = []
+      val.forEach(item => {
+        this.selectedRow.push(item)
+      })
+    },
   }
 }
 </script>
