@@ -101,17 +101,18 @@ export default {
       val.username.length > 0 && val.password.length > 0 ? this.clickable = true : this.clickable = false
     },
     loginSubmit() {
-      this.axios.post(this.prefixAddr + '/login',
-          Qs.stringify({...this.loginInfo})
-      ).then(res => {
-        if (res.data.code === 200) {
-          if (res.data.data.length <= 1) {
-            this.selectDialogVisible = true
-            this.posts = res.data.data
-          } else {this.userId = res.data.data[0].id}
-        } else {this.$message.error(res.data.msg)}
-      })
-          .catch()
+      this.$router.push('/HomePage')
+      // this.axios.post(this.prefixAddr + '/login',
+      //     Qs.stringify({...this.loginInfo})
+      // ).then(res => {
+      //   if (res.data.code === 200) {
+      //     if (res.data.data.length <= 1) {
+      //       this.selectDialogVisible = true
+      //       this.posts = res.data.data
+      //     } else {this.userId = res.data.data[0].id}
+      //   } else {this.$message.error(res.data.msg)}
+      // })
+      //     .catch()
     },
     radioChange(value) {
       this.userId = value

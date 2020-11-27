@@ -58,7 +58,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small">确 定</el-button>
+        <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除部门" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import Qs from 'qs'
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
@@ -115,13 +116,13 @@ export default {
     }
   },
   mounted() {
-    this.axios.get(this.prefixAddr + '/department/page', {
-      params: {},
-      // withCredentials:true,
-    }).then(res => {
-      console.log(res)
-    })
-        .catch()
+    // this.axios.get(this.prefixAddr + '/department/page', {
+    //   params: {},
+    //   // withCredentials:true,
+    // }).then(res => {
+    //   console.log(res)
+    // })
+    //     .catch()
 
     // const tableDatas = {
     //   count: 30,
@@ -174,6 +175,12 @@ export default {
     },
     confirmEdit() {
       this.editDialogVisible = false
+      console.log('执行了')
+      // this.axios.post(this.prefixAddr + '/department/save',Qs.stringify({...this.departmentInfo}))
+      // .then(res=>{
+      //   console.log(res)
+      // })
+      // .catch()
     },
     viewDepartment(row) {
       this.departmentInfo = row

@@ -29,6 +29,8 @@
                        v-if="col.prop === 'type'"
                        @click.native="changeType(scope.row)">
             </el-switch>
+            <span v-else-if="tableName==='userTable' && col.prop === 'riskLevel'">{{ riskLevel(scope.row[col.prop]) }} </span>
+            <span v-else-if="tableName==='userTable' && col.prop === 'status'">{{ riskLevel(scope.row[col.prop]) }} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
@@ -50,6 +52,7 @@ export default {
   props: {
     colsHead: {type: Array},
     tableDatas: {type: Object},
+    tableName:{},
   },
   data() {
     return {
@@ -216,6 +219,17 @@ export default {
     },
     dblclick(row) {
       this.$emit('dblclick', row)
+    },
+    //用户风险等级判断，1异地登录2频繁登录
+    riskLevel(level){
+      if (level==='1'){return '异地登录'}
+      else if (level==='2'){return '频繁登录'}
+    },
+    //用户状态，用户状态1正常2锁定3注销
+    userStatus(level){
+      if (level==='1'){return '正常'}
+      else if (level==='2'){return '锁定'}
+      else if (level==='3'){return '注销'}
     }
   }
 }

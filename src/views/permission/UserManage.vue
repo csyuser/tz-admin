@@ -14,7 +14,7 @@
         <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas">
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" tableName="userTable">
       <el-button size="small" class="update" @click="relatedDepartment"><SvgIcon icon-name="department"></SvgIcon>关联部门
       </el-button>
       <el-button size="small" class="update" @click="relatedPost"><SvgIcon icon-name="post"></SvgIcon>关联岗位</el-button>
@@ -45,55 +45,40 @@ export default {
   components: {Table,SvgIcon},
   data() {
     return {
-      colsHead: [{prop: 'name', label: '用户名'}, {prop: 'post', label: '岗位'}, {prop: 'gender', label: '性别'},
-        {prop: 'phone', label: '电话'}, {prop: 'mail', label: '邮箱'}, {prop: 'type', label: '状态'}, {
-          prop: 'date',
-          label: '创建日期'
-        }],
+      colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'}, {prop: 'riskLevel', label: '风险等级'},
+        {prop: 'status', label: '用户状态'}],
       tableDatas: {
         count: 30,
         tableData: [{
           id: 1,
           name: '王小虎',
-          post: '前端开发',
-          gender: '男',
-          phone: '13425014531',
-          mail: '13425014531@qq.com',
-          type: true,
-          date: '2016-05-02',
+          code: '1',
+          riskLevel: '1',
+          status: '2',
         }, {
           id: 2,
           name: '王小虎',
-          post: '前端开发',
-          gender: '男',
-          phone: '13425014531',
-          mail: '13425014531@qq.com',
-          type: false,
-          date: '2016-05-02',
+          code: '2',
+          riskLevel: '1',
+          status: '2',
         }, {
           id: 3,
           name: '王小虎',
-          post: '前端开发',
-          gender: '男',
-          phone: '13425014531',
-          mail: '13425014531@qq.com',
-          type: true,
-          date: '2016-05-02',
+          code: '3',
+          riskLevel: '1',
+          status: '2',
         }, {
           id: 4,
           name: '王小虎',
-          post: '前端开发',
-          gender: '男',
-          phone: '13425014531',
-          mail: '13425014531@qq.com',
-          type: true,
-          date: '2016-05-02',
+          code: '3',
+          riskLevel: '1',
+          status: '2',
         }],
       },
       checkedLabels: [],
       checkedOptions: [],
-      currentPage: 1,
-      total: 40,
+      page: 1,
+      pageSize:10,
       formInline: {
         user: '',
         region: ''
@@ -115,8 +100,7 @@ export default {
   },
   mounted() {
     this.axios.get(this.prefixAddr + '/user/page', {
-      params: {},
-      // withCredentials:true,
+      // params: {page:this.page, pageSize:this.pageSize},
     }).then(res => {
       console.log(res)
     })

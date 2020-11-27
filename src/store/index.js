@@ -15,6 +15,16 @@ export default new Vuex.Store({
     fetch(state){
       state.selectedMenu =  window.localStorage.getItem('selectedMenu')
     },
+    // getPage(state,payload){
+    //   const {url,page,pageSize} = payload
+    //   this.axios.get(this.prefixAddr + url, {
+    //     params: {page, pageSize}
+    //   }).then(res => {
+    //     console.log(res)
+    //     return {a:'11',b:'22'}
+    //   })
+    //     .catch()
+    // }
   },
   actions: {
   },

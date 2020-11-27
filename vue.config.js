@@ -3,16 +3,16 @@ const path =require ('path') //引入一个path模块，是nodejs的一个模块
 module.exports = {
   lintOnSave: false,
   devServer: {
-    // proxy:{
-    //   '/api': {
-    //     target: 'http://192.168.99.132:8080/top',
-    //     ws: true,
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/api': '/', // rewrite path
-    //     },
-    //   },
-    // }
+    proxy:{
+      '/api': {
+        target: 'http://192.168.11.240:8080/topcheer',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/', // rewrite path
+        },
+      },
+    }
   },
   chainWebpack: config =>{
     const dir = path.resolve(__dirname, 'src/assets/icons')
