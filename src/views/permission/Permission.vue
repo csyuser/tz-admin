@@ -21,9 +21,9 @@
     </el-form>
     <Table  :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
             @delete="deleteRows" @dblclick="view">
-      <el-button size="small" class="update" @click="relatedPermission"><i class="el-icon-edit icon"></i>关联权限范围</el-button>
-      <el-button size="small" class="update" @click="relatedPost"><i class="el-icon-edit icon"></i>关联岗位</el-button>
-      <el-button size="small" class="update" @click="relatedGroup"><i class="el-icon-edit icon"></i>关联小组</el-button>
+      <el-button size="small" class="update" @click="relatedPermission"><SvgIcon icon-name="permission"></SvgIcon>关联权限范围</el-button>
+      <el-button size="small" class="update" @click="relatedPost"><SvgIcon icon-name="post"></SvgIcon>关联岗位</el-button>
+      <el-button size="small" class="update" @click="relatedGroup"><SvgIcon icon-name="group"></SvgIcon>关联小组</el-button>
     </Table>
     <el-dialog title="添加权限" :visible.sync="editDialogVisible" width="970px">
       <el-form label-position="right" label-width="85px" :inline="true" :model="permissionInfo" size="small"
@@ -89,11 +89,11 @@
 
 <script>
 import Table from '@/components/permission/Table'
-// import '../../svg.js'
+import SvgIcon from '@/components/SvgIcon'
 
 export default {
   name: 'Permission',
-  components:{Table},
+  components:{Table,SvgIcon},
   data(){
     return{
       formInline: {

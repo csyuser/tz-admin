@@ -1,11 +1,7 @@
 <template>
-  <div class="xxx">
-    icon
-    <svg>
-      <use xlink:href="#post"/>
+    <svg class="icon">
+      <use :xlink:href="`#${iconName}`"/>
     </svg>
-  </div>
-
 </template>
 
 <script>
@@ -16,9 +12,9 @@ requireAll(req)
 
 export default {
   name: 'SvgIcon',
-  data(){
-    return{
-      iconName:'group'
+  props:{
+    iconName:{
+      type:String
     }
   },
   computed: {
@@ -28,10 +24,13 @@ export default {
 
 <style scoped lang='scss'>
 .icon {
-  width: 1em;
+  font-size: 12px;
   height: 1em;
-  vertical-align: -0.15em;
+  width: 1em;
+  vertical-align: -2px;
+  vertical-align: center;
   fill: currentColor;
   overflow: hidden;
+  margin-right: 1em;
 }
 </style>

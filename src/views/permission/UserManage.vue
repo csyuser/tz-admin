@@ -15,10 +15,10 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas">
-      <el-button size="small" class="update" @click="relatedDepartment"><i class="el-icon-edit icon"></i>关联部门
+      <el-button size="small" class="update" @click="relatedDepartment"><SvgIcon icon-name="department"></SvgIcon>关联部门
       </el-button>
-      <el-button size="small" class="update" @click="relatedPost"><i class="el-icon-edit icon"></i>关联岗位</el-button>
-      <el-button size="small" class="update" @click="relatedGroup"><i class="el-icon-edit icon"></i>关联小组</el-button>
+      <el-button size="small" class="update" @click="relatedPost"><SvgIcon icon-name="post"></SvgIcon>关联岗位</el-button>
+      <el-button size="small" class="update" @click="relatedGroup"><SvgIcon icon-name="group"></SvgIcon>关联小组</el-button>
     </Table>
     <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
       <el-transfer
@@ -38,10 +38,11 @@
 
 <script>
 import Table from '@/components/permission/Table'
+import SvgIcon from '@/components/SvgIcon'
 
 export default {
   name: 'userManage',
-  components: {Table},
+  components: {Table,SvgIcon},
   data() {
     return {
       colsHead: [{prop: 'name', label: '用户名'}, {prop: 'post', label: '岗位'}, {prop: 'gender', label: '性别'},
