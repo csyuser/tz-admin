@@ -61,7 +61,7 @@ export default {
       radio1: '',
       posts: [],
       userId: '',
-      token:''
+      token: ''
     }
   },
   watch: {
@@ -74,10 +74,10 @@ export default {
     },
   },
   mounted() {
-    this.axios.get(this.prefixAddr + '/getCsrf',{})
-        .then(res=>{
-          if (res.data.code === 200){
-            window.localStorage.setItem('token',res.data.data.token)
+    this.axios.get(this.prefixAddr + '/getCsrf', {})
+        .then(res => {
+          if (res.data.code === 200) {
+            window.localStorage.setItem('token', res.data.data.token)
           }
         })
         .catch()
@@ -109,7 +109,7 @@ export default {
             this.selectDialogVisible = true
             this.posts = res.data.data
           } else {this.userId = res.data.data[0].id}
-        }else {this.$message.error(res.data.msg)}
+        } else {this.$message.error(res.data.msg)}
       })
           .catch()
     },
@@ -117,23 +117,23 @@ export default {
       this.userId = value
     },
     selectedUser() {
-      if (this.userId !== ''){
+      if (this.userId !== '') {
         this.selectDialogVisible = false
         this.daveUser()
-      }else {
+      } else {
         this.$message.error('请选择一个用户')
       }
     },
     daveUser() {
-      this.axios.post(this.prefixAddr + '/user/selectUserPower', {
-         userId: this.userId
-        }).then(res=>{
-          console.log(res)
-          if (res.data.code === 200) {
-            this.$router.push('/HomePage')
-          }else {this.$message.error(res.data.msg)}
-        })
-            .catch()
+      this.axios.post(this.prefixAddr + '/user/selectUserPower',
+          Qs.stringify({userId: this.userId}))
+          .then(res => {
+            console.log(res)
+            if (res.data.code === 200) {
+              this.$router.push('/HomePage')
+            } else {this.$message.error(res.data.msg)}
+          })
+          .catch()
       this.$router.push('/HomePage')
     },
     handleClose(done) {
