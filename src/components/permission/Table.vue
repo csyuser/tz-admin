@@ -29,8 +29,8 @@
                        v-if="col.prop === 'type'"
                        @click.native="changeType(scope.row)">
             </el-switch>
-            <span v-else-if="tableName==='userTable' && col.prop === 'riskLevel'">{{ riskLevel(scope.row[col.prop]) }} </span>
-            <span v-else-if="tableName==='userTable' && col.prop === 'status'">{{ riskLevel(scope.row[col.prop]) }} </span>
+            <span v-else-if="col.prop === 'riskLevel'">{{ riskLevel(scope.row[col.prop]) }} </span>
+            <span v-else-if="col.prop === 'status'">{{ userStatus(scope.row[col.prop]) }} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
@@ -52,7 +52,7 @@ export default {
   props: {
     colsHead: {type: Array},
     tableDatas: {type: Object},
-    tableName:{},
+    // tableName:{type: Array},
   },
   data() {
     return {

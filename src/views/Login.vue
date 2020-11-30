@@ -28,8 +28,6 @@
         <el-radio-group v-model="radio1" class="radio-wrap" @change="radioChange">
           <el-radio :label="post.id" border class="radio" v-for="post in posts" :key="post.id">{{ post.name }}
           </el-radio>
-          <el-radio label="2" border class="radio">备选项2</el-radio>
-          <el-radio label="3" border class="radio">备选项3</el-radio>
         </el-radio-group>
         <p slot="footer" class="footer">
           <el-button @click="selectDialogVisible = false" size="small">取 消</el-button>
@@ -74,13 +72,13 @@ export default {
     },
   },
   mounted() {
-    this.axios.get(this.prefixAddr + '/getCsrf', {})
-        .then(res => {
-          if (res.data.code === 200) {
-            window.localStorage.setItem('token', res.data.data.token)
-          }
-        })
-        .catch()
+    // this.axios.get(this.prefixAddr + '/getCsrf', {})
+    //     .then(res => {
+    //       if (res.data.code === 200) {
+    //         window.localStorage.setItem('token', res.data.data.token)
+    //       }
+    //     })
+    //     .catch()
   },
   methods: {
     isLogin(val) {
@@ -101,18 +99,19 @@ export default {
       val.username.length > 0 && val.password.length > 0 ? this.clickable = true : this.clickable = false
     },
     loginSubmit() {
-      this.$router.push('/HomePage')
-      // this.axios.post(this.prefixAddr + '/login',
-      //     Qs.stringify({...this.loginInfo})
-      // ).then(res => {
-      //   if (res.data.code === 200) {
-      //     if (res.data.data.length <= 1) {
-      //       this.selectDialogVisible = true
-      //       this.posts = res.data.data
-      //     } else {this.userId = res.data.data[0].id}
-      //   } else {this.$message.error(res.data.msg)}
-      // })
-      //     .catch()
+      // this.$router.push('/HomePage')
+      this.axios.post(this.prefixAddr + '/auth',
+          Qs.stringify({...this.loginInfo})
+      ).then(res => {
+        if (res.data.code === 200) {
+          if (res.data.data['userList'].length > 1) {
+            this.selectDialogVisible = true
+            window.localStorage.setItem('token', res.data.data.token)
+            this.posts = res.data.data['userList']
+          } else {this.userId = res.data.data['userList'][0].id}
+        } else {this.$message.error(res.data.msg)}
+      })
+          .catch()
     },
     radioChange(value) {
       this.userId = value
@@ -129,13 +128,11 @@ export default {
       this.axios.post(this.prefixAddr + '/user/selectUserPower',
           Qs.stringify({userId: this.userId}))
           .then(res => {
-            console.log(res)
             if (res.data.code === 200) {
               this.$router.push('/HomePage')
             } else {this.$message.error(res.data.msg)}
           })
           .catch()
-      this.$router.push('/HomePage')
     },
     handleClose(done) {
       this.$confirm('确认关闭？')

@@ -12,7 +12,7 @@ Vue.use(ElementUI);
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
-// Vue.prototype.prefixAddr = 'http://192.168.11.240:8080/topcheer';
+// Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
 Vue.prototype.prefixAddr = '/api';
 
 
@@ -20,7 +20,7 @@ Vue.prototype.prefixAddr = '/api';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('token');
-  config.headers.post['X-CSRF-TOKEN'] = token;
+  config.headers.common['Authorization'] = token ? 'Bearer'+' ' + token :'';
   return config;
 }, function (error) {
   return Promise.reject(error);

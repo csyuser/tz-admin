@@ -5,7 +5,7 @@ module.exports = {
   devServer: {
     proxy:{
       '/api': {
-        target: 'http://192.168.11.240:8080/topcheer',
+        target: 'http://192.168.99.132:8080/topcheer',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -17,7 +17,6 @@ module.exports = {
   chainWebpack: config =>{
     const dir = path.resolve(__dirname, 'src/assets/icons')
 //确定icon所在的目录，__dirname当前目录的意思
-
     config.module
       .rule('svg-sprite')  //规则名称
       .test(/\.svg$/)  //匹配此正则的文件（以.svg结尾的文件），但是这样写是整个文件里面匹配的都会找到
@@ -28,30 +27,5 @@ module.exports = {
     config.plugin('svg-sprite').use(require('svg-sprite-loader/plugin'), [{plainSprite: true}])
     config.module.rule('svg').exclude.add(dir)// 其他 svg loader 排除 icons 目录
   }
-  // configureWebpack: {
-  //   name: projectName,
-  //   resolve: {
-  //     alias: {
-  //       '@': resolve('src'),
-  //       'views': resolve('src/views')
-  //     }
-  //   }
-  // },
-  // chainWebpack(config) {
-  //   config.module
-  //     .rule('svg')
-  //     .exclude.add(resolve('src/icons'))
-  //     .end()
-  //   config.module
-  //     .rule('icons')
-  //     .test(/\.svg$/)
-  //     .include.add(resolve('src/icons'))
-  //     .end()
-  //     .use('svg-sprite-loader')
-  //     .loader('svg-sprite-loader')
-  //     .options({
-  //       symbolId: 'icon-[name]'
-  //     })
-  //     .end()
-  // }
+
 }
