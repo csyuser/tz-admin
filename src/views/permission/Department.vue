@@ -14,8 +14,8 @@
         <el-button type="primary" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="addDepartment" @update="updateDepartment"
-           @postSelect="selectRow" @delete="deleteDepartment" @dblclick="viewDepartment">
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @add="addDepartment" @update="updateDepartment"
+           @postSelect="selectRow" @delete="deleteDepartment" @dblclick="viewDepartment" @currentChange="currentChange">
       <el-button size="small" class="update" @click="relatedUser"><SvgIcon icon-name="user"></SvgIcon>关联用户</el-button>
     </Table>
     <el-dialog title="添加部门" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
@@ -99,9 +99,13 @@ export default {
         {prop: 'level', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
         {prop: 'selection', label: '选用标志'}, {prop: 'describe', label: '描述'}],
       tableDatas: {},
+      page:1,
+      pageSize:10,
       editDialogVisible: false,
       deleteDialogVisible: false,
       editDialogDisabled: false,
+      dialogType:'',
+      deleteIds: [],
       selectedRow: [],
       departmentInfo: {},
       transformData: [],
@@ -116,55 +120,45 @@ export default {
     }
   },
   mounted() {
-    // this.axios.get(this.prefixAddr + '/department/page', {
-    //   params: {},
-    //   // withCredentials:true,
-    // }).then(res => {
-    //   console.log(res)
-    // })
-    //     .catch()
-
-    // const tableDatas = {
-    //   count: 30,
-    //   tableData: [{
-    //     id: 1,
-    //     className: '韩梅梅',
-    //     code: '333',
-    //     describe: '2016-05-02',
-    //     level: '2016-05-02',
-    //     name: '11111111111',
-    //     parentName: '11111111111@11.com',
-    //     regionName: 'JAVA',
-    //     selection: '女',
-    //   }, {
-    //     id: 2,
-    //     className: '韩梅梅',
-    //     code: '333',
-    //     describe: '2016-05-02',
-    //     level: '2016-05-02',
-    //     name: '11111111111',
-    //     parentName: '11111111111@11.com',
-    //     regionName: 'JAVA',
-    //     selection: '女',
-    //   }],
-    // }
-    // this.tableDatas = tableDatas
+    this.getPages(this.page,this.pageSize)
   },
   methods: {
+    getPages(page,pageSize){
+      this.axios.get(this.prefixAddr + '/department/page', {
+        params: {
+          page:page,
+          pageSize:pageSize
+        },
+      }).then(res => {
+        if (res.data.code.toString() === '200'){
+          this.tableDatas = res.data
+        }else {
+          this.$message.error(res.data.msg)
+        }
+      })
+          .catch()
+    },
+    currentChange(val,row){
+      this.page = val
+      this.selectedRow = row
+      this.deleteIds = []
+      this.getPages(this.page,this.pageSize)
+    },
 //部门的增删改查
     selectRow(val) {
       this.selectedRow = []
       val.forEach(item => {
         this.selectedRow.push(item)
       })
-      console.log(this.selectedRow)
     },
     addDepartment() {
+      this.dialogType = 'add'
       this.departmentInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
     updateDepartment() {
+      this.dialogType = 'update'
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.departmentInfo = this.selectedRow[0]
@@ -175,12 +169,18 @@ export default {
     },
     confirmEdit() {
       this.editDialogVisible = false
-      console.log('执行了')
-      // this.axios.post(this.prefixAddr + '/department/save',Qs.stringify({...this.departmentInfo}))
-      // .then(res=>{
-      //   console.log(res)
-      // })
-      // .catch()
+      let editData = {}
+      if (this.dialogType === 'add'){
+        editData = this.departmentInfo
+      }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.departmentInfo}}
+        this.axios.post(this.prefixAddr + '/department/save',{...editData})
+            .then(res=>{
+              if (res.data.code.toString() === '200'){
+                this.$message.success('保存成功')
+                this.getPages()
+              } else this.$message.error(res.data.msg)
+            })
+            .catch()
     },
     viewDepartment(row) {
       this.departmentInfo = row
@@ -190,15 +190,28 @@ export default {
     deleteDepartment() {
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
+        this.selectedRow.forEach(row=>{
+          this.deleteIds.push(row.id)
+        })
       } else {
         this.$message.error('请选择至少一行数据')
       }
     },
     confirmDelete() {
       this.deleteDialogVisible = false
+      this.axios.post(this.prefixAddr + '/department/delete',{ids:this.deleteIds})
+      .then(res=>{
+        if (res.data.code.toString() === '200'){
+          this.$message.success('删除成功')
+          this.getPages(this.page,this.pageSize)
+        }else {this.$message.error(this.data.msg)}
+        console.log(res)
+      })
+      .catch(error=>{this.$message.error('删除失败' + error)})
     },
 //关联用户
     relatedUser() {
+      if (this.selectedRow.length !== 1) {this.$message.error('请选择一行数据');return}
       this.value = this.userVal
       this.transformType = 'user'
       this.relatedTitle = '关联用户'

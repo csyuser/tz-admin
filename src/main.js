@@ -17,7 +17,7 @@ Vue.prototype.prefixAddr = '/api';
 
 
 
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('token');
   config.headers.common['Authorization'] = token ? 'Bearer'+' ' + token :'';

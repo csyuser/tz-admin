@@ -54,8 +54,9 @@
           <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
-          <el-input v-model="staffInfo.name" suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
-          <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}" @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+          <el-input v-model="staffInfo.department" suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
+          <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
+                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
         <el-form-item label="职级">
           <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
@@ -81,38 +82,38 @@ export default {
   data() {
     return {
       data: [{
+        id: 1,
         label: '一级 1',
         children: [{
+          id: 4,
           label: '二级 1-1',
           children: [{
+            id: 9,
             label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
           }]
         }]
       }, {
+        id: 2,
         label: '一级 2',
         children: [{
-          label: '二级 2-1',
-          children: [{
-            label: '三级 2-1-1'
-          }]
+          id: 5,
+          label: '二级 2-1'
         }, {
-          label: '二级 2-2',
-          children: [{
-            label: '三级 2-2-1'
-          }]
+          id: 6,
+          label: '二级 2-2'
         }]
       }, {
+        id: 3,
         label: '一级 3',
         children: [{
-          label: '二级 3-1',
-          children: [{
-            label: '三级 3-1-1'
-          }]
+          id: 7,
+          label: '二级 3-1'
         }, {
-          label: '二级 3-2',
-          children: [{
-            label: '三级 3-2-1'
-          }]
+          id: 8,
+          label: '二级 3-2'
         }]
       }],
       defaultProps: {
@@ -231,7 +232,7 @@ export default {
     selectDepartment(data) {
       console.log(data);
       this.treeVisible = false
-      this.staffInfo.name = data.label
+      this.staffInfo.department = data.label
     },
     handleClose(done) {
       this.$confirm('确认关闭？')

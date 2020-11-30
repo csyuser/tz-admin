@@ -35,10 +35,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page="currentPage"
+      <el-pagination class="pagination" @current-change="handleCurrentChange"
+                     :current-page="page"
                      :page-sizes="[10, 20, 30, 40]"
-                     :page-size="10"
+                     :page-size="pageSize"
                      layout="total, prev, pager, next"
                      :total="total">
       </el-pagination>
@@ -52,6 +52,8 @@ export default {
   props: {
     colsHead: {type: Array},
     tableDatas: {type: Object},
+    pageSize:{type: Number},
+    page:{type: Number},
     // tableName:{type: Array},
   },
   data() {
@@ -61,7 +63,6 @@ export default {
       checkedLabels: [],
       checkedOptions: [],
       checkedProps: [],
-      currentPage: 1,
       total: 40,
       tableData: [],
       cols: [],
@@ -94,7 +95,7 @@ export default {
 //监听表格数据传递
     tableDatas: {
       handler(newVal) {
-        this.tableData = newVal.tableData
+        this.tableData = newVal.data
         this.total = newVal.count
       },
       immediate: true,
@@ -102,11 +103,13 @@ export default {
     }
   },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
+    // handleSizeChange(val) {
+    //   console.log(`每页 ${val} 条`)
+    // },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+      this.$refs.multipleTable.clearSelection()
+      this.selectedRow = []
+      this.$emit('currentChange',val,this.selectedRow)
     },
     handleCheckAllChange(val) {
       this.checkedLabels = val ? this.checkedOptions : []
@@ -215,7 +218,7 @@ export default {
       this.selectedRow.forEach(item => {
         this.$refs.multipleTable.toggleRowSelection(item, true)
       })
-      console.log(this.selectedRow)
+      this.$emit('postSelect', this.selectedRow)
     },
     dblclick(row) {
       this.$emit('dblclick', row)
