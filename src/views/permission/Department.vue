@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import Qs from 'qs'
+// import Qs from 'qs'
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
@@ -151,6 +151,7 @@ export default {
     // this.tableDatas = tableDatas
   },
   methods: {
+//部门的增删改查
     selectRow(val) {
       this.selectedRow = []
       val.forEach(item => {
@@ -158,7 +159,6 @@ export default {
       })
       console.log(this.selectedRow)
     },
-//部门的增删改查
     addDepartment() {
       this.departmentInfo = {}
       this.editDialogDisabled = false
