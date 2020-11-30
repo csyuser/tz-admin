@@ -14,52 +14,53 @@
         <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @currentChange="currentChange"
+           @add="add" @update="update" @postSelect="selectRow"
            @delete="deleteRows" @dblclick="view"></Table>
-    <el-dialog title="添加岗位" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="staffInfo" size="small" class="addForm"
                :disabled="editDialogDisabled">
         <el-form-item label="人员名称">
           <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="人员编码">
-          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
-        </el-form-item>
-        <el-form-item label="入职时间">
-<!--          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>-->
-          <el-date-picker v-model="staffInfo.name" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="离职时间">
-          <el-date-picker v-model="staffInfo.name" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
-        </el-form-item>
-        <el-form-item label="联系邮箱">
-          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
+          <el-input v-model="staffInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="职务">
-          <el-select v-model="staffInfo.type">
+          <el-select v-model="staffInfo.post">
             <el-option label="激活" :value="true"></el-option>
             <el-option label="失效" :value="false"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="职级">
+          <el-input v-model="staffInfo.rank" suffix-icon="xxx"></el-input>
+        </el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="staffInfo.type">
+          <el-select v-model="staffInfo.sex">
             <el-option label="男" :value="0"></el-option>
             <el-option label="女" :value="1"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="身份证号码">
-          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
           <el-input v-model="staffInfo.department" suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
-        <el-form-item label="职级">
-          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="联系电话">
+          <el-input v-model="staffInfo.phone" suffix-icon="xxx"></el-input>
+        </el-form-item>
+        <el-form-item label="联系邮箱">
+          <el-input v-model="staffInfo.email" suffix-icon="xxx"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证号码">
+          <el-input v-model="staffInfo.idCard" suffix-icon="xxx"></el-input>
+        </el-form-item>
+        <el-form-item label="入职时间">
+<!--          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>-->
+          <el-date-picker v-model="staffInfo.entryTime" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="离职时间">
+          <el-date-picker v-model="staffInfo.departureTime" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -81,6 +82,8 @@ export default {
   components: {Table,DeleteRow},
   data() {
     return {
+      page:1,
+      pageSize:10,
       data: [{
         id: 1,
         label: '一级 1',
@@ -124,10 +127,9 @@ export default {
         user: '',
         region: ''
       },
-      colsHead: [{prop: 'NAME', label: '人员名称'}, {prop: 'CODE', label: '人员编码'}, {prop: 'ENTRY_TIME', label: '入职时间'},
-        {prop: 'OUT_TIME', label: '离职时间'}, {prop: 'PHONE', label: '联系电话'}, {prop: 'EMAIL', label: '联系邮箱'},
-        {prop: 'POST', label: '职务'}, {prop: 'SEX', label: '性别'}, {prop: 'ID_CARD', label: '身份证号码'},
-        {prop: 'DEPARTMENT_ID', label: '所属部门id'}, {prop: 'VALID', label: '有效标志'}, {prop: 'RANK', label: '职级'}],
+      colsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'post', label: '职务'},
+        {prop: 'rank', label: '职级'}, {prop: 'sex', label: '性别'},{prop: 'department', label: '部门名称'},{prop: 'phone', label: '电话'},
+        {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'}, {prop: 'entryTime', label: '入职时间'},{prop: 'departureTime', label: '离职时间'}],
       tableDatas: {
         count: 30,
         tableData: [{
@@ -160,17 +162,50 @@ export default {
           RANK: 'L7',
         }],
       },
+      dialogType:'',
+      dialogTitle:'',
       editDialogVisible: false,
       editDialogDisabled: false,
       deleteDialogVisible:false,
+      deleteIds:[],
       selectedRow:[],
       staffInfo: {},
       treeVisible:false,
       isFocus:false,
     }
   },
+  mounted() {
+    this.getPages(this.page,this.pageSize)
+    this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
+    .then(res=>{
+      console.log(res)
+    })
+    .catch()
+  },
   methods: {
     onSubmit() {console.log(this.formInline)},
+    getPages(page,pageSize){
+      this.axios.get(this.prefixAddr + '/person/page', {
+        params: {
+          page:page,
+          pageSize:pageSize
+        },
+      }).then(res => {
+        if (res.data.code.toString() === '200'){
+          this.tableDatas = res.data
+        }else {
+          this.$message.error(res.data.msg)
+        }
+      })
+          .catch()
+    },
+    currentChange(val,row){
+      this.page = val
+      this.selectedRow = row
+      this.deleteIds = []
+      this.getPages(this.page,this.pageSize)
+    },
+//表格增删改查
     selectRow(val) {
       this.selectedRow = []
       val.forEach(item => {
@@ -178,13 +213,16 @@ export default {
       })
       console.log(this.selectedRow)
     },
-//表格增删改查
     add() {
+      this.dialogType = 'add'
+      this.dialogTitle = '添加人员'
       this.staffInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
     update() {
+      this.dialogType = 'update'
+      this.dialogTitle = '编辑人员信息'
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.staffInfo = this.selectedRow[0]
@@ -195,6 +233,18 @@ export default {
     },
     confirmEdit(){
       this.editDialogVisible = false
+      let editData = {}
+      if (this.dialogType === 'add'){
+        editData = this.staffInfo
+      }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.staffInfo}}
+      this.axios.post(this.prefixAddr + '/person/save',{...editData})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$message.success('保存成功')
+              this.getPages()
+            } else this.$message.error(res.data.msg)
+          })
+          .catch()
     },
     view(row){
       this.staffInfo = row
@@ -204,6 +254,14 @@ export default {
     deleteRows() {
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
+        if (this.selectedRow.length > 0) {
+          this.deleteDialogVisible = true
+          this.selectedRow.forEach(row=>{
+            this.deleteIds.push(row.id)
+          })
+        } else {
+          this.$message.error('请选择至少一行数据')
+        }
       } else {
         this.$message.error('请选择至少一行数据')
       }
@@ -211,6 +269,15 @@ export default {
     confirmDelete(){
       console.log('点击了')
       this.deleteDialogVisible = false
+      this.axios.post(this.prefixAddr + '/person/delete',{ids:this.deleteIds})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$message.success('删除成功')
+              this.getPages(this.page,this.pageSize)
+            }else {this.$message.error(this.data.msg)}
+            console.log(res)
+          })
+          .catch(error=>{this.$message.error('删除失败' + error)})
     },
 //部门的数据下拉框
     treeNode(){
@@ -269,6 +336,7 @@ export default {
         width: 215px;
         border-radius: 4px;
         margin-top: 5px;
+        z-index: 999;
       }
       .treeVisible{
         display: block;
