@@ -135,7 +135,7 @@ export default {
         user: '',
         region: ''
       },
-      tableData: [],
+      // tableData: [],
       checkedProps: [],
       transformData: [],
       value: [],

@@ -43,6 +43,7 @@
                      :total="total">
       </el-pagination>
     </div>
+    <slot name="editDialog"></slot>
   </div>
 </template>
 
