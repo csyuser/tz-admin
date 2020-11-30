@@ -1,15 +1,20 @@
 <template>
     <el-form-item :label="labelName" class="treeItem">
-      <el-input v-model="treeValue" suffix-icon="xxx" @focus="focus" @blur="blur"
-                ref="treeInput"></el-input>
-      <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
-               @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+    <el-input suffix-icon="xxx" @focus="focus" @blur="blur" v-model="treeValue"
+              @change="xxx"
+              ref="treeInput"></el-input>
+    <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
+             @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
     </el-form-item>
 </template>
 
 <script>
 export default {
   name: 'SelectTree',
+  // model: {
+  //   prop: 'treeValue',
+  //   event: 'change'
+  // },
   props: {
     treeValue: {type: String},
     labelName: {type: String},
@@ -22,7 +27,19 @@ export default {
       isFocus: false,
     }
   },
+  watch:{
+    treeValue:function (newVal) {
+      this.treeValue = newVal
+      console.log('props')
+      console.log(this.treeValue)
+    }
+  },
   methods: {
+    xxx(){
+      this.$emit('change', this.treeValue)
+      console.log('this.treeValue')
+      console.log(this.treeValue)
+    },
 //数据下拉框
     treeNode() {
       this.isFocus = true
@@ -41,7 +58,7 @@ export default {
       }, 100)
     },
     select(data) {
-      console.log(data)
+
       this.treeVisible = false
       // this.staffInfo.name = data.label
       this.$emit('selectedTree',data)

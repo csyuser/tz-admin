@@ -267,7 +267,6 @@ export default {
       }
     },
     confirmDelete(){
-      console.log('点击了')
       this.deleteDialogVisible = false
       this.axios.post(this.prefixAddr + '/person/delete',{ids:this.deleteIds})
           .then(res=>{

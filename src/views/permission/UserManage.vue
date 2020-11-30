@@ -14,8 +14,8 @@
         <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update"
-           @postSelect="selectRow" @delete="deleteRows" @dblclick="view">
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @currentChange="currentChange"
+           @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows" @dblclick="view">
       <el-button size="small" class="update" @click="relatedDepartment">
         <SvgIcon icon-name="department"></SvgIcon>
         关联部门
@@ -42,10 +42,9 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="editDialogName" :visible.sync="editDialogVisible" width="660px">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="660px">
       <el-form label-position="right" label-width="85px" :inline="true" :model="userInfo" size="small"
-               class="addForm"
-               :disabled="editDialogDisabled">
+               class="addForm" :disabled="editDialogDisabled">
         <el-form-item label="用户名称">
           <el-input v-model="userInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
@@ -65,9 +64,11 @@
             <el-option label="注销" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <SelectTree :treeValue = userInfo.department labelName="部门" :data="treeData" :defaultProps="{children: 'children',label: 'label'}"
-        @selectedTree="selectedTree">
-        </SelectTree>
+        <el-form-item label="所属部门" class="departmentItem">
+          <el-input v-model="userInfo.department" suffix-icon="xxx" @focus="focus" @blur="blur" ref="treeInput"></el-input>
+          <el-tree :data="treeData" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
+                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
@@ -81,17 +82,19 @@
 </template>
 
 <script>
-import Qs from 'qs'
+// import Qs from 'qs'
 import Table from '@/components/permission/Table'
 import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
-import SelectTree from '@/views/permission/SelectTree'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon,DeleteRow,SelectTree},
+  components: {Table, SvgIcon,DeleteRow},
   data() {
     return {
+      page:1,
+      pageSize:10,
+      dialogTitle: '',
       colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'},{prop: 'department', label: '部门'}, {prop: 'riskLevel', label: '风险等级'},
         {prop: 'status', label: '用户状态'}],
       tableDatas: {
@@ -128,8 +131,6 @@ export default {
       },
       checkedLabels: [],
       checkedOptions: [],
-      page: 1,
-      pageSize: 10,
       formInline: {
         user: '',
         region: ''
@@ -150,10 +151,7 @@ export default {
       editDialogVisible: false,
       deleteDialogVisible: false,
       editDialogDisabled: false,
-      userInfo: {
-        name:'',code:'',riskLevel:'',status:'',department:''
-      },
-      editDialogName: '',
+      userInfo: {},
       selectedRow: [],
       treeData: [{
         label: '一级 1',
@@ -194,19 +192,39 @@ export default {
         children: 'children',
         label: 'label'
       },
+      treeVisible:false,
+      isFocus:false,
+      deleteIds:[],
+      dialogType:'',
     }
   },
   mounted() {
-    this.axios.get(this.prefixAddr + '/user/page', {
-      // params: {page:this.page, pageSize:this.pageSize},
-    }).then(res => {
-      console.log(res)
-    })
-        .catch()
+    this.getPages()
   },
   methods: {
     onSubmit() {
       console.log('submit!')
+    },
+    getPages(){
+      this.axios.get(this.prefixAddr + '/user/page', {
+        params: {
+          page:this.page,
+          pageSize:this.page,
+        },
+      }).then(res => {
+        if (res.data.code.toString() === '200'){
+          this.tableDatas = res.data
+        }else {
+          this.$message.error(res.data.msg)
+        }
+      })
+          .catch()
+    },
+    currentChange(val,row){
+      this.page = val
+      this.selectedRow = row
+      this.deleteIds = []
+      this.getPages()
     },
 //关联部门，岗位，小组
     relatedDepartment() {
@@ -254,13 +272,15 @@ export default {
       })
     },
     add() {
-      this.editDialogName = '增加用户'
+      this.dialogType = 'add'
+      this.dialogTitle = '增加用户'
       this.userInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
     update() {
-      this.editDialogName = '编辑用户'
+      this.dialogType = 'update'
+      this.dialogTitle = '编辑用户'
       this.editDialogDisabled = false
       if (this.selectedRow.length !== 1) {this.$message.error('请选择一行数据');return}
       this.userInfo = this.selectedRow[0]
@@ -268,11 +288,20 @@ export default {
     },
     confirmEdit() {
       this.editDialogVisible = false
-      this.axios.post(this.prefixAddr + '/department/save',Qs.stringify({...this.departmentInfo}))
-      .then(res=>{
-        console.log(res)
-      })
-      .catch()
+      let editData = {}
+      if (this.dialogType === 'add'){
+        editData = this.userInfo
+      }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.userInfo}}
+      console.log('editData')
+      console.log(editData)
+      this.axios.post(this.prefixAddr + '/user/save',{...editData})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$message.success('保存成功')
+              this.getPages()
+            } else this.$message.error(res.data.msg)
+          })
+          .catch()
     },
     view(row) {
       this.userInfo = row
@@ -282,20 +311,46 @@ export default {
     deleteRows() {
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
+        this.selectedRow.forEach(row=>{
+          this.deleteIds.push(row.id)
+        })
       } else {
         this.$message.error('请选择至少一行数据')
       }
     },
     confirmDelete() {
       this.deleteDialogVisible = false
+      this.axios.post(this.prefixAddr + '/user/delete',{ids:this.deleteIds})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$message.success('删除成功')
+              this.getPages(this.page,this.pageSize)
+            }else {this.$message.error(this.data.msg)}
+            console.log(res)
+          })
+          .catch(error=>{this.$message.error('删除失败' + error)})
     },
 //输入框树形结构
-    selectedTree(val){
-      this.userInfo.department = val.label
-      console.log('val.label')
-      console.log(val.label)
-      console.log(this.userInfo)
-    }
+    treeNode(){
+      this.isFocus = true
+      this.treeVisible = true
+      this.$refs.treeInput.focus()
+    },
+    focus(){
+      this.treeVisible = true
+    },
+    blur(){
+      this.isFocus = false
+      setTimeout(()=>{
+        if (this.isFocus !== true){
+          this.treeVisible = false
+        }
+      },100)
+    },
+    select(data) {
+      this.treeVisible = false
+      this.userInfo.department = data.label
+    },
   },
 }
 </script>
@@ -309,31 +364,28 @@ export default {
       width: 100px;
     }
   }
+  .addForm {
+    > .el-form-item {
+      margin-bottom: 18px;
+    }
+    .departmentItem{
+      position: relative;
+      .tree{
+        display: none;
+        position: absolute;
+        border: 1px solid #DCDFE6;
+        padding-right: 10px;
+        width: 215px;
+        border-radius: 4px;
+        margin-top: 5px;
+        z-index: 999;
+      }
+      .treeVisible{
+        display: block;
+      }
+    }
 
-  //> .buttons {
-  //  margin-bottom: 10px;
-  //  position: relative;
-  //
-  //  .icon {
-  //    margin-right: 1em;
-  //  }
-  //
-  //  > .popover-button {
-  //    position: absolute;
-  //    right: 0;
-  //  }
-  //}
-  //
-  //> .table-wrap {
-  //  > .pagination {
-  //    margin-top: 8px;
-  //  }
-  //}
-  //
-  //.xxx {
-  //
-  //}
-
+  }
 }
 
 </style>
