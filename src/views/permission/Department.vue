@@ -18,7 +18,7 @@
            @postSelect="selectRow" @delete="deleteDepartment" @dblclick="viewDepartment" @currentChange="currentChange">
       <el-button size="small" class="update" @click="relatedUser"><SvgIcon icon-name="user"></SvgIcon>关联用户</el-button>
     </Table>
-    <el-dialog title="添加部门" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="departmentInfo" size="small"
                class="addForm"
                :disabled="editDialogDisabled">
@@ -101,10 +101,11 @@ export default {
       tableDatas: {},
       page:1,
       pageSize:10,
+      dialogTitle:'',
+      dialogType:'',
       editDialogVisible: false,
       deleteDialogVisible: false,
       editDialogDisabled: false,
-      dialogType:'',
       deleteIds: [],
       selectedRow: [],
       departmentInfo: {},
@@ -153,12 +154,14 @@ export default {
     },
     addDepartment() {
       this.dialogType = 'add'
+      this.dialogTitle = '新增部门'
       this.departmentInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
     updateDepartment() {
       this.dialogType = 'update'
+      this.dialogTitle = '编辑部门信息'
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.departmentInfo = this.selectedRow[0]
@@ -183,6 +186,7 @@ export default {
             .catch()
     },
     viewDepartment(row) {
+      this.dialogTitle = '查看部门信息'
       this.departmentInfo = row
       this.editDialogVisible = true
       this.editDialogDisabled = true

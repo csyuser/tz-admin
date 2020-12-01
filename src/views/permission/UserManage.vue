@@ -304,6 +304,7 @@ export default {
           .catch()
     },
     view(row) {
+      this.dialogTitle = '查看用户信息'
       this.userInfo = row
       this.editDialogVisible = true
       this.editDialogDisabled = true

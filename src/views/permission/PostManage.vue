@@ -14,13 +14,13 @@
         <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="addPost" @update="updatePost" @postSelect="selectPostRow"
-           @delete="deletePost" @dblclick="viewPost">
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectPostRow"
+           @currentChange="currentChange" @delete="deleteRow" @dblclick="viewPost">
       <el-button size="small" class="update" @click="relatedPermission"><SvgIcon icon-name="permission"></SvgIcon>关联权限
       </el-button>
       <el-button size="small" class="update" @click="relatedUser"><SvgIcon icon-name="user"></SvgIcon>关联用户</el-button>
     </Table>
-    <el-dialog title="添加岗位" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
       <el-form label-position="right" label-width="80px" :inline="true" :model="postInfo" size="small" class="addForm" :disabled="editDialogDisabled">
         <el-form-item label="岗位名称">
           <el-input v-model="postInfo.name" suffix-icon="xxx"></el-input>
@@ -73,49 +73,47 @@ export default {
   data() {
     return {
       selectedRow: [],
-      colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'coding', label: '岗位编码'}, {
-        prop: 'order',
-        label: '排序'
-      }, {prop: 'type', label: '状态'}, {prop: 'date', label: '创建日期'}],
+      colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {prop: 'department', label: '部门名称'}, {prop: 'describe', label: '角色描述'}],
       tableDatas: {
         count: 30,
-        tableData: [{
+        data: [{
           id: 1,
-          name: '开发',
-          coding: '333',
-          order: '2',
-          type: true,
-          date: '2016-05-02',
+          name: '前端',
+          code: '333',
+          department: '开发',
+          describe: '2016-05-02',
         }, {
           id: 2,
           name: '测试',
-          coding: '333',
-          order: '3',
-          type: false,
-          date: '2016-05-02',
+          code: '333',
+          department: '开发',
+          describe: '2016-05-02',
         }, {
           id: 3,
           name: 'java',
-          coding: '333',
-          order: '4',
-          type: true,
-          date: '2016-05-02',
+          code: '333',
+          department: '开发',
+          describe: '2016-05-02',
         }, {
           id: 4,
           name: '前端',
-          coding: '333',
-          order: '5',
-          type: true,
-          date: '2016-05-02',
+          code: '333',
+          department: '开发',
+          describe: '2016-05-02',
         }],
       },
       formInline: {
         user: '',
         region: ''
       },
+      page:1,
+      pageSize:10,
+      dialogType:'',
+      dialogTitle:'',
       editDialogVisible: false,
       deleteDialogVisible: false,
       editDialogDisabled:false,
+      deleteIds:[],
       postInfo: {
         name: '',
         order: '',
@@ -135,12 +133,35 @@ export default {
     }
   },
   mounted() {
-
+    this.getPages()
   },
   methods: {
     onSubmit() {
       console.log('submit!')
     },
+    getPages(){
+      this.axios.get(this.prefixAddr + '/role/page', {
+        params: {
+          page:this.page,
+          pageSize:this.pageSize
+        },
+      }).then(res => {
+        if (res.data.code.toString() === '200'){
+          this.tableDatas = res.data
+        }else {
+          this.$message.error(res.data.msg)
+        }
+      })
+          .catch()
+    },
+    currentChange(val,row){
+      this.page = val
+      this.selectedRow = row
+      this.deleteIds = []
+      this.getPages()
+    },
+
+//表格增删改查
     selectPostRow(val) {
       this.selectedRow = []
       val.forEach(item => {
@@ -148,13 +169,16 @@ export default {
       })
       console.log(this.selectedRow)
     },
-//表格增删改查
-    addPost() {
+    add() {
+      this.dialogType = 'add'
+      this.dialogTitle = '增加岗位'
       this.postInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
-    updatePost() {
+    update() {
+      this.dialogType = 'update'
+      this.dialogTitle = '编辑岗位'
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.postInfo = this.selectedRow[0]
@@ -165,21 +189,48 @@ export default {
     },
     confirmEdit(){
       this.editDialogVisible = false
+      let editData = {}
+      if (this.dialogType === 'add'){
+        editData = this.postInfo
+      }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.postInfo}}
+      console.log('editData')
+      console.log(editData)
+      this.axios.post(this.prefixAddr + '/role/save',{...editData})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$message.success('保存成功')
+              this.getPages()
+            } else this.$message.error(res.data.msg)
+          })
+          .catch()
     },
     viewPost(row){
+      this.dialogTitle = '查看岗位'
       this.postInfo = row
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },
-    deletePost() {
+    deleteRow() {
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
+        this.selectedRow.forEach(row=>{
+          this.deleteIds.push(row.id)
+        })
       } else {
         this.$message.error('请选择至少一行数据')
       }
     },
     confirmDelete(){
       this.deleteDialogVisible = false
+      this.axios.post(this.prefixAddr + '/role/delete',{ids:this.deleteIds})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$message.success('删除成功')
+              this.getPages(this.page,this.pageSize)
+            }else {this.$message.error(this.data.msg)}
+            console.log(res)
+          })
+          .catch(error=>{this.$message.error('删除失败' + error)})
     },
 //关联权限，范围
     relatedPermission() {
