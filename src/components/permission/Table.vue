@@ -33,6 +33,7 @@
             <span v-else-if="col.prop === 'riskLevel'">{{ riskLevel(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'status'">{{ userStatus(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'selection'">{{ selection(scope.row[col.prop]) }} </span>
+            <span v-else-if="col.prop === 'sex'">{{ gender(scope.row[col.prop]) }} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
@@ -50,6 +51,8 @@
 </template>
 
 <script>
+import {helper} from '@/views/method'
+
 export default {
   name: 'Table',
   props: {
@@ -66,7 +69,7 @@ export default {
       checkedLabels: [],
       checkedOptions: [],
       checkedProps: [],
-      total: 40,
+      total: 0,
       tableData: [],
       cols: [],
       selectedRow: [],
@@ -101,8 +104,6 @@ export default {
         this.tableData = newVal.data
         this.total = newVal.count
         this.selectedRow = []
-        console.log('table')
-        console.log(this.selectedRow)
       },
       immediate: true,
       deep: true
@@ -232,15 +233,18 @@ export default {
     },
     //用户风险等级判断，1异地登录2频繁登录
     riskLevel(level) {
-      if (level === '1') {return '异地登录'} else if (level === '2') {return '频繁登录'}
+      return helper.riskLevel(level)
     },
     //用户状态，用户状态1正常2锁定3注销
     userStatus(level) {
-      if (level === '1') {return '正常'} else if (level === '2') {return '锁定'} else if (level === '3') {return '注销'}
+      return helper.userStatus(level)
     },
     //选用标志
     selection(val) {
-      if (val === '1') {return '选用'} else if (val === '0') {return '禁用'}
+      return helper.selection(val)
+    },
+    gender(val){
+      return helper.gender(val)
     }
   }
 }

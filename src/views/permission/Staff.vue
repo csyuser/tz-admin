@@ -33,12 +33,15 @@
           </el-select>
         </el-form-item>
         <el-form-item label="职级">
-          <el-input v-model="staffInfo['rank']" suffix-icon="xxx"></el-input>
+          <el-select v-model="staffInfo['rank']">
+            <el-option label="激活" :value="true"></el-option>
+            <el-option label="失效" :value="false"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="性别">
           <el-select v-model="staffInfo['sex']">
-            <el-option label="男" :value="0"></el-option>
-            <el-option label="女" :value="1"></el-option>
+            <el-option label="女" :value="0"></el-option>
+            <el-option label="男" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
@@ -77,6 +80,7 @@
 <script>
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
+import {helper} from '@/views/method'
 export default {
   name: 'Staff',
   components: {Table,DeleteRow},
@@ -84,41 +88,7 @@ export default {
     return {
       page:1,
       pageSize:10,
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      data: [],
       defaultProps: {
         children: 'child',
         label: 'name'
@@ -229,6 +199,7 @@ export default {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.staffInfo = this.selectedRow[0]
+        this.staffInfo.sex = helper.gender(this.selectedRow[0].sex)
         this.editDialogVisible = true
       } else {
         this.$message.error('请选择一行数据')
@@ -255,10 +226,12 @@ export default {
       this.dialogType = 'view'
       this.dialogTitle = '查看人员信息'
       this.staffInfo = row
+      this.staffInfo.sex = helper.gender(row.sex)
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },
     deleteRows() {
+      console.log(this.selectedRow)
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
         if (this.selectedRow.length > 0) {
