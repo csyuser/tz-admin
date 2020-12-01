@@ -103,38 +103,7 @@ export default {
         label: '部门'
       }, {prop: 'riskLevel', label: '风险等级'},
         {prop: 'status', label: '用户状态'}],
-      tableDatas: {
-        count: 30,
-        tableData: [{
-          id: 1,
-          name: '王小虎',
-          code: '1',
-          riskLevel: '1',
-          status: '1',
-          department: '开发部'
-        }, {
-          id: 2,
-          name: '王小虎',
-          code: '2',
-          riskLevel: '1',
-          status: '2',
-          department: '运营部'
-        }, {
-          id: 3,
-          name: '王小虎',
-          code: '3',
-          riskLevel: '1',
-          status: '2',
-          department: '人事部'
-        }, {
-          id: 4,
-          name: '王小虎',
-          code: '3',
-          riskLevel: '1',
-          status: '3',
-          department: '开发部'
-        }],
-      },
+      tableDatas: {},
       checkedLabels: [],
       checkedOptions: [],
       formInline: {
