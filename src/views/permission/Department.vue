@@ -37,11 +37,14 @@
         <el-form-item label="部门级别">
           <el-input v-model="departmentInfo.level" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="上级部门">
-          <el-select v-model="departmentInfo.parentName">
-            <el-option label="选用" :value="1"></el-option>
-            <el-option label="禁用" :value="0"></el-option>
-          </el-select>
+        <el-form-item label="上级部门" class="departmentItem">
+          <el-input v-model="departmentInfo.parentName" suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
+          <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
+                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+<!--          <el-select v-model="departmentInfo.parentName">-->
+<!--            <el-option label="选用" :value="1"></el-option>-->
+<!--            <el-option label="禁用" :value="0"></el-option>-->
+<!--          </el-select>-->
         </el-form-item>
         <el-form-item label="行政区划">
           <el-input v-model="departmentInfo.regionName" suffix-icon="xxx"></el-input>
@@ -91,6 +94,45 @@ export default {
   components: {SvgIcon, Table, DeleteRow},
   data() {
     return {
+      data: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }, {
+        id: 2,
+        label: '一级 2',
+        children: [{
+          id: 5,
+          label: '二级 2-1'
+        }, {
+          id: 6,
+          label: '二级 2-2'
+        }]
+      }, {
+        id: 3,
+        label: '一级 3',
+        children: [{
+          id: 7,
+          label: '二级 3-1'
+        }, {
+          id: 8,
+          label: '二级 3-2'
+        }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
       formInline: {
         user: '',
         region: ''
@@ -118,17 +160,24 @@ export default {
       relatedDialogVisible: false,
       userVal: [],
       transformType: '',
+      treeVisible:false,
+      isFocus:false,
     }
   },
   mounted() {
-    this.getPages(this.page,this.pageSize)
+    this.getPages()
+    this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
+        .then(res=>{
+          console.log(res)
+        })
+        .catch()
   },
   methods: {
-    getPages(page,pageSize){
+    getPages(){
       this.axios.get(this.prefixAddr + '/department/page', {
         params: {
-          page:page,
-          pageSize:pageSize
+          page:this.page,
+          pageSize:this.pageSize
         },
       }).then(res => {
         if (res.data.code.toString() === '200'){
@@ -143,7 +192,7 @@ export default {
       this.page = val
       this.selectedRow = row
       this.deleteIds = []
-      this.getPages(this.page,this.pageSize)
+      this.getPages()
     },
 //部门的增删改查
     selectRow(val) {
@@ -207,7 +256,7 @@ export default {
       .then(res=>{
         if (res.data.code.toString() === '200'){
           this.$message.success('删除成功')
-          this.getPages(this.page,this.pageSize)
+          this.getPages()
         }else {this.$message.error(this.data.msg)}
         console.log(res)
       })
@@ -237,6 +286,29 @@ export default {
           })
           .catch(() => {})
     },
+//部门的数据下拉框
+    treeNode(){
+      this.isFocus = true
+      this.treeVisible = true
+      this.$refs.treeInput.focus()
+    },
+    focusDepartment(){
+      this.treeVisible = true
+    },
+    blurDepartment(){
+      this.isFocus = false
+      setTimeout(()=>{
+        if (this.isFocus !== true){
+          this.treeVisible = false
+        }
+      },100)
+    },
+    selectDepartment(data) {
+      console.log(data);
+      this.treeVisible = false
+      this.departmentInfo.parentName = data.label
+      this.$refs.treeInput.blur()
+    },
   }
 }
 </script>
@@ -255,6 +327,23 @@ export default {
     > .el-form-item {
       margin-bottom: 18px;
     }
+      .departmentItem{
+        position: relative;
+        .tree{
+          display: none;
+          position: absolute;
+          border: 1px solid #DCDFE6;
+          padding-right: 10px;
+          width: 215px;
+          border-radius: 4px;
+          margin-top: 5px;
+          z-index: 999;
+        }
+        .treeVisible{
+          display: block;
+        }
+      }
+
 
   }
 }

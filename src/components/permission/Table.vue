@@ -98,6 +98,7 @@ export default {
       handler(newVal) {
         this.tableData = newVal.data
         this.total = newVal.count
+        this.selectedRow = []
       },
       immediate: true,
       deep: true
