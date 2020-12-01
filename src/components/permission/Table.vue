@@ -20,7 +20,8 @@
     <div class="table-wrap">
       <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
                 :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
-                :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick" @select-all="selectAllRows"
+                :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
+                @select-all="selectAllRows"
                 :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
@@ -31,6 +32,7 @@
             </el-switch>
             <span v-else-if="col.prop === 'riskLevel'">{{ riskLevel(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'status'">{{ userStatus(scope.row[col.prop]) }} </span>
+            <span v-else-if="col.prop === 'selection'">{{ selection(scope.row[col.prop]) }} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
@@ -53,8 +55,8 @@ export default {
   props: {
     colsHead: {type: Array},
     tableDatas: {type: Object},
-    pageSize:{type: Number},
-    page:{type: Number},
+    pageSize: {type: Number},
+    page: {type: Number},
     // tableName:{type: Array},
   },
   data() {
@@ -68,7 +70,7 @@ export default {
       tableData: [],
       cols: [],
       selectedRow: [],
-      children:[]
+      children: []
     }
   },
   mounted() {
@@ -99,6 +101,8 @@ export default {
         this.tableData = newVal.data
         this.total = newVal.count
         this.selectedRow = []
+        console.log('table')
+        console.log(this.selectedRow)
       },
       immediate: true,
       deep: true
@@ -111,7 +115,7 @@ export default {
     handleCurrentChange(val) {
       this.$refs.multipleTable.clearSelection()
       this.selectedRow = []
-      this.$emit('currentChange',val,this.selectedRow)
+      this.$emit('currentChange', val, this.selectedRow)
     },
     handleCheckAllChange(val) {
       this.checkedLabels = val ? this.checkedOptions : []
@@ -158,19 +162,19 @@ export default {
             }
           })
           let childSelected = true
-          parent.children && parent.children.forEach(child=>{
-           if (this.selectedRow.indexOf(child) < 0) {childSelected = false}
+          parent.children && parent.children.forEach(child => {
+            if (this.selectedRow.indexOf(child) < 0) {childSelected = false}
           })
-          if (childSelected === true){this.selectedRow.push(parent)}
+          if (childSelected === true) {this.selectedRow.push(parent)}
         }
-      }else {
+      } else {
         let index = this.selectedRow.indexOf(row)
-        this.selectedRow.splice(index,1)
+        this.selectedRow.splice(index, 1)
         if (row.children) {
           row.children.forEach(child => {
             if (this.selectedRow.indexOf(child) >= 0) {
               let index = this.selectedRow.indexOf(child)
-              this.selectedRow.splice(index,1)
+              this.selectedRow.splice(index, 1)
             }
           })
         }
@@ -180,9 +184,9 @@ export default {
               parent = item
             }
           })
-          if (this.selectedRow.indexOf(parent) >= 0){
+          if (this.selectedRow.indexOf(parent) >= 0) {
             let index = this.selectedRow.indexOf(parent)
-            this.selectedRow.splice(index,1)
+            this.selectedRow.splice(index, 1)
           }
         }
       }
@@ -195,14 +199,15 @@ export default {
       console.log(this.selectedRow)
       this.$emit('postSelect', this.selectedRow)
     },
-    selectAllRows(selection){
-      if (this.children.length>0){
-        this.children.forEach(child=>{
+    selectAllRows(selection) {
+      if (this.children.length > 0) {
+        this.children.forEach(child => {
           this.$refs.multipleTable.toggleRowSelection(child, false)
-        })}
+        })
+      }
       console.log(selection.length)
-      if (selection.length>0){
-        selection.forEach(item=>{
+      if (selection.length > 0) {
+        selection.forEach(item => {
           this.selectedRow.push(item)
           if (item.children) {
             item.children.forEach(child => {
@@ -213,7 +218,7 @@ export default {
             })
           }
         })
-      }else {
+      } else {
         this.selectedRow = []
       }
       this.$refs.multipleTable.clearSelection()
@@ -226,15 +231,16 @@ export default {
       this.$emit('dblclick', row)
     },
     //用户风险等级判断，1异地登录2频繁登录
-    riskLevel(level){
-      if (level==='1'){return '异地登录'}
-      else if (level==='2'){return '频繁登录'}
+    riskLevel(level) {
+      if (level === '1') {return '异地登录'} else if (level === '2') {return '频繁登录'}
     },
     //用户状态，用户状态1正常2锁定3注销
-    userStatus(level){
-      if (level==='1'){return '正常'}
-      else if (level==='2'){return '锁定'}
-      else if (level==='3'){return '注销'}
+    userStatus(level) {
+      if (level === '1') {return '正常'} else if (level === '2') {return '锁定'} else if (level === '3') {return '注销'}
+    },
+    //选用标志
+    selection(val) {
+      if (val === '1') {return '选用'} else if (val === '0') {return '禁用'}
     }
   }
 }

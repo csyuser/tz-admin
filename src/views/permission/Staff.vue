@@ -33,16 +33,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="职级">
-          <el-input v-model="staffInfo.rank" suffix-icon="xxx"></el-input>
+          <el-input v-model="staffInfo['rank']" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="staffInfo.sex">
+          <el-select v-model="staffInfo['sex']">
             <el-option label="男" :value="0"></el-option>
             <el-option label="女" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
-          <el-input v-model="staffInfo.department" suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
+          <el-input v-model="staffInfo.departmentName" readonly suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
@@ -53,14 +53,14 @@
           <el-input v-model="staffInfo.email" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="身份证号码">
-          <el-input v-model="staffInfo.idCard" suffix-icon="xxx"></el-input>
+          <el-input v-model="staffInfo['idCard']" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="入职时间">
 <!--          <el-input v-model="staffInfo.name" suffix-icon="xxx"></el-input>-->
-          <el-date-picker v-model="staffInfo.entryTime" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
+          <el-date-picker v-model="staffInfo['entryTime']" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
         </el-form-item>
         <el-form-item label="离职时间">
-          <el-date-picker v-model="staffInfo.departureTime" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
+          <el-date-picker v-model="staffInfo['departureTime']" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -120,15 +120,15 @@ export default {
         }]
       }],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'child',
+        label: 'name'
       },
       formInline: {
         user: '',
         region: ''
       },
       colsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'post', label: '职务'},
-        {prop: 'rank', label: '职级'}, {prop: 'sex', label: '性别'},{prop: 'department', label: '部门名称'},{prop: 'phone', label: '电话'},
+        {prop: 'rank', label: '职级'}, {prop: 'sex', label: '性别'},{prop: 'departmentName', label: '部门名称'},{prop: 'phone', label: '电话'},
         {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'}, {prop: 'entryTime', label: '入职时间'},{prop: 'departureTime', label: '离职时间'}],
       tableDatas: {
         count: 30,
@@ -177,10 +177,12 @@ export default {
   mounted() {
     this.getPages(this.page,this.pageSize)
     this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
-    .then(res=>{
-      console.log(res)
-    })
-    .catch()
+        .then(res => {
+          if (res.data.code.toString() === '200') {
+            this.data = res.data.data
+          } else {this.data = []}
+        })
+        .catch()
   },
   methods: {
     onSubmit() {console.log(this.formInline)},
@@ -193,6 +195,7 @@ export default {
       }).then(res => {
         if (res.data.code.toString() === '200'){
           this.tableDatas = res.data
+          this.selectedRow = []
         }else {
           this.$message.error(res.data.msg)
         }
@@ -237,16 +240,19 @@ export default {
       if (this.dialogType === 'add'){
         editData = this.staffInfo
       }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.staffInfo}}
-      this.axios.post(this.prefixAddr + '/person/save',{...editData})
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
-              this.$message.success('保存成功')
-              this.getPages()
-            } else this.$message.error(res.data.msg)
-          })
-          .catch()
+      if (this.dialogType !== 'view'){
+        this.axios.post(this.prefixAddr + '/person/save',{...editData})
+            .then(res=>{
+              if (res.data.code.toString() === '200'){
+                this.$message.success('保存成功')
+                this.getPages()
+              } else this.$message.error(res.data.msg)
+            })
+            .catch()
+      }
     },
     view(row){
+      this.dialogType = 'view'
       this.dialogTitle = '查看人员信息'
       this.staffInfo = row
       this.editDialogVisible = true
@@ -299,7 +305,8 @@ export default {
     selectDepartment(data) {
       console.log(data);
       this.treeVisible = false
-      this.staffInfo.department = data.label
+      this.staffInfo.departmentName = data.name
+      this.staffInfo.departmentId = data.id
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -337,6 +344,7 @@ export default {
         border-radius: 4px;
         margin-top: 5px;
         z-index: 999;
+        min-height: 50px;
       }
       .treeVisible{
         display: block;

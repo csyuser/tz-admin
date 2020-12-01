@@ -14,9 +14,13 @@
         <el-button type="primary" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @add="addDepartment" @update="updateDepartment"
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @add="addDepartment"
+           @update="updateDepartment"
            @postSelect="selectRow" @delete="deleteDepartment" @dblclick="viewDepartment" @currentChange="currentChange">
-      <el-button size="small" class="update" @click="relatedUser"><SvgIcon icon-name="user"></SvgIcon>关联用户</el-button>
+<!--      <el-button size="small" class="update" @click="relatedUser">-->
+<!--        <SvgIcon icon-name="user"></SvgIcon>-->
+<!--        关联用户-->
+<!--      </el-button>-->
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="departmentInfo" size="small"
@@ -38,10 +42,11 @@
           <el-input v-model="departmentInfo.level" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="上级部门" class="departmentItem">
-          <el-input v-model="departmentInfo.parentName" readonly suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
+          <el-input v-model="departmentInfo.parentName" readonly suffix-icon="xxx" @focus="focusDepartment"
+                    @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
-<!--          <span v-if="data.length<1">暂无数据</span>-->
+          <!--          <span v-if="data.length<1">暂无数据</span>-->
         </el-form-item>
         <el-form-item label="行政区划">
           <el-input v-model="departmentInfo.regionName" suffix-icon="xxx"></el-input>
@@ -64,19 +69,19 @@
     <el-dialog title="删除部门" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
-      <el-transfer
-          filterable
-          :filter-method="filterMethod"
-          filter-placeholder="请输入"
-          v-model="value"
-          :data="transformData">
-      </el-transfer>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
-      </span>
-    </el-dialog>
+<!--    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">-->
+<!--      <el-transfer-->
+<!--          filterable-->
+<!--          :filter-method="filterMethod"-->
+<!--          filter-placeholder="请输入"-->
+<!--          v-model="value"-->
+<!--          :data="transformData">-->
+<!--      </el-transfer>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>-->
+<!--        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -84,48 +89,14 @@
 // import Qs from 'qs'
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
-import SvgIcon from '@/components/SvgIcon'
+import {helper} from '@/views/method'
 
 export default {
   name: 'Department',
-  components: {SvgIcon, Table, DeleteRow},
+  components: {Table, DeleteRow},
   data() {
     return {
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      data: [],
       defaultProps: {
         children: 'child',
         label: 'name'
@@ -138,10 +109,10 @@ export default {
         {prop: 'level', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
         {prop: 'selection', label: '选用标志'}, {prop: 'describe', label: '描述'}],
       tableDatas: {},
-      page:1,
-      pageSize:10,
-      dialogTitle:'',
-      dialogType:'',
+      page: 1,
+      pageSize: 10,
+      dialogTitle: '',
+      dialogType: '',
       editDialogVisible: false,
       deleteDialogVisible: false,
       editDialogDisabled: false,
@@ -153,41 +124,42 @@ export default {
       filterMethod(query, item) {
         return item.label.indexOf(query) > -1
       },
-      relatedTitle: '',
-      relatedDialogVisible: false,
-      userVal: [],
-      transformType: '',
-      treeVisible:false,
-      isFocus:false,
+      // relatedTitle: '',
+      // relatedDialogVisible: false,
+      // userVal: [],
+      // transformType: '',
+      treeVisible: false,
+      isFocus: false,
     }
   },
   mounted() {
     this.getPages()
     this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
-        .then(res=>{
-          if (res.data.code.toString() === '200'){
+        .then(res => {
+          if (res.data.code.toString() === '200') {
             this.data = res.data.data
-          }else {this.data = []}
+          } else {this.data = []}
         })
         .catch()
   },
   methods: {
-    getPages(){
+    getPages() {
       this.axios.get(this.prefixAddr + '/department/page', {
         params: {
-          page:this.page,
-          pageSize:this.pageSize
+          page: this.page,
+          pageSize: this.pageSize
         },
       }).then(res => {
-        if (res.data.code.toString() === '200'){
+        if (res.data.code.toString() === '200') {
           this.tableDatas = res.data
-        }else {
+          this.selectedRow = []
+        } else {
           this.$message.error(res.data.msg)
         }
       })
           .catch()
     },
-    currentChange(val,row){
+    currentChange(val, row) {
       this.page = val
       this.selectedRow = row
       this.deleteIds = []
@@ -213,6 +185,7 @@ export default {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.departmentInfo = this.selectedRow[0]
+        this.departmentInfo.selection = helper.selection(this.selectedRow[0].selection)
         this.editDialogVisible = true
       } else {
         this.$message.error('请选择一行数据')
@@ -221,28 +194,32 @@ export default {
     confirmEdit() {
       this.editDialogVisible = false
       let editData = {}
-      if (this.dialogType === 'add'){
+      if (this.dialogType === 'add') {
         editData = this.departmentInfo
-      }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.departmentInfo}}
-        this.axios.post(this.prefixAddr + '/department/save',{...editData})
-            .then(res=>{
-              if (res.data.code.toString() === '200'){
+      } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.departmentInfo}}
+      if (this.dialogType !== 'view'){
+        this.axios.post(this.prefixAddr + '/department/save', {...editData})
+            .then(res => {
+              if (res.data.code.toString() === '200') {
                 this.$message.success('保存成功')
                 this.getPages()
               } else this.$message.error(res.data.msg)
             })
             .catch()
+      }
     },
     viewDepartment(row) {
+      this.dialogType = 'view'
       this.dialogTitle = '查看部门信息'
       this.departmentInfo = row
+      this.departmentInfo.selection = helper.selection(row.selection)
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },
     deleteDepartment() {
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
-        this.selectedRow.forEach(row=>{
+        this.selectedRow.forEach(row => {
           this.deleteIds.push(row.id)
         })
       } else {
@@ -251,33 +228,36 @@ export default {
     },
     confirmDelete() {
       this.deleteDialogVisible = false
-      this.axios.post(this.prefixAddr + '/department/delete',{ids:this.deleteIds})
-      .then(res=>{
-        if (res.data.code.toString() === '200'){
-          this.$message.success('删除成功')
-          this.getPages()
-        }else {this.$message.error(this.data.msg)}
-        console.log(res)
-      })
-      .catch(error=>{this.$message.error('删除失败' + error)})
+      this.axios.post(this.prefixAddr + '/department/delete', {ids: this.deleteIds})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.$message.success('删除成功')
+              this.getPages()
+            } else {this.$message.error(this.data.msg)}
+          })
+          .catch(error => {this.$message.error('删除失败' + error)})
     },
+
 //关联用户
-    relatedUser() {
-      if (this.selectedRow.length !== 1) {this.$message.error('请选择一行数据');return}
-      this.value = this.userVal
-      this.transformType = 'user'
-      this.relatedTitle = '关联用户'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '小组1', key: '小组1',}, {label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
-        {label: '小组4', key: '小组4'}]
-    },
-    confirmTransform() {
-      this.relatedDialogVisible = false
-      if (this.transformType === 'user') {
-        this.userVal = this.value
-      }
-      console.log(this.value)
-    },
+//     relatedUser() {
+//       if (this.selectedRow.length !== 1) {
+//         this.$message.error('请选择一行数据')
+//         return
+//       }
+//       this.value = this.userVal
+//       this.transformType = 'user'
+//       this.relatedTitle = '关联用户'
+//       this.relatedDialogVisible = true
+//       this.transformData = [{label: '小组1', key: '小组1',}, {label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
+//         {label: '小组4', key: '小组4'}]
+//     },
+//     confirmTransform() {
+//       this.relatedDialogVisible = false
+//       if (this.transformType === 'user') {
+//         this.userVal = this.value
+//       }
+//     },
+
     handleClose(done) {
       this.$confirm('确认关闭？')
           .then(() => {
@@ -286,25 +266,26 @@ export default {
           .catch(() => {})
     },
 //部门的数据下拉框
-    treeNode(){
+    treeNode() {
       this.isFocus = true
       this.treeVisible = true
       this.$refs.treeInput.focus()
     },
-    focusDepartment(){
+    focusDepartment() {
       this.treeVisible = true
     },
-    blurDepartment(){
+    blurDepartment() {
       this.isFocus = false
-      setTimeout(()=>{
-        if (this.isFocus !== true){
+      setTimeout(() => {
+        if (this.isFocus !== true) {
           this.treeVisible = false
         }
-      },100)
+      }, 100)
     },
     selectDepartment(data) {
       this.treeVisible = false
-        this.departmentInfo.parentName = data.name
+      this.departmentInfo.parentName = data.name
+      this.departmentInfo.parentId = data.id
       this.$refs.treeInput.blur()
     },
   }
@@ -325,23 +306,26 @@ export default {
     > .el-form-item {
       margin-bottom: 18px;
     }
-      .departmentItem{
-        position: relative;
-        .tree{
-          display: none;
-          position: absolute;
-          border: 1px solid #DCDFE6;
-          padding-right: 10px;
-          width: 215px;
-          border-radius: 4px;
-          margin-top: 5px;
-          z-index: 999;
-          min-height: 50px;
-        }
-        .treeVisible{
-          display: block;
-        }
+
+    .departmentItem {
+      position: relative;
+
+      .tree {
+        display: none;
+        position: absolute;
+        border: 1px solid #DCDFE6;
+        padding-right: 10px;
+        width: 215px;
+        border-radius: 4px;
+        margin-top: 5px;
+        z-index: 999;
+        min-height: 50px;
       }
+
+      .treeVisible {
+        display: block;
+      }
+    }
 
 
   }
