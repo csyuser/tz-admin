@@ -196,7 +196,7 @@ export default {
       this.editDialogDisabled = true
     },
     deleteRows() {
-      console.log(this.selectedRow)
+      this.deleteIds = []
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
         if (this.selectedRow.length > 0) {
