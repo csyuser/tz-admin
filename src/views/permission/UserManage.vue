@@ -14,12 +14,9 @@
         <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @currentChange="currentChange"
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
+           @currentChange="currentChange"
            @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows" @dblclick="view">
-      <el-button size="small" class="update" @click="relatedDepartment">
-        <SvgIcon icon-name="department"></SvgIcon>
-        关联部门
-      </el-button>
       <el-button size="small" class="update" @click="relatedPost">
         <SvgIcon icon-name="post"></SvgIcon>
         关联岗位
@@ -48,8 +45,13 @@
         <el-form-item label="用户名称">
           <el-input v-model="userInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="用户编号">
-          <el-input v-model="userInfo.code" suffix-icon="xxx"></el-input>
+        <el-form-item label="人员编号">
+          <el-select v-model="userInfo.code">
+            <el-option :label="code.code" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户密码">
+            <el-input v-model="userInfo.password" show-password suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="风险等级">
           <el-select v-model="userInfo.riskLevel">
@@ -65,8 +67,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
-          <el-input v-model="userInfo.department" suffix-icon="xxx" @focus="focus" @blur="blur" ref="treeInput"></el-input>
-          <el-tree :data="treeData" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
+          <el-input readonly v-model="userInfo.departmentName" suffix-icon="xxx" @focus="focus" @blur="blur"
+                    ref="treeInput"></el-input>
+          <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
       </el-form>
@@ -89,13 +92,16 @@ import DeleteRow from '@/components/permission/DeleteRow'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon,DeleteRow},
+  components: {Table, SvgIcon, DeleteRow},
   data() {
     return {
-      page:1,
-      pageSize:10,
+      page: 1,
+      pageSize: 10,
       dialogTitle: '',
-      colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'},{prop: 'department', label: '部门'}, {prop: 'riskLevel', label: '风险等级'},
+      colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'}, {
+        prop: 'departmentName',
+        label: '部门'
+      }, {prop: 'riskLevel', label: '风险等级'},
         {prop: 'status', label: '用户状态'}],
       tableDatas: {
         count: 30,
@@ -105,28 +111,28 @@ export default {
           code: '1',
           riskLevel: '1',
           status: '1',
-          department:'开发部'
+          department: '开发部'
         }, {
           id: 2,
           name: '王小虎',
           code: '2',
           riskLevel: '1',
           status: '2',
-          department:'运营部'
+          department: '运营部'
         }, {
           id: 3,
           name: '王小虎',
           code: '3',
           riskLevel: '1',
           status: '2',
-          department:'人事部'
+          department: '人事部'
         }, {
           id: 4,
           name: '王小虎',
           code: '3',
           riskLevel: '1',
           status: '3',
-          department:'开发部'
+          department: '开发部'
         }],
       },
       checkedLabels: [],
@@ -144,7 +150,6 @@ export default {
       },
       relatedTitle: '',
       relatedDialogVisible: false,
-      departmentVal: [],
       postVal: [],
       transformType: '',
       groupVal: [],
@@ -153,91 +158,70 @@ export default {
       editDialogDisabled: false,
       userInfo: {},
       selectedRow: [],
-      treeData: [{
-        label: '一级 1',
-        children: [{
-          label: '二级 1-1',
-          children: [{
-            label: '三级 1-1-1'
-          }]
-        }]
-      }, {
-        label: '一级 2',
-        children: [{
-          label: '二级 2-1',
-          children: [{
-            label: '三级 2-1-1'
-          }]
-        }, {
-          label: '二级 2-2',
-          children: [{
-            label: '三级 2-2-1'
-          }]
-        }]
-      }, {
-        label: '一级 3',
-        children: [{
-          label: '二级 3-1',
-          children: [{
-            label: '三级 3-1-1'
-          }]
-        }, {
-          label: '二级 3-2',
-          children: [{
-            label: '三级 3-2-1'
-          }]
-        }]
-      }],
+      data: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'child',
+        label: 'name'
       },
-      treeVisible:false,
-      isFocus:false,
-      deleteIds:[],
-      dialogType:'',
+      treeVisible: false,
+      isFocus: false,
+      deleteIds: [],
+      dialogType: '',
+      userCodes: []
     }
   },
   mounted() {
     this.getPages()
+    this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
+        .then(res => {
+          if (res.data.code.toString() === '200') {
+            this.data = res.data.data
+          } else {this.data = []}
+        })
+        .catch()
+    this.axios.get(this.prefixAddr + '/dropList/selectPerson')
+        .then(res => {
+          if (res.data.code.toString() === '200') {
+            this.userCodes = res.data.data
+          } else {this.userCodes = []}
+        })
+        .catch()
   },
   methods: {
+    xxx() {
+      console.log('xxx')
+    },
     onSubmit() {
       console.log('submit!')
     },
-    getPages(){
+    getPages() {
       this.axios.get(this.prefixAddr + '/user/page', {
         params: {
-          page:this.page,
-          pageSize:this.page,
+          page: this.page,
+          pageSize: this.pageSize,
         },
       }).then(res => {
-        if (res.data.code.toString() === '200'){
+        if (res.data.code.toString() === '200') {
           this.tableDatas = res.data
-        }else {
+          this.selectedRow = []
+        } else {
           this.$message.error(res.data.msg)
         }
       })
           .catch()
     },
-    currentChange(val,row){
+    currentChange(val, row) {
       this.page = val
       this.selectedRow = row
       this.deleteIds = []
       this.getPages()
     },
 //关联部门，岗位，小组
-    relatedDepartment() {
-      if (this.selectedRow.length !== 1) {this.$message.error('请选择一行数据');return}
-      this.transformType = 'department'
-      this.value = this.departmentVal
-      this.relatedTitle = '关联部门'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '上海', key: 0}, {label: '北京', key: 1}, {label: '广州', key: 2},
-        {label: '深圳', key: 3}, {label: '南京', key: 4}, {label: '西安', key: 5}, {label: '成都', key: 6}]
-    },
     relatedPost() {
-      if (this.selectedRow.length !== 1) {this.$message.error('请选择一行数据');return}
+      if (this.selectedRow.length !== 1) {
+        this.$message.error('请选择一行数据')
+        return
+      }
       this.value = this.postVal
       this.transformType = 'post'
       this.relatedTitle = '关联岗位'
@@ -246,7 +230,10 @@ export default {
         {label: 'ui', key: 'ui'}]
     },
     relatedGroup() {
-      if (this.selectedRow.length !== 1) {this.$message.error('请选择一行数据');return}
+      if (this.selectedRow.length !== 1) {
+        this.$message.error('请选择一行数据')
+        return
+      }
       this.value = this.groupVal
       this.transformType = 'group'
       this.relatedTitle = '关联小组'
@@ -256,9 +243,7 @@ export default {
     },
     confirmTransform() {
       this.relatedDialogVisible = false
-      if (this.transformType === 'department') {
-        this.departmentVal = this.value
-      } else if (this.transformType === 'post') {
+      if (this.transformType === 'post') {
         this.postVal = this.value
       } else if (this.transformType === 'group') {
         this.groupVal = this.value
@@ -282,28 +267,34 @@ export default {
       this.dialogType = 'update'
       this.dialogTitle = '编辑用户'
       this.editDialogDisabled = false
-      if (this.selectedRow.length !== 1) {this.$message.error('请选择一行数据');return}
+      if (this.selectedRow.length !== 1) {
+        this.$message.error('请选择一行数据')
+        return
+      }
       this.userInfo = this.selectedRow[0]
       this.editDialogVisible = true
     },
     confirmEdit() {
       this.editDialogVisible = false
       let editData = {}
-      if (this.dialogType === 'add'){
+      if (this.dialogType === 'add') {
         editData = this.userInfo
-      }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.userInfo}}
+      } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.userInfo}}
       console.log('editData')
       console.log(editData)
-      this.axios.post(this.prefixAddr + '/user/save',{...editData})
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
-              this.$message.success('保存成功')
-              this.getPages()
-            } else this.$message.error(res.data.msg)
-          })
-          .catch()
+      if (this.dialogType !== 'view') {
+        this.axios.post(this.prefixAddr + '/user/save', {...editData})
+            .then(res => {
+              if (res.data.code.toString() === '200') {
+                this.$message.success('保存成功')
+                this.getPages()
+              } else this.$message.error(res.data.msg)
+            })
+            .catch()
+      }
     },
     view(row) {
+      this.dialogType = 'view'
       this.dialogTitle = '查看用户信息'
       this.userInfo = row
       this.editDialogVisible = true
@@ -312,7 +303,7 @@ export default {
     deleteRows() {
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
-        this.selectedRow.forEach(row=>{
+        this.selectedRow.forEach(row => {
           this.deleteIds.push(row.id)
         })
       } else {
@@ -321,36 +312,37 @@ export default {
     },
     confirmDelete() {
       this.deleteDialogVisible = false
-      this.axios.post(this.prefixAddr + '/user/delete',{ids:this.deleteIds})
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
+      this.axios.post(this.prefixAddr + '/user/delete', {ids: this.deleteIds})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
               this.$message.success('删除成功')
-              this.getPages(this.page,this.pageSize)
-            }else {this.$message.error(this.data.msg)}
+              this.getPages(this.page, this.pageSize)
+            } else {this.$message.error(this.data.msg)}
             console.log(res)
           })
-          .catch(error=>{this.$message.error('删除失败' + error)})
+          .catch(error => {this.$message.error('删除失败' + error)})
     },
 //输入框树形结构
-    treeNode(){
+    treeNode() {
       this.isFocus = true
       this.treeVisible = true
       this.$refs.treeInput.focus()
     },
-    focus(){
+    focus() {
       this.treeVisible = true
     },
-    blur(){
+    blur() {
       this.isFocus = false
-      setTimeout(()=>{
-        if (this.isFocus !== true){
+      setTimeout(() => {
+        if (this.isFocus !== true) {
           this.treeVisible = false
         }
-      },100)
+      }, 100)
     },
     select(data) {
       this.treeVisible = false
-      this.userInfo.department = data.label
+      this.userInfo.departmentName = data.name
+      this.userInfo.departmentId = data.id
     },
   },
 }
@@ -365,13 +357,16 @@ export default {
       width: 100px;
     }
   }
+
   .addForm {
     > .el-form-item {
       margin-bottom: 18px;
     }
-    .departmentItem{
+
+    .departmentItem {
       position: relative;
-      .tree{
+
+      .tree {
         display: none;
         position: absolute;
         border: 1px solid #DCDFE6;
@@ -381,7 +376,8 @@ export default {
         margin-top: 5px;
         z-index: 999;
       }
-      .treeVisible{
+
+      .treeVisible {
         display: block;
       }
     }
