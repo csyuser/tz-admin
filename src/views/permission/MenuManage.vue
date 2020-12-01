@@ -1,39 +1,31 @@
 <template>
   <div class="menu-manege-wrap">
-    <el-form :inline="true" :model="menuInfo" class="demo-form-inline searchForm">
+    <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="menuInfo.name" placeholder="菜单名称" size="small"></el-input>
+        <el-input v-model="formInline.name" placeholder="菜单名称" size="small"></el-input>
       </el-form-item>
       <el-form-item class="selectInput">
-        <el-select v-model="menuInfo.previousMenu" placeholder="上级菜单" size="small">
-          <el-option label="激活" value="active"></el-option>
-          <el-option label="失效" value="disabled"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item class="selectInput">
-        <el-select v-model="menuInfo.menuType" placeholder="菜单类型" size="small">
-          <el-option label="激活" value="active"></el-option>
-          <el-option label="失效" value="disabled"></el-option>
+        <el-select v-model="formInline['parentId']" placeholder="上级菜单" clearable size="small">
+          <el-option :label="parentMenu.name" :value="parentMenu.id" v-for="parentMenu in parentMenus" :key="parentMenu.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submit" size="small">查询</el-button>
+        <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" tableName="menu" @add="add" @update="update" @postSelect="selectRow"
            @currentChange="currentChange" @delete="deleteRow" @dblclick="viewPost"></Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px">
-      <el-form label-position="right" label-width="80px" :inline="true" :model="menuInfo" size="small" class="addForm" :disabled="editDialogDisabled">
+      <el-form label-position="right" label-width="80px" ref="addForm" :inline="true" :model="menuInfo" size="small" class="addForm" :disabled="editDialogDisabled">
         <el-form-item label="菜单名称">
           <el-input v-model="menuInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="排序">
-          <el-input v-model="menuInfo.sort" suffix-icon="xxx"></el-input>
+        <el-form-item label="排序" prop="sort" :rules="{ type: 'number', message: '排序必须为数字值'}">
+          <el-input v-model.number="menuInfo.sort" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="上级菜单">
+        <el-form-item label="上级菜单" class="departmentItem">
           <el-select v-model="menuInfo.parentId">
-            <el-option label="权限管理" value="1"></el-option>
-            <el-option label="其他" value="2"></el-option>
+            <el-option :label="parentMenu.name" :value="parentMenu.id" v-for="parentMenu in parentMenus" :key="parentMenu.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="菜单地址">
@@ -59,64 +51,13 @@ export default {
   components:{Table,DeleteRow},
   data(){
     return{
-      formInline:{
-        name:'',
-        previousMenu:'',
-        menuType:''
-      },
+      formInline:{},
       colsHead: [{prop: 'name', label: '菜单名称'}, {prop: 'sort', label: '排序'},
-        {prop: 'parentId', label: '上级菜单'}, {prop: 'url', label: '菜单地址'},],
-      tableDatas: {
-        count: 30,
-        data: [{
-          id: 1,
-          name:'权限管理',
-          sort:'1',
-          parentId:'',
-          url:'',
-          children:[{
-            id: '1-1',
-            name:'用户管理',
-            sort:'1',
-            parentId:'权限管理',
-            url:'/MenuManage',
-          },{
-            id: 1-2,
-            name:'岗位管理',
-            sort:'2',
-            parentId:'权限管理',
-            url:'/MenuManage',
-          },{
-            id: '1-4',
-            name:'菜单管理',
-            sort:'3',
-            parentId:'权限管理',
-            url:'/MenuManage',
-          }]
-        },  {
-          id: 4,
-          name:'其他',
-          sort:'4',
-          parentId:'',
-          url:'/MenuManage',
-          children:[{
-            id: '2-1',
-            name:'用户管理',
-            sort:'1',
-            parentId:'其他',
-            url:'/MenuManage',
-          }]
-        },{
-          id: 5,
-          name:'其他1',
-          sort:'5',
-          parentId:'',
-          url:'/MenuManage',
-        }],
-      },
+        {prop: 'parentName', label: '上级菜单'}, {prop: 'url', label: '菜单地址'},],
+      tableDatas: {},
       selectedRow:[],
-      page:1,
-      pageSize:10,
+      // page:1,
+      // pageSize:10,
       dialogType:'',
       dialogTitle:'',
       editDialogVisible: false,
@@ -129,24 +70,33 @@ export default {
         parentId: '',
         url: ''
       },
+      parentMenus: [],
     }
   },
   mounted() {
     this.getPages()
+    this.getMenu()
   },
   methods:{
-    submit(){
-      console.log(this.menuInfo)
+    getMenu(){
+      this.axios.get(this.prefixAddr + '/dropList/selectMenu')
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.parentMenus = res.data.data
+            } else {this.parentMenus = []}
+          })
+          .catch()
     },
-    getPages(){
+    getPages(formInline){
       this.axios.get(this.prefixAddr + '/menu/page', {
         params: {
-          page:this.page,
-          pageSize:this.pageSize
+          ...formInline
         },
       }).then(res => {
         if (res.data.code.toString() === '200'){
           this.tableDatas = res.data
+          this.selectedRow = []
+          this.getMenu()
         }else {
           this.$message.error(res.data.msg)
         }
@@ -167,6 +117,9 @@ export default {
       })
       console.log(this.selectedRow)
     },
+    search(){
+      this.getPages(this.formInline)
+    },
     add() {
       this.dialogType = 'add'
       this.dialogTitle = '增加菜单'
@@ -186,21 +139,30 @@ export default {
       }
     },
     confirmEdit(){
-      this.editDialogVisible = false
-      let editData = {}
-      if (this.dialogType === 'add'){
-        editData = this.menuInfo
-      }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.menuInfo}}
-      console.log('editData')
-      console.log(editData)
-      this.axios.post(this.prefixAddr + '/menu/save',{...editData})
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
-              this.$message.success('保存成功')
-              this.getPages()
-            } else this.$message.error(res.data.msg)
-          })
-          .catch()
+      this.$refs.addForm.validate((valid) => {
+        if (valid) {
+          console.log('zhixingle')
+
+          this.editDialogVisible = false
+          let editData = {}
+          if (this.dialogType === 'add'){
+            editData = this.menuInfo
+          }else if (this.dialogType === 'update'){editData = {id:this.selectedRow.id,...this.menuInfo}}
+          console.log('editData')
+          console.log(editData)
+          this.axios.post(this.prefixAddr + '/menu/save',{...editData})
+              .then(res=>{
+                if (res.data.code.toString() === '200'){
+                  this.$message.success('保存成功')
+                  this.getPages()
+                } else this.$message.error(res.data.msg)
+              })
+              .catch()
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
     viewPost(row){
       this.dialogTitle = '查看菜单'

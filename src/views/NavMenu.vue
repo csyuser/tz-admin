@@ -13,10 +13,10 @@
         <el-submenu :index="lists.id" v-for="lists in menuList" :key="lists.id">
           <template slot="title">
             <i class="el-icon-location"></i>
-            <span>{{ lists.title }}</span>
+            <span>{{ lists.name }}</span>
           </template>
-          <el-menu-item v-for="list in lists.list" :key="list.id" :index="list.path" @click="selectMenu(list)">
-            {{ list.menuName }}
+          <el-menu-item v-for="list in lists.children" :key="list.id" :index="list.url" @click="selectMenu(list)">
+            {{ list.name }}
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -54,6 +54,13 @@ export default {
   mounted() {
     this.$store.commit('fetch')
     this.selected = this.$store.state.selectedMenu
+    this.axios.get(this.prefixAddr + '/menu/selectMenuTree')
+        .then(res => {
+          if (res.data.code.toString() === '200') {
+            this.menuList = res.data.data
+          } else {this.menuList = []}
+        })
+        .catch()
   },
   computed: {
     unClickable() {
@@ -63,7 +70,7 @@ export default {
   methods: {
     selectMenu(list) {
       if (list) {
-        this.selected = ' / ' + list.menuTitle + ' / ' + list.menuName
+        this.selected = ' / ' + list.name + ' / ' + list.parentName
       } else {
         this.selected = ''
       }

@@ -38,7 +38,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination" @current-change="handleCurrentChange"
+      <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="tableName != 'menu'"
                      :current-page="page"
                      :page-sizes="[10, 20, 30, 40]"
                      :page-size="pageSize"
@@ -60,6 +60,7 @@ export default {
     tableDatas: {type: Object},
     pageSize: {type: Number},
     page: {type: Number},
+    tableName: {type: String},
     // tableName:{type: Array},
   },
   data() {
