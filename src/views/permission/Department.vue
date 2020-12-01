@@ -38,13 +38,10 @@
           <el-input v-model="departmentInfo.level" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="上级部门" class="departmentItem">
-          <el-input v-model="departmentInfo.parentName" suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
+          <el-input v-model="departmentInfo.parentName" readonly suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
-<!--          <el-select v-model="departmentInfo.parentName">-->
-<!--            <el-option label="选用" :value="1"></el-option>-->
-<!--            <el-option label="禁用" :value="0"></el-option>-->
-<!--          </el-select>-->
+<!--          <span v-if="data.length<1">暂无数据</span>-->
         </el-form-item>
         <el-form-item label="行政区划">
           <el-input v-model="departmentInfo.regionName" suffix-icon="xxx"></el-input>
@@ -130,8 +127,8 @@ export default {
         }]
       }],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'child',
+        label: 'name'
       },
       formInline: {
         user: '',
@@ -168,7 +165,9 @@ export default {
     this.getPages()
     this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
         .then(res=>{
-          console.log(res)
+          if (res.data.code.toString() === '200'){
+            this.data = res.data.data
+          }else {this.data = []}
         })
         .catch()
   },
@@ -304,9 +303,8 @@ export default {
       },100)
     },
     selectDepartment(data) {
-      console.log(data);
       this.treeVisible = false
-      this.departmentInfo.parentName = data.label
+        this.departmentInfo.parentName = data.name
       this.$refs.treeInput.blur()
     },
   }
@@ -338,6 +336,7 @@ export default {
           border-radius: 4px;
           margin-top: 5px;
           z-index: 999;
+          min-height: 50px;
         }
         .treeVisible{
           display: block;
