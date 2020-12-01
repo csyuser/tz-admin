@@ -2,16 +2,10 @@
   <div class="post-manage-wrap">
     <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="formInline.user" placeholder="输入名称或邮箱搜索" size="small"></el-input>
-      </el-form-item>
-      <el-form-item class="selectInput">
-        <el-select v-model="formInline.region" placeholder="状态" size="small">
-          <el-option label="激活" value="active"></el-option>
-          <el-option label="失效" value="disabled"></el-option>
-        </el-select>
+        <el-input v-model="formInline.name" placeholder="输入名称" size="small"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
+        <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
@@ -84,8 +78,7 @@ export default {
         prop: 'departmentName', label: '部门名称'}, {prop: 'describe', label: '角色描述'}],
       tableDatas: {},
       formInline: {
-        user: '',
-        region: ''
+        name: '',
       },
       page: 1,
       pageSize: 5,
@@ -131,14 +124,12 @@ export default {
         .catch()
   },
   methods: {
-    onSubmit() {
-      console.log('submit!')
-    },
-    getPages() {
+    getPages(formInline) {
       this.axios.get(this.prefixAddr + '/role/page', {
         params: {
           page: this.page,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          ...formInline
         },
       }).then(res => {
         if (res.data.code.toString() === '200') {
@@ -164,6 +155,9 @@ export default {
         this.selectedRow.push(item)
       })
       console.log(this.selectedRow)
+    },
+    search() {
+      this.getPages(this.formInline)
     },
     add() {
       this.dialogType = 'add'

@@ -2,16 +2,10 @@
   <div class="staff-wrap">
     <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="formInline.user" placeholder="输入名称或邮箱搜索" size="small"></el-input>
-      </el-form-item>
-      <el-form-item class="selectInput">
-        <el-select v-model="formInline.region" placeholder="状态" size="small">
-          <el-option label="激活" value="active"></el-option>
-          <el-option label="失效" value="disabled"></el-option>
-        </el-select>
+        <el-input v-model="formInline.name" placeholder="输入名称" size="small"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" size="small">查询</el-button>
+        <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @currentChange="currentChange"
@@ -94,8 +88,7 @@ export default {
         label: 'name'
       },
       formInline: {
-        user: '',
-        region: ''
+        name: '',
       },
       colsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'post', label: '职务'},
         {prop: 'rank', label: '职级'}, {prop: 'sex', label: '性别'},{prop: 'departmentName', label: '部门名称'},{prop: 'phone', label: '电话'},
@@ -114,7 +107,7 @@ export default {
     }
   },
   mounted() {
-    this.getPages(this.page,this.pageSize)
+    this.getPages()
     this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
@@ -124,12 +117,12 @@ export default {
         .catch()
   },
   methods: {
-    onSubmit() {console.log(this.formInline)},
-    getPages(page,pageSize){
+    getPages(formInline){
       this.axios.get(this.prefixAddr + '/person/page', {
         params: {
-          page:page,
-          pageSize:pageSize
+          page:this.page,
+          pageSize:this.pageSize,
+          ...formInline
         },
       }).then(res => {
         if (res.data.code.toString() === '200'){
@@ -145,7 +138,7 @@ export default {
       this.page = val
       this.selectedRow = row
       this.deleteIds = []
-      this.getPages(this.page,this.pageSize)
+      this.getPages()
     },
 //表格增删改查
     selectRow(val) {
@@ -154,6 +147,9 @@ export default {
         this.selectedRow.push(item)
       })
       console.log(this.selectedRow)
+    },
+    search() {
+      this. getPages(this.formInline)
     },
     add() {
       this.dialogType = 'add'
@@ -221,7 +217,7 @@ export default {
           .then(res=>{
             if (res.data.code.toString() === '200'){
               this.$message.success('删除成功')
-              this.getPages(this.page,this.pageSize)
+              this.getPages()
             }else {this.$message.error(this.data.msg)}
             console.log(res)
           })

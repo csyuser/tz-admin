@@ -2,16 +2,10 @@
   <div class="department-wrap">
     <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="formInline.user" placeholder="输入名称或邮箱搜索" size="small"></el-input>
-      </el-form-item>
-      <el-form-item class="selectInput">
-        <el-select v-model="formInline.region" placeholder="状态" size="small">
-          <el-option label="激活" value="active"></el-option>
-          <el-option label="失效" value="disabled"></el-option>
-        </el-select>
+        <el-input v-model="formInline.name" placeholder="输入名称" size="small"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="small">查询</el-button>
+        <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @add="addDepartment"
@@ -102,8 +96,7 @@ export default {
         label: 'name'
       },
       formInline: {
-        user: '',
-        region: ''
+        name: '',
       },
       colsHead: [{prop: 'className', label: '部门分类'}, {prop: 'name', label: '部门名称'}, {prop: 'code', label: '部门编号'},
         {prop: 'level', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
@@ -143,11 +136,12 @@ export default {
         .catch()
   },
   methods: {
-    getPages() {
+    getPages(formInline) {
       this.axios.get(this.prefixAddr + '/department/page', {
         params: {
           page: this.page,
-          pageSize: this.pageSize
+          pageSize: this.pageSize,
+          ...formInline
         },
       }).then(res => {
         if (res.data.code.toString() === '200') {
@@ -166,6 +160,9 @@ export default {
       this.getPages()
     },
 //部门的增删改查
+    search(){
+      this.getPages(this.formInline)
+    },
     selectRow(val) {
       this.selectedRow = []
       val.forEach(item => {
