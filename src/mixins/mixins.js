@@ -30,6 +30,13 @@ export const mixins = {
       permissionTypeDrop:[],
       permissionScopeDrop:[],
       permissionRelateDrop:[],
+      relatedTitle: '',
+      relatedDialogVisible: false,
+      transformData: [],
+      relatedValue: [],
+      filterMethod(query, item) {
+        return item.label.indexOf(query) > -1
+      },
     }
   },
   methods: {
@@ -171,18 +178,36 @@ export const mixins = {
       })
         .catch()
     },
-//关联
-    related(relatedValue) {
+//关联功能
+    related(treeUrl,title) {
       if (this.selectedRow.length !== 1) {
         this.$message.error('请选择一行数据')
         return
       }
-      this.value = relatedValue
-      this.transformType = 'post'
-      this.relatedTitle = '关联岗位'
+      this.axios.get(this.prefixAddr + treeUrl,{
+        params:{userId:this.selectedRow[0].id}
+      }).then(res=>{
+        if (res.data.code.toString() === '200') {
+          this.transformData =res.data.data['allList']
+          this.relatedValue = res.data.data['checkList']
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+        .catch()
+      this.relatedTitle = title
       this.relatedDialogVisible = true
-      this.transformData = [{label: '前端', key: '前端',}, {label: '后端', key: '后端'}, {label: '测试', key: '测试'},
-        {label: 'ui', key: 'ui'}]
-    },
+      },
+    confirmRelate(saveUrl,params) {
+      this.relatedDialogVisible = false
+        this.axios.post(this.prefixAddr + saveUrl,{
+          ...params
+        }).then(res=>{
+          if (res.data.code.toString() === '200'){
+            this.$message.success('保存成功')
+          }else {this.$message.error(res.data.msg)}
+        })
+          .catch()
+      }
   },
 }

@@ -25,7 +25,7 @@
           filterable
           :filter-method="filterMethod"
           filter-placeholder="请输入"
-          v-model="value"
+          v-model="relatedValue"
           :data="transformData">
       </el-transfer>
       <span slot="footer" class="dialog-footer">
@@ -62,7 +62,7 @@
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
           <el-input readonly v-model="userInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur"
-                    ref="treeInput"></el-input>
+                    ref="treeInput" placeholder="请选择"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
@@ -103,16 +103,6 @@ export default {
         name: '',
       },
       checkedProps: [],
-      transformData: [],
-      value: [],
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
-      },
-      relatedTitle: '',
-      relatedDialogVisible: false,
-      postVal: [],
-      transformType: '',
-      groupVal: [],
       editDialogVisible: false,
       deleteDialogVisible: false,
       editDialogDisabled: false,
@@ -125,7 +115,8 @@ export default {
       },
       deleteIds: [],
       dialogType: '',
-      userCodes: []
+      userCodes: [],
+      relatedName:''
     }
   },
   mounted() {
@@ -171,36 +162,25 @@ export default {
     },
 //关联部门，岗位，小组
     relatedPost() {
-      if (this.selectedRow.length !== 1) {
-        this.$message.error('请选择一行数据')
-        return
-      }
-      this.value = this.postVal
-      this.transformType = 'post'
-      this.relatedTitle = '关联岗位'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '前端', key: '前端',}, {label: '后端', key: '后端'}, {label: '测试', key: '测试'},
-        {label: 'ui', key: 'ui'}]
+      this.relatedName = 'post'
+      this.related('/user/selectUserAndRole','关联岗位')
     },
     relatedGroup() {
-      if (this.selectedRow.length !== 1) {
-        this.$message.error('请选择一行数据')
-        return
-      }
-      this.value = this.groupVal
-      this.transformType = 'group'
-      this.relatedTitle = '关联小组'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '小组1', key: '小组1',}, {label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
-        {label: '小组4', key: '小组4'}]
+      this.relatedName = 'group'
+      this.related('/user/selectUserAndTeam','关联小组')
     },
     confirmTransform() {
-      this.relatedDialogVisible = false
-      if (this.transformType === 'post') {
-        this.postVal = this.value
-      } else if (this.transformType === 'group') {
-        this.groupVal = this.value
-      }
+      if (this.relatedName === 'post'){this.confirmRelate('/role/saveUserRole', {
+        type: '0',
+        userIds: [this.selectedRow[0].id],
+        roleIds: this.relatedValue
+      })}
+      else if (this.relatedName === 'group'){this.confirmRelate('/team/saveUserAndTeam',{
+        type:'0',
+        userIds:[this.selectedRow[0].id],
+        teamIds:this.relatedValue
+      })}
+
     },
 //用户的增删改查
     selectRow(val) {
