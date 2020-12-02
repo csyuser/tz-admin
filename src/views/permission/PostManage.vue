@@ -10,7 +10,7 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
            @add="add" @update="update" @postSelect="selectPostRow"
-           @currentChange="currentChange" @delete="deleteRow" @dblclick="viewPost">
+           @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <el-button size="small" class="update" @click="relatedPermission">
         <SvgIcon icon-name="permission"></SvgIcon>
         关联权限
@@ -21,22 +21,22 @@
       </el-button>
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
-      <el-form label-position="right" label-width="80px" :inline="true" :model="postInfo" size="small" class="addForm"
+      <el-form label-position="right" label-width="80px" :inline="true" :model="editFormInfo" size="small" class="addForm"
                :disabled="editDialogDisabled">
         <el-form-item label="岗位名称">
-          <el-input v-model="postInfo.name" suffix-icon="xxx"></el-input>
+          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="岗位编码">
-          <el-input v-model="postInfo.code" suffix-icon="xxx"></el-input>
+          <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="部门名称" class="departmentItem">
-          <el-input readonly v-model="postInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur" placeholder="请选择"
+          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur" placeholder="请选择"
                     ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
         <el-form-item label="角色描述">
-          <el-input v-model="postInfo.describe" suffix-icon="xxx"></el-input>
+          <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -78,26 +78,9 @@ export default {
       selectedRow: [],
       colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {
         prop: 'departmentName', label: '部门名称'}, {prop: 'describe', label: '角色描述'}],
-      tableDatas: {},
       formInline: {
         name: '',
       },
-      page: 1,
-      pageSize: 5,
-      dialogType: '',
-      dialogTitle: '',
-      editDialogVisible: false,
-      deleteDialogVisible: false,
-      editDialogDisabled: false,
-      deleteIds: [],
-      postInfo: {
-        name: '',
-        order: '',
-        coding: '',
-        type: false
-      },
-      relatedDialogVisible: false,
-      relatedName: '',
       data: [],
       defaultProps: {
         children: 'child',
@@ -106,7 +89,7 @@ export default {
     }
   },
   mounted() {
-    this.getPages()
+    this.getPages('/role/page')
     this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
@@ -116,105 +99,37 @@ export default {
         .catch()
   },
   methods: {
-    getPages(formInline) {
-      this.axios.get(this.prefixAddr + '/role/page', {
-        params: {
-          page: this.page,
-          pageSize: this.pageSize,
-          ...formInline
-        },
-      }).then(res => {
-        if (res.data.code.toString() === '200') {
-          this.tableDatas = res.data
-          this.selectedRow = []
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      })
-          .catch()
-    },
     currentChange(val, row) {
-      this.page = val
-      this.selectedRow = row
-      this.deleteIds = []
-      this.getPages()
+      this.currentPageChange(val, row, '/role/page')
     },
 
 //表格增删改查
     selectPostRow(val) {
-      this.selectedRow = []
-      val.forEach(item => {
-        this.selectedRow.push(item)
-      })
-      console.log(this.selectedRow)
+      this.selectedRows(val)
     },
     search() {
-      this.getPages(this.formInline)
+      this.searchRow('/role/page')
     },
     add() {
-      this.dialogType = 'add'
-      this.dialogTitle = '增加岗位'
-      this.postInfo = {}
-      this.editDialogDisabled = false
-      this.editDialogVisible = true
+      this.dialogTitle = '新增岗位'
+      this.addRow()
     },
     update() {
-      this.dialogType = 'update'
       this.dialogTitle = '编辑岗位'
-      this.editDialogDisabled = false
-      if (this.selectedRow.length === 1) {
-        this.postInfo = this.selectedRow[0]
-        this.editDialogVisible = true
-      } else {
-        this.$message.error('请选择一行数据')
-      }
+      this.updateRow()
     },
     confirmEdit() {
-      this.editDialogVisible = false
-      let editData = {}
-      if (this.dialogType === 'add') {
-        editData = this.postInfo
-      } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.postInfo}}
-      if (this.dialogType !== 'view'){
-        this.axios.post(this.prefixAddr + '/role/save', {...editData})
-            .then(res => {
-              if (res.data.code.toString() === '200') {
-                this.$message.success('保存成功')
-                this.getPages()
-              } else this.$message.error(res.data.msg)
-            })
-            .catch()
-      }
+      this.confirmEditRow('/role/save', '/role/page')
     },
-    viewPost(row) {
-      this.dialogType = 'view'
-      this.dialogTitle = '查看岗位'
-      this.postInfo = row
-      this.editDialogVisible = true
-      this.editDialogDisabled = true
+    view(row) {
+      this.dialogTitle = '查看岗位信息'
+      this.viewRow(row)
     },
-    deleteRow() {
-      this.deleteIds = []
-      if (this.selectedRow.length > 0) {
-        this.deleteDialogVisible = true
-        this.selectedRow.forEach(row => {
-          this.deleteIds.push(row.id)
-        })
-      } else {
-        this.$message.error('请选择至少一行数据')
-      }
+    deleteRows() {
+      this.deleteRow()
     },
     confirmDelete() {
-      this.deleteDialogVisible = false
-      this.axios.post(this.prefixAddr + '/role/delete', {ids: this.deleteIds})
-          .then(res => {
-            if (res.data.code.toString() === '200') {
-              this.$message.success('删除成功')
-              this.getPages(this.page, this.pageSize)
-            } else {this.$message.error(this.data.msg)}
-            console.log(res)
-          })
-          .catch(error => {this.$message.error('删除失败' + error)})
+      this.confirmDeleteRow('/role/delete', '/role/page')
     },
 //关联权限，范围
     relatedPermission() {
@@ -249,8 +164,8 @@ export default {
     },
     select(data) {
       this.selectTree(data)
-      this.postInfo.departmentName = data.name
-      this.postInfo.departmentId = data.id
+      this.editFormInfo.departmentName = data.name
+      this.editFormInfo.departmentId = data.id
     },
 
     handleClose(done) {

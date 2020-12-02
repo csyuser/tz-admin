@@ -34,6 +34,7 @@ export const mixins = {
       relatedDialogVisible: false,
       transformData: [],
       relatedValue: [],
+      relatedName: '',
       filterMethod(query, item) {
         return item.label.indexOf(query) > -1
       },
