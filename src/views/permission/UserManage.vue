@@ -163,11 +163,11 @@ export default {
 //关联部门，岗位，小组
     relatedPost() {
       this.relatedName = 'post'
-      this.related('/user/selectUserAndRole','关联岗位')
+      this.related('/user/selectUserAndRole','关联岗位', {userId: this.selectedRow[0].id})
     },
     relatedGroup() {
       this.relatedName = 'group'
-      this.related('/user/selectUserAndTeam','关联小组')
+      this.related('/user/selectUserAndTeam','关联小组',{userId: this.selectedRow[0].id})
     },
     confirmTransform() {
       if (this.relatedName === 'post'){this.confirmRelate('/role/saveUserRole', {
