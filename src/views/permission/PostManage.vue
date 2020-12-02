@@ -131,17 +131,18 @@ export default {
 //关联权限，范围
     relatedPermission() {
       this.relatedName = 'permission'
-      this.related('','关联权限',{roleId:this.selectedRow[0] && this.selectedRow[0].id})
+      this.related('/role/selectRoleAndPermission','关联权限',{roleId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     relatedUser() {
       this.relatedName = 'user'
       this.related('/role/selectRoleAndUser','关联用户',{roleId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     confirmTransform() {
-      if (this.relatedName === 'permission'){this.confirmRelate('', {
-        type: '',
-        userIds: [this.selectedRow[0].id],
-        // roleIds: this.relatedValue
+      if (this.relatedName === 'permission'){this.confirmRelate('/permission-relation/saveTeamAndPermission', {
+        type: '0',
+        relationIds: [this.selectedRow[0].id],
+        permissionIds: this.relatedValue,
+        relationType:'1'
       })}
       else if (this.relatedName === 'user'){this.confirmRelate('/role/saveUserRole',{
         type:'1',
