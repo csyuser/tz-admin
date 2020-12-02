@@ -1,8 +1,8 @@
 <template>
   <div class="post-manage-wrap">
-    <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
+    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="formInline.name" placeholder="输入名称" size="small"></el-input>
+        <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search" size="small">查询</el-button>
@@ -78,9 +78,6 @@ export default {
       selectedRow: [],
       colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {
         prop: 'departmentName', label: '部门名称'}, {prop: 'describe', label: '角色描述'}],
-      formInline: {
-        name: '',
-      },
       data: [],
       defaultProps: {
         children: 'child',

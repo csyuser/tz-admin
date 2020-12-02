@@ -1,8 +1,8 @@
 <template>
   <div class="department-wrap">
-    <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
+    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="formInline.name" placeholder="输入名称" size="small"></el-input>
+        <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small" @click="search">查询</el-button>
@@ -78,9 +78,6 @@ export default {
       defaultProps: {
         children: 'child',
         label: 'name'
-      },
-      formInline: {
-        name: '',
       },
       colsHead: [{prop: 'className', label: '部门分类'}, {prop: 'name', label: '部门名称'}, {prop: 'code', label: '部门编号'},
         {prop: 'level2Name', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},

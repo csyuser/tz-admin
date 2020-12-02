@@ -1,8 +1,8 @@
 <template>
   <div class="staff-wrap">
-    <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
+    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="formInline.name" placeholder="输入名称" size="small"></el-input>
+        <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search" size="small">查询</el-button>
@@ -87,9 +87,6 @@ export default {
       defaultProps: {
         children: 'child',
         label: 'name'
-      },
-      formInline: {
-        name: '',
       },
       colsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'post', label: '职务'},
         {prop: 'rank', label: '职级'}, {prop: 'sex', label: '性别'},{prop: 'departmentName', label: '部门名称'},{prop: 'phone', label: '电话'},

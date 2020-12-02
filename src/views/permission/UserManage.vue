@@ -1,8 +1,8 @@
 <template>
   <div class="user-manage-wrap">
-    <el-form :inline="true" :model="formInline" class="demo-form-inline searchForm">
+    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-input v-model="formInline.name" placeholder="输入名称" size="small"></el-input>
+        <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search" size="small">查询</el-button>
@@ -99,9 +99,6 @@ export default {
       tableDatas: {},
       checkedLabels: [],
       checkedOptions: [],
-      formInline: {
-        name: '',
-      },
       checkedProps: [],
       editDialogVisible: false,
       deleteDialogVisible: false,
