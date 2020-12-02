@@ -179,13 +179,13 @@ export const mixins = {
         .catch()
     },
 //关联功能
-    related(treeUrl,title) {
+    related(treeUrl,title,params) {
       if (this.selectedRow.length !== 1) {
         this.$message.error('请选择一行数据')
         return
       }
       this.axios.get(this.prefixAddr + treeUrl,{
-        params:{userId:this.selectedRow[0].id}
+        params:{...params}
       }).then(res=>{
         if (res.data.code.toString() === '200') {
           this.transformData =res.data.data['allList']
