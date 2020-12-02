@@ -163,11 +163,11 @@ export default {
 //关联部门，岗位，小组
     relatedPost() {
       this.relatedName = 'post'
-      this.related('/user/selectUserAndRole','关联岗位', {userId: this.selectedRow[0].id})
+      this.related('/user/selectUserAndRole','关联岗位', {userId: this.selectedRow[0] && this.selectedRow[0].id})
     },
     relatedGroup() {
       this.relatedName = 'group'
-      this.related('/user/selectUserAndTeam','关联小组',{userId: this.selectedRow[0].id})
+      this.related('/user/selectUserAndTeam','关联小组',{userId: this.selectedRow[0] && this.selectedRow[0].id})
     },
     confirmTransform() {
       if (this.relatedName === 'post'){this.confirmRelate('/role/saveUserRole', {
@@ -305,6 +305,7 @@ export default {
         border-radius: 4px;
         margin-top: 5px;
         z-index: 999;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
       }
 
       .treeVisible {

@@ -219,11 +219,11 @@ export default {
 //关联权限，范围
     relatedPermission() {
       this.relatedName = 'permission'
-      this.related('','关联权限',{roleId:this.selectedRow[0].id})
+      this.related('','关联权限',{roleId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     relatedUser() {
       this.relatedName = 'user'
-      this.related('/role/selectRoleAndUser','关联用户',{roleId:this.selectedRow[0].id})
+      this.related('/role/selectRoleAndUser','关联用户',{roleId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     confirmTransform() {
       if (this.relatedName === 'permission'){this.confirmRelate('', {
@@ -300,6 +300,7 @@ export default {
         border-radius: 4px;
         margin-top: 5px;
         z-index: 999;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
       }
 
       .treeVisible {
