@@ -22,14 +22,12 @@
         </el-form-item>
         <el-form-item label="职务">
           <el-select v-model="staffInfo.post">
-            <el-option label="激活" :value="true"></el-option>
-            <el-option label="失效" :value="false"></el-option>
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in postDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="职级">
           <el-select v-model="staffInfo['rank']">
-            <el-option label="激活" :value="true"></el-option>
-            <el-option label="失效" :value="false"></el-option>
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in rankDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="性别">
@@ -39,7 +37,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
-          <el-input v-model="staffInfo.departmentName" readonly suffix-icon="xxx" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
+          <el-input v-model="staffInfo.departmentName" readonly :suffix-icon="iconName" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
@@ -75,9 +73,12 @@
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import {helper} from '@/views/method'
+import {mixins} from '@/mixins/mixins'
+
 export default {
   name: 'Staff',
   components: {Table,DeleteRow},
+  mixins:[mixins],
   data() {
     return {
       page:1,
@@ -102,8 +103,6 @@ export default {
       deleteIds:[],
       selectedRow:[],
       staffInfo: {},
-      treeVisible:false,
-      isFocus:false,
     }
   },
   mounted() {
@@ -115,6 +114,8 @@ export default {
           } else {this.data = []}
         })
         .catch()
+    this.getDropList('3')
+    this.getDropList('7')
   },
   methods: {
     getPages(formInline){
@@ -225,24 +226,16 @@ export default {
     },
 //部门的数据下拉框
     treeNode(){
-      this.isFocus = true
-      this.treeVisible = true
-      this.$refs.treeInput.focus()
+      this.nodeClick()
     },
     focusDepartment(){
-      this.treeVisible = true
+      this.focusInput()
     },
     blurDepartment(){
-      this.isFocus = false
-      setTimeout(()=>{
-        if (this.isFocus !== true){
-          this.treeVisible = false
-        }
-      },100)
+      this.blurInput()
     },
     selectDepartment(data) {
-      console.log(data);
-      this.treeVisible = false
+      this.selectTree(data)
       this.staffInfo.departmentName = data.name
       this.staffInfo.departmentId = data.id
     },
@@ -282,7 +275,6 @@ export default {
         border-radius: 4px;
         margin-top: 5px;
         z-index: 999;
-        min-height: 50px;
       }
       .treeVisible{
         display: block;

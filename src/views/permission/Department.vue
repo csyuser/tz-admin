@@ -21,8 +21,8 @@
                class="addForm"
                :disabled="editDialogDisabled">
         <el-form-item label="部门分类">
-          <el-select v-model="departmentInfo.className">
-            <el-option :label="item['dropName']" :value="item['dropKey']" v-for="item in departmentClassifyDrop" :key="item.id"></el-option>
+          <el-select v-model="departmentInfo.classId">
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentClassifyDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门名称">
@@ -32,9 +32,8 @@
           <el-input v-model="departmentInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="部门级别">
-<!--          <el-input v-model="departmentInfo.level" suffix-icon="xxx"></el-input>-->
-          <el-select v-model="departmentInfo.level">
-            <el-option :label="item['dropName']" :value="item['dropKey']" v-for="item in departmentLevelDrop" :key="item.id"></el-option>
+          <el-select v-model="departmentInfo['level2']">
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentLevelDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="上级部门" class="departmentItem">
@@ -48,8 +47,8 @@
         </el-form-item>
         <el-form-item label="选用标志">
           <el-select v-model="departmentInfo.selection">
-            <el-option label="选用" :value="1"></el-option>
-            <el-option label="禁用" :value="0"></el-option>
+            <el-option label="选用" value="1"></el-option>
+            <el-option label="禁用" value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="描述">
@@ -71,7 +70,6 @@
 // import Qs from 'qs'
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
-import {helper} from '@/views/method'
 import {mixins} from '@/mixins/mixins'
 
 export default {
@@ -89,7 +87,7 @@ export default {
         name: '',
       },
       colsHead: [{prop: 'className', label: '部门分类'}, {prop: 'name', label: '部门名称'}, {prop: 'code', label: '部门编号'},
-        {prop: 'level', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
+        {prop: 'level2Name', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
         {prop: 'selection', label: '选用标志'}, {prop: 'describe', label: '描述'}],
       tableDatas: {},
       page: 1,
@@ -168,7 +166,6 @@ export default {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.departmentInfo = this.selectedRow[0]
-        this.departmentInfo.selection = helper.selection(this.selectedRow[0].selection)
         this.editDialogVisible = true
       } else {
         this.$message.error('请选择一行数据')
@@ -195,7 +192,6 @@ export default {
       this.dialogType = 'view'
       this.dialogTitle = '查看部门信息'
       this.departmentInfo = row
-      this.departmentInfo.selection = helper.selection(row.selection)
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },

@@ -26,6 +26,7 @@ export const mixins = {
       departmentClassifyDrop:[],
       departmentLevelDrop:[],
       rankDrop:[],
+      postDrop:[],
       permissionTypeDrop:[],
       permissionScopeDrop:[],
       permissionRelateDrop:[],
@@ -151,7 +152,7 @@ export const mixins = {
       console.log(data)
       this.treeVisible = false
     },
-//下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型
+//下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务
     getDropList(key) {
       this.axios.get(this.prefixAddr + '/dropList/getDropListByKey',{
         params:{dropListKey:key}
@@ -163,6 +164,7 @@ export const mixins = {
           else  if (key === '4'){this.permissionTypeDrop= res.data.data}
           else  if (key === '5'){this.permissionScopeDrop= res.data.data}
           else  if (key === '6'){this.permissionRelateDrop= res.data.data}
+          else  if (key === '7'){this.postDrop= res.data.data}
         } else {
           this.$message.error(res.data.msg)
         }

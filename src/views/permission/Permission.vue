@@ -31,7 +31,9 @@
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="权限类型">
-          <el-input v-model="editFormInfo.type" suffix-icon="xxx"></el-input>
+          <el-select v-model="editFormInfo.type">
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in permissionTypeDrop" :key="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="权限描述">
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
@@ -40,7 +42,7 @@
         <!--          <el-input v-model="editFormInfo.menuId" suffix-icon="xxx"></el-input>-->
         <!--        </el-form-item>-->
         <el-form-item label="依赖菜单" class="departmentItem">
-          <el-input v-model="editFormInfo.menuName" readonly suffix-icon="xxx" @focus="focusDepartment"
+          <el-input v-model="editFormInfo.menuName" readonly :suffix-icon="iconName" @focus="focusDepartment"
                     @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="treeData" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
@@ -110,6 +112,7 @@ export default {
           } else {this.treeData = []}
         })
         .catch()
+    this.getDropList('4')
   },
   methods: {
     currentChange(val, row) {

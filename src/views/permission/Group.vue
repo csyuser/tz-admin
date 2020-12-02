@@ -31,7 +31,7 @@
           <el-input v-model="groupInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
-          <el-input readonly v-model="groupInfo.departmentName" suffix-icon="xxx" @focus="focus" @blur="blur"
+          <el-input readonly v-model="groupInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur"
                     ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
@@ -71,10 +71,12 @@
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
+import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Group',
   components: {Table, DeleteRow, SvgIcon},
+  mixins:[mixins],
   data() {
     return {
       formInline: {},
@@ -106,8 +108,6 @@ export default {
         children: 'child',
         label: 'name'
       },
-      treeVisible: false,
-      isFocus: false,
     }
   },
   mounted() {
@@ -259,23 +259,16 @@ export default {
     },
 //输入框树形结构
     treeNode() {
-      this.isFocus = true
-      this.treeVisible = true
-      this.$refs.treeInput.focus()
+     this.nodeClick()
     },
     focus() {
-      this.treeVisible = true
+      this.focusInput()
     },
     blur() {
-      this.isFocus = false
-      setTimeout(() => {
-        if (this.isFocus !== true) {
-          this.treeVisible = false
-        }
-      }, 100)
+      this.blurInput()
     },
     select(data) {
-      this.treeVisible = false
+      this.selectTree(data)
       this.groupInfo.departmentName = data.name
       this.groupInfo.departmentId = data.id
     },
