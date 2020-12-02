@@ -37,7 +37,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
-          <el-input v-model="editFormInfo.departmentName" readonly :suffix-icon="iconName" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
+          <el-input v-model="editFormInfo.departmentName" readonly placeholder="请选择" :suffix-icon="iconName" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>

@@ -163,37 +163,36 @@ export default {
     },
 //关联权限范围，岗位，小组
     relatedPermission() {
-      this.value = this.permissionVal
-      this.transformType = 'permission'
-      this.relatedTitle = '关联权限范围'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '前端', key: '前端',}, {label: '后端', key: '后端'}, {label: '测试', key: '测试'},
-        {label: 'ui', key: 'ui'}]
+      this.relatedName = 'permission'
+      this.related('','关联权限范围',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     relatedPost() {
-      this.value = this.postVal
-      this.transformType = 'post'
-      this.relatedTitle = '关联岗位'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '小组1', key: '小组1',}, {label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
-        {label: '小组4', key: '小组4'}]
+      this.relatedName = 'post'
+      this.related('/permission-relation/selectPermissionAndRole','关联岗位',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     relatedGroup() {
-      this.value = this.groupVal
-      this.transformType = 'group'
-      this.relatedTitle = '关联小组'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '前端', key: '前端',}, {label: '后端', key: '后端'}, {label: '测试', key: '测试'},
-        {label: 'ui', key: 'ui'}]
+      this.relatedName = 'group'
+      this.related('/permission-relation/selectPermissionAndTeam','关联小组',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     confirmTransform() {
-      this.relatedDialogVisible = false
-      if (this.transformType === 'user') {
-        this.userVal = this.value
-      } else if (this.transformType === 'permission') {
-        this.permissionVal = this.value
-      }
-      console.log(this.value)
+      if (this.relatedName === 'permission'){this.confirmRelate('', {
+        type: '1',
+        permissionIds: [this.selectedRow[0].id],
+        relationIds: this.relatedValue,
+        relationType:'1'
+      })}
+      else if (this.relatedName === 'post'){this.confirmRelate('/permission-relation/saveTeamAndPermission',{
+        type: '1',
+        permissionIds: [this.selectedRow[0].id],
+        relationIds: this.relatedValue,
+        relationType:'1'
+      })}
+      else if (this.relatedName === 'group'){this.confirmRelate('/permission-relation/saveTeamAndPermission',{
+        type: '1',
+        permissionIds: [this.selectedRow[0].id],
+        relationIds: this.relatedValue,
+        relationType:'2'
+      })}
     },
   }
 }

@@ -157,8 +157,7 @@ export const mixins = {
         }
       }, 100)
     },
-    selectTree(data) {
-      console.log(data)
+    selectTree() {
       this.treeVisible = false
     },
 //下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务
@@ -182,6 +181,7 @@ export const mixins = {
     },
 //关联功能
     related(treeUrl,title,params) {
+      console.log(this.relatedValue)
       if (this.selectedRow.length !== 1) {
         this.$message.error('请选择一行数据')
         return
@@ -192,6 +192,7 @@ export const mixins = {
         if (res.data.code.toString() === '200') {
           this.transformData =res.data.data['allList']
           this.relatedValue = res.data.data['checkList']
+          console.log(this.relatedValue)
         } else {
           this.$message.error(res.data.msg)
         }
