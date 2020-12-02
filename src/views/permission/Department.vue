@@ -8,51 +8,47 @@
         <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @add="addDepartment"
-           @update="updateDepartment"
-           @postSelect="selectRow" @delete="deleteDepartment" @dblclick="viewDepartment" @currentChange="currentChange">
-<!--      <el-button size="small" class="update" @click="relatedUser">-->
-<!--        <SvgIcon icon-name="user"></SvgIcon>-->
-<!--        关联用户-->
-<!--      </el-button>-->
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @add="add"
+           @update="update"
+           @postSelect="selectRow" @delete="deleteRows" @dblclick="view" @currentChange="currentChange">
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
-      <el-form label-position="right" label-width="85px" :inline="true" :model="departmentInfo" size="small"
+      <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"
                :disabled="editDialogDisabled">
         <el-form-item label="部门分类">
-          <el-select v-model="departmentInfo.classId">
+          <el-select v-model="editFormInfo.classId">
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentClassifyDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门名称">
-          <el-input v-model="departmentInfo.name" suffix-icon="xxx"></el-input>
+          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="部门编号">
-          <el-input v-model="departmentInfo.code" suffix-icon="xxx"></el-input>
+          <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="部门级别">
-          <el-select v-model="departmentInfo['level2']">
+          <el-select v-model="editFormInfo['level2']">
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentLevelDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="上级部门" class="departmentItem">
-          <el-input v-model="departmentInfo.parentName" readonly :suffix-icon="iconName" @focus="focusDepartment"
+          <el-input v-model="editFormInfo.parentName" readonly :suffix-icon="iconName" @focus="focusDepartment"
                     @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
         <el-form-item label="行政区划">
-          <el-input v-model="departmentInfo.regionName" suffix-icon="xxx"></el-input>
+          <el-input v-model="editFormInfo.regionName" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="选用标志">
-          <el-select v-model="departmentInfo.selection">
+          <el-select v-model="editFormInfo.selection">
             <el-option label="选用" value="1"></el-option>
             <el-option label="禁用" value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="departmentInfo.describe" suffix-icon="xxx"></el-input>
+          <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -89,26 +85,10 @@ export default {
       colsHead: [{prop: 'className', label: '部门分类'}, {prop: 'name', label: '部门名称'}, {prop: 'code', label: '部门编号'},
         {prop: 'level2Name', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
         {prop: 'selection', label: '选用标志'}, {prop: 'describe', label: '描述'}],
-      tableDatas: {},
-      page: 1,
-      pageSize: 10,
-      dialogTitle: '',
-      dialogType: '',
-      editDialogVisible: false,
-      deleteDialogVisible: false,
-      editDialogDisabled: false,
-      deleteIds: [],
-      selectedRow: [],
-      departmentInfo: {},
-      transformData: [],
-      value: [],
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
-      },
     }
   },
   mounted() {
-    this.getPages()
+    this.getPages('/department/page')
     this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
@@ -120,102 +100,36 @@ export default {
     this.getDropList('2')
   },
   methods: {
-    getPages(formInline) {
-      this.axios.get(this.prefixAddr + '/department/page', {
-        params: {
-          page: this.page,
-          pageSize: this.pageSize,
-          ...formInline
-        },
-      }).then(res => {
-        if (res.data.code.toString() === '200') {
-          this.tableDatas = res.data
-          this.selectedRow = []
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      })
-          .catch()
-    },
     currentChange(val, row) {
-      this.page = val
-      this.selectedRow = row
-      this.deleteIds = []
-      this.getPages()
+      this.currentPageChange(val, row, '/department/page')
     },
 //部门的增删改查
     search(){
-      this.getPages(this.formInline)
+      this.searchRow('/department/page')
     },
     selectRow(val) {
-      this.selectedRow = []
-      val.forEach(item => {
-        this.selectedRow.push(item)
-      })
+      this.selectedRows(val)
     },
-    addDepartment() {
-      this.dialogType = 'add'
+    add() {
       this.dialogTitle = '新增部门'
-      this.departmentInfo = {}
-      this.editDialogDisabled = false
-      this.editDialogVisible = true
+      this.addRow()
     },
-    updateDepartment() {
-      this.dialogType = 'update'
-      this.dialogTitle = '编辑部门信息'
-      this.editDialogDisabled = false
-      if (this.selectedRow.length === 1) {
-        this.departmentInfo = this.selectedRow[0]
-        this.editDialogVisible = true
-      } else {
-        this.$message.error('请选择一行数据')
-      }
+    update() {
+      this.dialogTitle = '编辑部门'
+      this.updateRow()
     },
     confirmEdit() {
-      this.editDialogVisible = false
-      let editData = {}
-      if (this.dialogType === 'add') {
-        editData = this.departmentInfo
-      } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.departmentInfo}}
-      if (this.dialogType !== 'view'){
-        this.axios.post(this.prefixAddr + '/department/save', {...editData})
-            .then(res => {
-              if (res.data.code.toString() === '200') {
-                this.$message.success('保存成功')
-                this.getPages()
-              } else this.$message.error(res.data.msg)
-            })
-            .catch()
-      }
+      this.confirmEditRow('/department/save', '/department/page')
     },
-    viewDepartment(row) {
-      this.dialogType = 'view'
+    view(row) {
       this.dialogTitle = '查看部门信息'
-      this.departmentInfo = row
-      this.editDialogVisible = true
-      this.editDialogDisabled = true
+      this.viewRow(row)
     },
-    deleteDepartment() {
-      this.deleteIds = []
-      if (this.selectedRow.length > 0) {
-        this.deleteDialogVisible = true
-        this.selectedRow.forEach(row => {
-          this.deleteIds.push(row.id)
-        })
-      } else {
-        this.$message.error('请选择至少一行数据')
-      }
+    deleteRows() {
+      this.deleteRow()
     },
     confirmDelete() {
-      this.deleteDialogVisible = false
-      this.axios.post(this.prefixAddr + '/department/delete', {ids: this.deleteIds})
-          .then(res => {
-            if (res.data.code.toString() === '200') {
-              this.$message.success('删除成功')
-              this.getPages()
-            } else {this.$message.error(this.data.msg)}
-          })
-          .catch(error => {this.$message.error('删除失败' + error)})
+      this.confirmDeleteRow('/department/delete', '/department/page')
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -236,8 +150,8 @@ export default {
     },
     selectDepartment(data) {
       this.selectTree(data)
-      this.departmentInfo.parentName = data.name
-      this.departmentInfo.parentId = data.id
+      this.editFormInfo.parentName = data.name
+      this.editFormInfo.parentId = data.id
     },
   }
 }
