@@ -31,7 +31,7 @@
           <el-input v-model="groupInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" class="departmentItem">
-          <el-input readonly v-model="groupInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur"
+          <el-input readonly v-model="groupInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur" placeholder="请选择"
                     ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
@@ -56,7 +56,7 @@
           filterable
           :filter-method="filterMethod"
           filter-placeholder="请输入"
-          v-model="value"
+          v-model="relatedValue"
           :data="transformData">
       </el-transfer>
       <span slot="footer" class="dialog-footer">
@@ -93,16 +93,6 @@ export default {
       deleteDialogVisible: false,
       selectedRow: [],
       groupInfo: {},
-      transformData: [],
-      value: [],
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
-      },
-      relatedTitle: '',
-      relatedDialogVisible: false,
-      userVal: [],
-      permissionVal: [],
-      transformType: '',
       data: [],
       defaultProps: {
         children: 'child',
@@ -233,29 +223,24 @@ export default {
     },
 //关联用户，权限
     relatedUser() {
-      this.value = this.userVal
-      this.transformType = 'user'
-      this.relatedTitle = '关联用户'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '小组1', key: '小组1',}, {label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
-        {label: '小组4', key: '小组4'}]
+      this.relatedName = 'user'
+      this.related('/team/selectTeamAndUser','关联用户',{teamId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     relatedPermission() {
-      this.value = this.permissionVal
-      this.transformType = 'permission'
-      this.relatedTitle = '关联权限'
-      this.relatedDialogVisible = true
-      this.transformData = [{label: '前端', key: '前端',}, {label: '后端', key: '后端'}, {label: '测试', key: '测试'},
-        {label: 'ui', key: 'ui'}]
+      this.relatedName = 'permission'
+      this.related('','关联权限',{teamId:this.selectedRow[0] && this.selectedRow[0].id})
     },
     confirmTransform() {
-      this.relatedDialogVisible = false
-      if (this.transformType === 'user') {
-        this.userVal = this.value
-      } else if (this.transformType === 'permission') {
-        this.permissionVal = this.value
-      }
-      console.log(this.value)
+      if (this.relatedName === 'permission'){this.confirmRelate('', {
+        type: '',
+        // userIds: [this.selectedRow[0].id],
+        // roleIds: this.relatedValue
+      })}
+      else if (this.relatedName === 'user'){this.confirmRelate('/team/saveUserAndTeam',{
+        type:'1',
+        teamIds:[this.selectedRow[0].id],
+        userIds:this.relatedValue
+      })}
     },
 //输入框树形结构
     treeNode() {
@@ -296,6 +281,7 @@ export default {
         border-radius: 4px;
         margin-top: 5px;
         z-index: 999;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
       }
 
       .treeVisible {
