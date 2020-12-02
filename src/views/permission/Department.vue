@@ -22,8 +22,7 @@
                :disabled="editDialogDisabled">
         <el-form-item label="部门分类">
           <el-select v-model="departmentInfo.className">
-            <el-option label="激活" :value="true"></el-option>
-            <el-option label="失效" :value="false"></el-option>
+            <el-option :label="item['dropName']" :value="item['dropKey']" v-for="item in departmentClassifyDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门名称">
@@ -33,14 +32,16 @@
           <el-input v-model="departmentInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="部门级别">
-          <el-input v-model="departmentInfo.level" suffix-icon="xxx"></el-input>
+<!--          <el-input v-model="departmentInfo.level" suffix-icon="xxx"></el-input>-->
+          <el-select v-model="departmentInfo.level">
+            <el-option :label="item['dropName']" :value="item['dropKey']" v-for="item in departmentLevelDrop" :key="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="上级部门" class="departmentItem">
-          <el-input v-model="departmentInfo.parentName" readonly suffix-icon="xxx" @focus="focusDepartment"
+          <el-input v-model="departmentInfo.parentName" readonly :suffix-icon="iconName" @focus="focusDepartment"
                     @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
-          <!--          <span v-if="data.length<1">暂无数据</span>-->
         </el-form-item>
         <el-form-item label="行政区划">
           <el-input v-model="departmentInfo.regionName" suffix-icon="xxx"></el-input>
@@ -63,19 +64,6 @@
     <el-dialog title="删除部门" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-<!--    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">-->
-<!--      <el-transfer-->
-<!--          filterable-->
-<!--          :filter-method="filterMethod"-->
-<!--          filter-placeholder="请输入"-->
-<!--          v-model="value"-->
-<!--          :data="transformData">-->
-<!--      </el-transfer>-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>-->
-<!--        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -84,10 +72,12 @@
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import {helper} from '@/views/method'
+import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Department',
   components: {Table, DeleteRow},
+  mixins:[mixins],
   data() {
     return {
       data: [],
@@ -117,12 +107,6 @@ export default {
       filterMethod(query, item) {
         return item.label.indexOf(query) > -1
       },
-      // relatedTitle: '',
-      // relatedDialogVisible: false,
-      // userVal: [],
-      // transformType: '',
-      treeVisible: false,
-      isFocus: false,
     }
   },
   mounted() {
@@ -134,6 +118,8 @@ export default {
           } else {this.data = []}
         })
         .catch()
+    this.getDropList('1')
+    this.getDropList('2')
   },
   methods: {
     getPages(formInline) {
@@ -235,27 +221,6 @@ export default {
           })
           .catch(error => {this.$message.error('删除失败' + error)})
     },
-
-//关联用户
-//     relatedUser() {
-//       if (this.selectedRow.length !== 1) {
-//         this.$message.error('请选择一行数据')
-//         return
-//       }
-//       this.value = this.userVal
-//       this.transformType = 'user'
-//       this.relatedTitle = '关联用户'
-//       this.relatedDialogVisible = true
-//       this.transformData = [{label: '小组1', key: '小组1',}, {label: '小组2', key: '小组2'}, {label: '小组3', key: '小组3'},
-//         {label: '小组4', key: '小组4'}]
-//     },
-//     confirmTransform() {
-//       this.relatedDialogVisible = false
-//       if (this.transformType === 'user') {
-//         this.userVal = this.value
-//       }
-//     },
-
     handleClose(done) {
       this.$confirm('确认关闭？')
           .then(() => {
@@ -265,26 +230,18 @@ export default {
     },
 //部门的数据下拉框
     treeNode() {
-      this.isFocus = true
-      this.treeVisible = true
-      this.$refs.treeInput.focus()
+      this.nodeClick()
     },
     focusDepartment() {
-      this.treeVisible = true
+      this.focusInput()
     },
     blurDepartment() {
-      this.isFocus = false
-      setTimeout(() => {
-        if (this.isFocus !== true) {
-          this.treeVisible = false
-        }
-      }, 100)
+      this.blurInput()
     },
     selectDepartment(data) {
-      this.treeVisible = false
+      this.selectTree(data)
       this.departmentInfo.parentName = data.name
       this.departmentInfo.parentId = data.id
-      this.$refs.treeInput.blur()
     },
   }
 }
@@ -317,7 +274,6 @@ export default {
         border-radius: 4px;
         margin-top: 5px;
         z-index: 999;
-        min-height: 50px;
       }
 
       .treeVisible {

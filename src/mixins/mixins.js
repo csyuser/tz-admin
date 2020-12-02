@@ -1,6 +1,8 @@
 export const mixins = {
-  data(){
-    return{
+  mounted() {
+  },
+  data() {
+    return {
       page: 1,
       pageSize: 10,
       tableDatas: {},
@@ -12,18 +14,25 @@ export const mixins = {
       deleteDialogVisible: false,
       selectedRow: [],
       editFormInfo: {},
-      searchData:{},
-      treeVisible:false,
-      isFocus:false,
+      searchData: {},
+      treeVisible: false,
+      isFocus: false,
+      iconName:'el-icon-arrow-down',
       treeData: [],
       defaultProps: {
         children: 'children',
         label: 'name'
       },
+      departmentClassifyDrop:[],
+      departmentLevelDrop:[],
+      rankDrop:[],
+      permissionTypeDrop:[],
+      permissionScopeDrop:[],
+      permissionRelateDrop:[],
     }
   },
-  methods:{
-    getPages(url,formInline) {
+  methods: {
+    getPages(url, formInline) {
       this.axios.get(this.prefixAddr + url, {
         params: {
           page: this.page,
@@ -40,7 +49,7 @@ export const mixins = {
       })
         .catch()
     },
-    currentPageChange(val, row,url) {
+    currentPageChange(val, row, url) {
       this.page = val
       this.selectedRow = row
       this.deleteIds = []
@@ -54,7 +63,7 @@ export const mixins = {
       })
     },
     searchRow(pageUrl) {
-      this.getPages(pageUrl,this.searchData)
+      this.getPages(pageUrl, this.searchData)
     },
     addRow() {
       this.dialogType = 'add'
@@ -73,22 +82,22 @@ export const mixins = {
         this.$message.error('请选择一行数据')
       }
     },
-    confirmEditRow(saveUrl,pageUrl) {
-          this.editDialogVisible = false
-          let editData = {}
-          if (this.dialogType === 'add') {
-            editData = this.editFormInfo
-          } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.editFormInfo}}
-          if (this.dialogType !== 'view') {
-            this.axios.post(this.prefixAddr + saveUrl, {...editData})
-              .then(res => {
-                if (res.data.code.toString() === '200') {
-                  this.$message.success('保存成功')
-                  this.getPages(pageUrl)
-                } else this.$message.error(res.data.msg)
-              })
-              .catch()
-          }
+    confirmEditRow(saveUrl, pageUrl) {
+      this.editDialogVisible = false
+      let editData = {}
+      if (this.dialogType === 'add') {
+        editData = this.editFormInfo
+      } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.editFormInfo}}
+      if (this.dialogType !== 'view') {
+        this.axios.post(this.prefixAddr + saveUrl, {...editData})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.$message.success('保存成功')
+              this.getPages(pageUrl)
+            } else this.$message.error(res.data.msg)
+          })
+          .catch()
+      }
     },
     viewRow(row) {
       this.dialogType = 'view'
@@ -107,7 +116,7 @@ export const mixins = {
         this.$message.error('请选择至少一行数据')
       }
     },
-    confirmDeleteRow(deleteUrl,pageUrl) {
+    confirmDeleteRow(deleteUrl, pageUrl) {
       this.deleteDialogVisible = false
       this.axios.post(this.prefixAddr + deleteUrl, {ids: this.deleteIds})
         .then(res => {
@@ -119,25 +128,59 @@ export const mixins = {
         .catch(error => {this.$message.error('删除失败' + error)})
     },
 //数据下拉树
-    nodeClick(){
+    nodeClick() {
       this.isFocus = true
       this.treeVisible = true
       this.$refs.treeInput.focus()
+      this.iconName = 'el-icon-arrow-up'
     },
-    focusInput(){
+    focusInput() {
       this.treeVisible = true
+      this.iconName = 'el-icon-arrow-up'
     },
-    blurInput(){
+    blurInput() {
       this.isFocus = false
-      setTimeout(()=>{
-        if (this.isFocus !== true){
+      setTimeout(() => {
+        if (this.isFocus !== true) {
           this.treeVisible = false
+          this.iconName = 'el-icon-arrow-down'
         }
-      },100)
+      }, 100)
     },
     selectTree(data) {
-      console.log(data);
+      console.log(data)
       this.treeVisible = false
+    },
+//下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型
+    getDropList(key) {
+      this.axios.get(this.prefixAddr + '/dropList/getDropListByKey',{
+        params:{dropListKey:key}
+      }).then(res=>{
+        if (res.data.code.toString() === '200') {
+          if (key === '1'){this.departmentClassifyDrop = res.data.data}
+          else  if (key === '2'){this.departmentLevelDrop = res.data.data}
+          else  if (key === '3'){this.rankDrop= res.data.data}
+          else  if (key === '4'){this.permissionTypeDrop= res.data.data}
+          else  if (key === '5'){this.permissionScopeDrop= res.data.data}
+          else  if (key === '6'){this.permissionRelateDrop= res.data.data}
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+        .catch()
+    },
+//关联
+    related(relatedValue) {
+      if (this.selectedRow.length !== 1) {
+        this.$message.error('请选择一行数据')
+        return
+      }
+      this.value = relatedValue
+      this.transformType = 'post'
+      this.relatedTitle = '关联岗位'
+      this.relatedDialogVisible = true
+      this.transformData = [{label: '前端', key: '前端',}, {label: '后端', key: '后端'}, {label: '测试', key: '测试'},
+        {label: 'ui', key: 'ui'}]
     },
   },
 }

@@ -92,18 +92,14 @@ export default {
       page: 1,
       pageSize: 10,
       dialogTitle: '',
-      colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'}, {
-        prop: 'departmentName',
-        label: '部门'
-      }, {prop: 'riskLevel', label: '风险等级'},
-        {prop: 'status', label: '用户状态'}],
+      colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
+        {prop: 'riskLevel', label: '风险等级'}, {prop: 'status', label: '用户状态'}],
       tableDatas: {},
       checkedLabels: [],
       checkedOptions: [],
       formInline: {
         name: '',
       },
-      // tableData: [],
       checkedProps: [],
       transformData: [],
       value: [],
