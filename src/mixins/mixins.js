@@ -111,6 +111,7 @@ export const mixins = {
     viewRow(row) {
       this.dialogType = 'view'
       this.editFormInfo = row
+      this.editFormInfo.sort = row.sort && parseInt(row.sort)
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },
