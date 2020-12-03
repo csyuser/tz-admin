@@ -22,15 +22,15 @@
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
       <el-form label-position="right" label-width="80px" :inline="true" :model="editFormInfo" size="small" class="addForm"
-               :disabled="editDialogDisabled">
-        <el-form-item label="岗位名称">
+               :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="岗位名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="岗位编码">
+        <el-form-item label="岗位编码" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="部门名称" class="departmentItem">
-          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur" placeholder="请选择"
+        <el-form-item label="部门名称" class="departmentItem" prop="departmentName">
+          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @input="focus" @focus="focus" @blur="blur" placeholder="请选择"
                     ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>

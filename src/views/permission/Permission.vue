@@ -25,12 +25,11 @@
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="700px">
       <el-form label-position="right" label-width="100px" :inline="true" :model="editFormInfo" size="small"
-               class="addForm"
-               :disabled="editDialogDisabled">
-        <el-form-item label="权限名称">
+               class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="权限名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="权限类型">
+        <el-form-item label="权限类型" prop="type">
           <el-select v-model="editFormInfo.type">
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in permissionTypeDrop" :key="item.id"></el-option>
           </el-select>
@@ -41,13 +40,13 @@
         <!--        <el-form-item label="依赖菜单ID">-->
         <!--          <el-input v-model="editFormInfo.menuId" suffix-icon="xxx"></el-input>-->
         <!--        </el-form-item>-->
-        <el-form-item label="依赖菜单" class="departmentItem">
+        <el-form-item label="依赖菜单" class="departmentItem" prop="menuName">
           <el-input v-model="editFormInfo.menuName" readonly :suffix-icon="iconName" @focus="focusDepartment"
                     @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="treeData" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
-        <el-form-item label="是否需要范围">
+        <el-form-item label="是否需要范围" prop="isNeededScope">
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"
                      active-value="1" inactive-value="0">
           </el-switch>

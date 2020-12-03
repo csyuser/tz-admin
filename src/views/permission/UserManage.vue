@@ -35,16 +35,16 @@
     </el-dialog>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="660px">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
-               class="addForm" :disabled="editDialogDisabled">
-        <el-form-item label="用户名称">
+               class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="用户名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="人员编号">
+        <el-form-item label="人员编号" prop="code">
           <el-select v-model="editFormInfo.code">
             <el-option :label="code.code" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户密码">
+        <el-form-item label="用户密码" prop="password">
             <el-input v-model="editFormInfo.password" show-password suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="风险等级">
@@ -53,14 +53,14 @@
             <el-option label="频繁登录" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户状态">
+        <el-form-item label="用户状态" prop="status">
           <el-select v-model="editFormInfo.status">
             <el-option label="正常" value="1"></el-option>
             <el-option label="锁定" value="2"></el-option>
             <el-option label="注销" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属部门" class="departmentItem">
+        <el-form-item label="所属部门" class="departmentItem" prop="departmentName">
           <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur"
                     ref="treeInput" placeholder="请选择"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"

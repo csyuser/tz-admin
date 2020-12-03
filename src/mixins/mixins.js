@@ -38,6 +38,31 @@ export const mixins = {
       filterMethod(query, item) {
         return item.label.indexOf(query) > -1
       },
+      rules: {
+        name:[{required: true, message: '名称不能为空', trigger: 'blur' }],
+        code:[{required: true, message: '编码不能为空', trigger: 'change' }],
+        departmentName:[{required: true, message: '部门名称不能为空', trigger: 'change' }],
+        sort:[{ type: 'number', message: '排序必须为数字值'}],
+        password:[{required: true, message: '密码不能为空', trigger: 'blur' }],
+        status:[{required: true, message: '状态不能为空', trigger: 'change' }],
+        post:[{required: true, message: '职务不能为空', trigger: 'change' }],
+        rank:[{required: true, message: '职级不能为空', trigger: 'change' }],
+        sex:[{required: true, message: '性别不能为空', trigger: 'change' }],
+        phone:[{required: true, message: '电话不能为空', trigger: 'blur' },
+          {pattern: /^\d{3}-\d{8}$|^\d{11}$/, message: '请输入正确的电话', trigger: 'blur' }
+        ],
+        email:[{type: 'email',required: true, message: '邮箱格式不正确', trigger: 'blur' }],
+        idCard:[{required: true, message: '身份证号不能为空', trigger: 'blur' },
+          { min: 18, max: 18, message: '请输入正确的身份证号', trigger: 'blur' }],
+        entryTime:[{type: 'date',required: true, message: '入职时间不能为空', trigger: 'change' }],
+        url:[{required: true, message: '菜单地址不能为空', trigger: 'blur' }],
+        classId:[{required: true, message: '部门分类不能为空', trigger: 'change' }],
+        level2:[{required: true, message: '部门级别不能为空', trigger: 'change' }],
+        selection:[{required: true, message: '选用标志不能为空', trigger: 'change' }],
+        type:[{required: true, message: '类型不能为空', trigger: 'change' }],
+        menuName:[{required: true, message: '依赖菜单不能为空', trigger: 'change' }],
+        isNeededScope:[{required: true, message: '是否需要范围必须', trigger: 'change' }],
+      }
     }
   },
   methods: {
@@ -92,21 +117,27 @@ export const mixins = {
       }
     },
     confirmEditRow(saveUrl, pageUrl) {
-      this.editDialogVisible = false
-      let editData = {}
-      if (this.dialogType === 'add') {
-        editData = this.editFormInfo
-      } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.editFormInfo}}
-      if (this.dialogType !== 'view') {
-        this.axios.post(this.prefixAddr + saveUrl, {...editData})
-          .then(res => {
-            if (res.data.code.toString() === '200') {
-              this.$message.success('保存成功')
-              this.getPages(pageUrl)
-            } else this.$message.error(res.data.msg)
-          })
-          .catch()
-      }
+      this.$refs.editDialog.validate((valid) => {
+        if (valid) {
+          this.editDialogVisible = false
+          let editData = {}
+          if (this.dialogType === 'add') {
+            editData = this.editFormInfo
+          } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.editFormInfo}}
+          if (this.dialogType !== 'view') {
+            this.axios.post(this.prefixAddr + saveUrl, {...editData})
+              .then(res => {
+                if (res.data.code.toString() === '200') {
+                  this.$message.success('保存成功')
+                  this.getPages(pageUrl)
+                } else this.$message.error(res.data.msg)
+              })
+              .catch()
+          }
+        } else {
+          return false;
+        }
+      });
     },
     viewRow(row) {
       this.dialogType = 'view'

@@ -18,12 +18,12 @@
            @postSelect="selectRow"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="viewPost"></Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px">
-      <el-form label-position="right" label-width="80px" ref="addForm" :inline="true" :model="editFormInfo" size="small"
-               class="addForm" :disabled="editDialogDisabled">
-        <el-form-item label="菜单名称">
+      <el-form label-position="right" label-width="80px" ref="editDialog" :inline="true" :model="editFormInfo" size="small"
+               class="addForm" :disabled="editDialogDisabled" :rules="rules">
+        <el-form-item label="菜单名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="排序" prop="sort" :rules="{ type: 'number', message: '排序必须为数字值'}">
+        <el-form-item label="排序" prop="sort" :rules="{ required: true, type: 'number', message: '排序必须为数字值'}">
           <el-input v-model.number="editFormInfo.sort" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="上级菜单" class="departmentItem">
@@ -32,7 +32,7 @@
                        :key="parentMenu.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="菜单地址">
+        <el-form-item label="菜单地址" prop="url">
           <el-input v-model="editFormInfo.url" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
@@ -96,13 +96,7 @@ export default {
       this.updateRow()
     },
     confirmEdit() {
-      this.$refs.addForm.validate((valid) => {
-        if (valid) {
-          this.confirmEditRow('/menu/save', '/menu/page')
-        } else {
-          return false
-        }
-      })
+      this.confirmEditRow('/menu/save', '/menu/page')
     },
     viewPost(row) {
       this.dialogTitle = '查看菜单信息'

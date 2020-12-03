@@ -21,26 +21,25 @@
       </el-button>
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px">
-      <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small" ref="addForm"
-               class="addForm"
-               :disabled="editDialogDisabled">
-        <el-form-item label="小组名称">
+      <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
+               class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="小组名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="小组编号">
+        <el-form-item label="小组编号" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="所属部门" class="departmentItem">
-          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur" placeholder="请选择"
+        <el-form-item label="所属部门" class="departmentItem" prop="departmentName">
+          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @input="focus" @focus="focus" @blur="blur" placeholder="请选择"
                     ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="editFormInfo.sort" suffix-icon="xxx"></el-input>
+        </el-form-item>
         <el-form-item label="小组描述">
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
-        </el-form-item>
-        <el-form-item label="排序" prop="sort" :rules="{ type: 'number', message: '排序必须为数字值'}">
-          <el-input v-model.number="editFormInfo.sort" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -118,15 +117,7 @@ export default {
       this.updateRow()
     },
     confirmEdit() {
-      this.$refs.addForm.validate((valid) => {
-        if (valid) {
-          this.confirmEditRow('/team/save', '/team/page')
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-
+      this.confirmEditRow('/team/save', '/team/page')
     },
     view(row) {
       this.dialogTitle = '查看小组信息'

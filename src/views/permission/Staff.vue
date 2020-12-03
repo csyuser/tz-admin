@@ -11,46 +11,46 @@
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @currentChange="currentChange"
            @add="add" @update="update" @postSelect="selectRow"
            @delete="deleteRows" @dblclick="view"></Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
-      <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small" class="addForm"
-               :disabled="editDialogDisabled">
-        <el-form-item label="人员名称">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
+      <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small" class="addForm"
+               :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="人员名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="人员编码">
+        <el-form-item label="人员编码" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="职务">
+        <el-form-item label="职务" prop="post">
           <el-select v-model="editFormInfo.post">
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in postDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="职级">
+        <el-form-item label="职级" prop="rank">
           <el-select v-model="editFormInfo['rank']">
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in rankDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="性别">
+        <el-form-item label="性别" prop="sex">
           <el-select v-model="editFormInfo['sex']">
             <el-option label="女" :value="0"></el-option>
             <el-option label="男" :value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属部门" class="departmentItem">
+        <el-form-item label="所属部门" class="departmentItem" prop="departmentName">
           <el-input v-model="editFormInfo.departmentName" readonly placeholder="请选择" :suffix-icon="iconName" @focus="focusDepartment" @blur="blurDepartment" ref="treeInput"></el-input>
           <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
-        <el-form-item label="联系电话">
+        <el-form-item label="联系电话" prop="phone">
           <el-input v-model="editFormInfo.phone" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="联系邮箱">
+        <el-form-item label="联系邮箱" prop="email">
           <el-input v-model="editFormInfo.email" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="身份证号码">
+        <el-form-item label="身份证号码" prop="idCard">
           <el-input v-model="editFormInfo['idCard']" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="入职时间">
+        <el-form-item label="入职时间" prop="entryTime">
           <el-date-picker v-model="editFormInfo['entryTime']" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
         </el-form-item>
         <el-form-item label="离职时间">

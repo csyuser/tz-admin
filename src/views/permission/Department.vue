@@ -14,20 +14,19 @@
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
-               class="addForm"
-               :disabled="editDialogDisabled">
-        <el-form-item label="部门分类">
+               class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="部门分类" prop="classId">
           <el-select v-model="editFormInfo.classId">
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentClassifyDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="部门名称">
+        <el-form-item label="部门名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="部门编号">
+        <el-form-item label="部门编号" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="部门级别">
+        <el-form-item label="部门级别" prop="level2">
           <el-select v-model="editFormInfo['level2']">
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentLevelDrop" :key="item.id"></el-option>
           </el-select>
@@ -41,7 +40,7 @@
         <el-form-item label="行政区划">
           <el-input v-model="editFormInfo.regionName" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="选用标志">
+        <el-form-item label="选用标志" prop="selection">
           <el-select v-model="editFormInfo.selection">
             <el-option label="选用" value="1"></el-option>
             <el-option label="禁用" value="0"></el-option>
