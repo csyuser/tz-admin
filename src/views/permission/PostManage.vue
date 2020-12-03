@@ -30,9 +30,9 @@
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="部门名称" class="departmentItem" prop="departmentName">
-          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @input="focus" @focus="focus" @blur="blur" placeholder="请选择"
+          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @click.native="focus" @focus="focus" @blur="blur" placeholder="请选择"
                     ref="treeInput"></el-input>
-          <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
+          <el-tree id="floatTree" :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
                    @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
         </el-form-item>
         <el-form-item label="角色描述">
@@ -157,15 +157,12 @@ export default {
     focus() {
       this.focusInput()
     },
-    blur() {
-      this.blurInput()
+    blur(e) {
+      this.blurInput(e)
     },
     select(data) {
       this.selectTree(data)
-      this.editFormInfo.departmentName = data.name
-      this.editFormInfo.departmentId = data.id
     },
-
     handleClose(done) {
       this.$confirm('确认关闭？')
           .then(() => {
@@ -220,8 +217,6 @@ export default {
         display: block;
       }
     }
-
-
   }
 }
 

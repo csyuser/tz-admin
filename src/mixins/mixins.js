@@ -1,5 +1,13 @@
 export const mixins = {
-  mounted() {
+  watch: {
+    form: {
+      handler(form){
+        if(this.isShowSelect){
+          this.$refs.selectTree.filter(form.departmentName);
+        }
+      },
+      deep: true,//深度监听，重要
+    },
   },
   data() {
     return {
@@ -17,19 +25,19 @@ export const mixins = {
       searchData: {},
       treeVisible: false,
       isFocus: false,
-      iconName:'el-icon-arrow-down',
+      iconName: 'el-icon-arrow-down',
       treeData: [],
       defaultProps: {
         children: 'children',
         label: 'name'
       },
-      departmentClassifyDrop:[],
-      departmentLevelDrop:[],
-      rankDrop:[],
-      postDrop:[],
-      permissionTypeDrop:[],
-      permissionScopeDrop:[],
-      permissionRelateDrop:[],
+      departmentClassifyDrop: [],
+      departmentLevelDrop: [],
+      rankDrop: [],
+      postDrop: [],
+      permissionTypeDrop: [],
+      permissionScopeDrop: [],
+      permissionRelateDrop: [],
       relatedTitle: '',
       relatedDialogVisible: false,
       transformData: [],
@@ -39,29 +47,29 @@ export const mixins = {
         return item.label.indexOf(query) > -1
       },
       rules: {
-        name:[{required: true, message: '名称不能为空', trigger: 'blur' }],
-        code:[{required: true, message: '编码不能为空', trigger: 'change' }],
-        departmentName:[{required: true, message: '部门名称不能为空', trigger: 'change' }],
-        sort:[{ type: 'number', message: '排序必须为数字值'}],
-        password:[{required: true, message: '密码不能为空', trigger: 'blur' }],
-        status:[{required: true, message: '状态不能为空', trigger: 'change' }],
-        post:[{required: true, message: '职务不能为空', trigger: 'change' }],
-        rank:[{required: true, message: '职级不能为空', trigger: 'change' }],
-        sex:[{required: true, message: '性别不能为空', trigger: 'change' }],
-        phone:[{required: true, message: '电话不能为空', trigger: 'blur' },
-          {pattern: /^\d{3}-\d{8}$|^\d{11}$/, message: '请输入正确的电话', trigger: 'blur' }
+        name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+        code: [{required: true, message: '编码不能为空', trigger: 'change'}],
+        departmentName: [{required: true, message: '部门名称不能为空', trigger: 'change'}],
+        sort: [{type: 'number', message: '排序必须为数字值'}],
+        password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
+        status: [{required: true, message: '状态不能为空', trigger: 'change'}],
+        post: [{required: true, message: '职务不能为空', trigger: 'change'}],
+        rank: [{required: true, message: '职级不能为空', trigger: 'change'}],
+        sex: [{required: true, message: '性别不能为空', trigger: 'change'}],
+        phone: [{required: true, message: '电话不能为空', trigger: 'blur'},
+          {pattern: /^\d{3}-\d{8}$|^\d{11}$/, message: '请输入正确的电话', trigger: 'blur'}
         ],
-        email:[{type: 'email',required: true, message: '邮箱格式不正确', trigger: 'blur' }],
-        idCard:[{required: true, message: '身份证号不能为空', trigger: 'blur' },
-          { min: 18, max: 18, message: '请输入正确的身份证号', trigger: 'blur' }],
-        entryTime:[{type: 'date',required: true, message: '入职时间不能为空', trigger: 'change' }],
-        url:[{required: true, message: '菜单地址不能为空', trigger: 'blur' }],
-        classId:[{required: true, message: '部门分类不能为空', trigger: 'change' }],
-        level2:[{required: true, message: '部门级别不能为空', trigger: 'change' }],
-        selection:[{required: true, message: '选用标志不能为空', trigger: 'change' }],
-        type:[{required: true, message: '类型不能为空', trigger: 'change' }],
-        menuName:[{required: true, message: '依赖菜单不能为空', trigger: 'change' }],
-        isNeededScope:[{required: true, message: '是否需要范围必须', trigger: 'change' }],
+        email: [{type: 'email', required: true, message: '邮箱格式不正确', trigger: 'blur'}],
+        idCard: [{required: true, message: '身份证号不能为空', trigger: 'blur'},
+          {min: 18, max: 18, message: '请输入正确的身份证号', trigger: 'blur'}],
+        entryTime: [{type: 'date', required: true, message: '入职时间不能为空', trigger: 'change'}],
+        url: [{required: true, message: '菜单地址不能为空', trigger: 'blur'}],
+        classId: [{required: true, message: '部门分类不能为空', trigger: 'change'}],
+        level2: [{required: true, message: '部门级别不能为空', trigger: 'change'}],
+        selection: [{required: true, message: '选用标志不能为空', trigger: 'change'}],
+        type: [{required: true, message: '类型不能为空', trigger: 'change'}],
+        menuName: [{required: true, message: '依赖菜单不能为空', trigger: 'change'}],
+        isNeededScope: [{required: true, message: '是否需要范围必须', trigger: 'change'}],
       }
     }
   },
@@ -135,9 +143,9 @@ export const mixins = {
               .catch()
           }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     viewRow(row) {
       this.dialogType = 'view'
@@ -170,40 +178,48 @@ export const mixins = {
     },
 //数据下拉树
     nodeClick() {
-      this.isFocus = true
-      this.treeVisible = true
-      this.$refs.treeInput.focus()
-      this.iconName = 'el-icon-arrow-up'
+      // this.isFocus = true
+      // this.treeVisible = true
+      // this.$refs.treeInput.focus()
+      // this.iconName = 'el-icon-arrow-up'
     },
     focusInput() {
       this.treeVisible = true
       this.iconName = 'el-icon-arrow-up'
     },
-    blurInput() {
-      this.isFocus = false
-      setTimeout(() => {
-        if (this.isFocus !== true) {
-          this.treeVisible = false
-          this.iconName = 'el-icon-arrow-down'
-        }
-      }, 100)
+    blurInput(e) {
+      // this.isFocus = false
+      let isOther = e.relatedTarget == null || e.relatedTarget.closest("div.el-tree")
+        == null || e.relatedTarget.closest("div.el-tree").id != "floatTree";
+
+      if (isOther) {
+        this.treeVisible = false;
+        this.iconName = 'el-icon-arrow-down'
+      } else {
+        e.target.focus();
+      }
+
+      // setTimeout(() => {
+      //   if (this.isFocus !== true) {
+      //     this.treeVisible = false
+      //     this.iconName = 'el-icon-arrow-down'
+      //   }
+      // }, 100)
     },
-    selectTree() {
+    selectTree(data) {
+      this.editFormInfo.departmentName = data.name
+      this.editFormInfo.departmentId = data.id
+      this.$refs.treeInput.blur()
       this.treeVisible = false
+
     },
 //下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务
     getDropList(key) {
-      this.axios.get(this.prefixAddr + '/dropList/getDropListByKey',{
-        params:{dropListKey:key}
-      }).then(res=>{
+      this.axios.get(this.prefixAddr + '/dropList/getDropListByKey', {
+        params: {dropListKey: key}
+      }).then(res => {
         if (res.data.code.toString() === '200') {
-          if (key === '1'){this.departmentClassifyDrop = res.data.data}
-          else  if (key === '2'){this.departmentLevelDrop = res.data.data}
-          else  if (key === '3'){this.rankDrop= res.data.data}
-          else  if (key === '4'){this.permissionTypeDrop= res.data.data}
-          else  if (key === '5'){this.permissionScopeDrop= res.data.data}
-          else  if (key === '6'){this.permissionRelateDrop= res.data.data}
-          else  if (key === '7'){this.postDrop= res.data.data}
+          if (key === '1') {this.departmentClassifyDrop = res.data.data} else if (key === '2') {this.departmentLevelDrop = res.data.data} else if (key === '3') {this.rankDrop = res.data.data} else if (key === '4') {this.permissionTypeDrop = res.data.data} else if (key === '5') {this.permissionScopeDrop = res.data.data} else if (key === '6') {this.permissionRelateDrop = res.data.data} else if (key === '7') {this.postDrop = res.data.data}
         } else {
           this.$message.error(res.data.msg)
         }
@@ -211,19 +227,17 @@ export const mixins = {
         .catch()
     },
 //关联功能
-    related(treeUrl,title,params) {
-      console.log(this.relatedValue)
+    related(treeUrl, title, params) {
       if (this.selectedRow.length !== 1) {
         this.$message.error('请选择一行数据')
         return
       }
-      this.axios.get(this.prefixAddr + treeUrl,{
-        params:{...params}
-      }).then(res=>{
+      this.axios.get(this.prefixAddr + treeUrl, {
+        params: {...params}
+      }).then(res => {
         if (res.data.code.toString() === '200') {
-          this.transformData =res.data.data['allList']
+          this.transformData = res.data.data['allList']
           this.relatedValue = res.data.data['checkList']
-          console.log(this.relatedValue)
         } else {
           this.$message.error(res.data.msg)
         }
@@ -231,17 +245,17 @@ export const mixins = {
         .catch()
       this.relatedTitle = title
       this.relatedDialogVisible = true
-      },
-    confirmRelate(saveUrl,params) {
+    },
+    confirmRelate(saveUrl, params) {
       this.relatedDialogVisible = false
-        this.axios.post(this.prefixAddr + saveUrl,{
-          ...params
-        }).then(res=>{
-          if (res.data.code.toString() === '200'){
-            this.$message.success('保存成功')
-          }else {this.$message.error(res.data.msg)}
-        })
-          .catch()
-      }
+      this.axios.post(this.prefixAddr + saveUrl, {
+        ...params
+      }).then(res => {
+        if (res.data.code.toString() === '200') {
+          this.$message.success('保存成功')
+        } else {this.$message.error(res.data.msg)}
+      })
+        .catch()
+    }
   },
 }
