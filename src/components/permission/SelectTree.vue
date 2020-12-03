@@ -4,7 +4,7 @@
              :props="props" :expand-on-click-node="false" :filter-node-method="filterNode" :default-expand-all="false"
              @node-click="onClickNode">
     </el-tree>
-    <el-input slot="reference" ref="input" v-model="labelModel" clearable
+    <el-input slot="reference" ref="input" v-model="labelModel" clearable  class="xxx"
               :style="`width: ${width}px`" :class="{ 'rotate': showStatus }" suffix-icon="el-icon-arrow-down"
               :placeholder="placeholder">
     </el-input>

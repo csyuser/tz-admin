@@ -29,11 +29,8 @@
         <el-form-item label="小组编号" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="所属部门" class="departmentItem" prop="departmentName">
-          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @input="focus" @focus="focus" @blur="blur" placeholder="请选择"
-                    ref="treeInput"></el-input>
-          <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
-                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+        <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="editFormInfo.sort" suffix-icon="xxx"></el-input>
@@ -70,32 +67,22 @@
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
+import SelectTree from '@/components/permission/SelectTree'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Group',
-  components: {Table, DeleteRow, SvgIcon},
+  components: {Table, DeleteRow, SvgIcon,SelectTree},
   mixins:[mixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '小组名称'}, {prop: 'code', label: '小组编号'}, {prop: 'departmentName', label: '所属部门'},
-        {prop: 'describe', label: '小组描述'}, {prop: 'sort', label: '排序'}, {prop: 'valid', label: '是否有效'},],
-      data: [],
-      defaultProps: {
-        children: 'child',
-        label: 'name'
-      },
+        {prop: 'describe', label: '小组描述'}, {prop: 'sort', label: '排序'}],
     }
   },
   mounted() {
     this.getPages('/team/page')
-    this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
-        .then(res => {
-          if (res.data.code.toString() === '200') {
-            this.data = res.data.data
-          } else {this.data = []}
-        })
-        .catch()
+    this.getDepartmentTree('/department/selectDepartmentTree')
   },
   methods: {
     currentChange(val, row) {
@@ -151,21 +138,6 @@ export default {
         userIds:this.relatedValue
       })}
     },
-//输入框树形结构
-    treeNode() {
-     this.nodeClick()
-    },
-    focus() {
-      this.focusInput()
-    },
-    blur() {
-      this.blurInput()
-    },
-    select(data) {
-      this.selectTree(data)
-      this.editFormInfo.departmentName = data.name
-      this.editFormInfo.departmentId = data.id
-    },
   }
 }
 </script>
@@ -176,26 +148,6 @@ export default {
   .addForm {
     > .el-form-item {
       margin-bottom: 18px;
-    }
-
-    .departmentItem {
-      position: relative;
-
-      .tree {
-        display: none;
-        position: absolute;
-        border: 1px solid #DCDFE6;
-        padding-right: 10px;
-        width: 215px;
-        border-radius: 4px;
-        margin-top: 5px;
-        z-index: 999;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-      }
-
-      .treeVisible {
-        display: block;
-      }
     }
 
   }

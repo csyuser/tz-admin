@@ -60,11 +60,8 @@
             <el-option label="注销" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属部门" class="departmentItem" prop="departmentName">
-          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @focus="focus" @blur="blur"
-                    ref="treeInput" placeholder="请选择"></el-input>
-          <el-tree :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
-                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+        <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -79,40 +76,26 @@
 </template>
 
 <script>
-// import Qs from 'qs'
 import Table from '@/components/permission/Table'
 import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
+import SelectTree from '@/components/permission/SelectTree'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon, DeleteRow},
+  components: {Table, SvgIcon, DeleteRow,SelectTree},
   mixins:[mixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
         {prop: 'riskLevel', label: '风险等级'}, {prop: 'status', label: '用户状态'}],
-      data: [],
-      defaultProps: {
-        children: 'child',
-        label: 'name'
-      },
-      deleteIds: [],
-      dialogType: '',
       userCodes: [],
-      relatedName:''
     }
   },
   mounted() {
     this.getPages('/user/page')
-    this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
-        .then(res => {
-          if (res.data.code.toString() === '200') {
-            this.data = res.data.data
-          } else {this.data = []}
-        })
-        .catch()
+    this.getDepartmentTree('/department/selectDepartmentTree')
     this.axios.get(this.prefixAddr + '/dropList/selectPerson')
         .then(res => {
           if (res.data.code.toString() === '200') {
@@ -175,21 +158,6 @@ export default {
     confirmDelete() {
       this.confirmDeleteRow('/user/delete', '/user/page')
     },
-//输入框树形结构
-    treeNode() {
-      this.nodeClick()
-    },
-    focus() {
-      this.focusInput()
-    },
-    blur() {
-      this.blurInput()
-    },
-    select(data) {
-      this.selectTree(data)
-      this.editFormInfo.departmentName = data.name
-      this.editFormInfo.departmentId = data.id
-    },
   },
 }
 </script>
@@ -208,27 +176,6 @@ export default {
     > .el-form-item {
       margin-bottom: 18px;
     }
-
-    .departmentItem {
-      position: relative;
-
-      .tree {
-        display: none;
-        position: absolute;
-        border: 1px solid #DCDFE6;
-        padding-right: 10px;
-        width: 215px;
-        border-radius: 4px;
-        margin-top: 5px;
-        z-index: 999;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-      }
-
-      .treeVisible {
-        display: block;
-      }
-    }
-
   }
 }
 

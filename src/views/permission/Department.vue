@@ -20,7 +20,7 @@
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentClassifyDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="部门名称" prop="name">
+        <el-form-item label="部门名称" prop="name" >
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="部门编号" prop="code">
@@ -31,11 +31,8 @@
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in departmentLevelDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="上级部门" class="departmentItem">
-          <el-input v-model="editFormInfo.parentName" readonly :suffix-icon="iconName" @focus="focusDepartment"
-                    @blur="blurDepartment" ref="treeInput"></el-input>
-          <el-tree :data="data" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
-                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+        <el-form-item label="上级部门"  style="height: 32px">
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
         </el-form-item>
         <el-form-item label="行政区划">
           <el-input v-model="editFormInfo.regionName" suffix-icon="xxx"></el-input>
@@ -65,19 +62,15 @@
 // import Qs from 'qs'
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
+import SelectTree from '@/components/permission/SelectTree'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Department',
-  components: {Table, DeleteRow},
+  components: {Table, DeleteRow,SelectTree},
   mixins:[mixins],
   data() {
     return {
-      data: [],
-      defaultProps: {
-        children: 'child',
-        label: 'name'
-      },
       colsHead: [{prop: 'className', label: '部门分类'}, {prop: 'name', label: '部门名称'}, {prop: 'code', label: '部门编号'},
         {prop: 'level2Name', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
         {prop: 'selection', label: '选用标志'}, {prop: 'describe', label: '描述'}],
@@ -85,13 +78,7 @@ export default {
   },
   mounted() {
     this.getPages('/department/page')
-    this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
-        .then(res => {
-          if (res.data.code.toString() === '200') {
-            this.data = res.data.data
-          } else {this.data = []}
-        })
-        .catch()
+    this.getDepartmentTree('/department/selectDepartmentTree')
     this.getDropList('1')
     this.getDropList('2')
   },
@@ -134,21 +121,6 @@ export default {
           })
           .catch(() => {})
     },
-//部门的数据下拉框
-    treeNode() {
-      this.nodeClick()
-    },
-    focusDepartment() {
-      this.focusInput()
-    },
-    blurDepartment() {
-      this.blurInput()
-    },
-    selectDepartment(data) {
-      this.selectTree(data)
-      this.editFormInfo.parentName = data.name
-      this.editFormInfo.parentId = data.id
-    },
   }
 }
 </script>
@@ -167,28 +139,6 @@ export default {
     > .el-form-item {
       margin-bottom: 18px;
     }
-
-    .departmentItem {
-      position: relative;
-
-      .tree {
-        display: none;
-        position: absolute;
-        border: 1px solid #DCDFE6;
-        padding-right: 10px;
-        width: 215px;
-        border-radius: 4px;
-        margin-top: 5px;
-        z-index: 999;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-      }
-
-      .treeVisible {
-        display: block;
-      }
-    }
-
-
   }
 }
 </style>

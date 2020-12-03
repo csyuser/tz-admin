@@ -29,12 +29,8 @@
         <el-form-item label="岗位编码" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="部门名称" class="departmentItem" prop="departmentId">
-<!--          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @click.native="focus" @focus="focus" @blur="blur" placeholder="请选择"-->
-<!--                    ref="treeInput"></el-input>-->
-<!--          <el-tree id="floatTree" :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"-->
-<!--                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>-->
-          <SelectTree v-model="editFormInfo.departmentId" :options="data" :props="defaultProps" />
+        <el-form-item label="部门名称" prop="departmentId" style="height: 32px">
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
         </el-form-item>
         <el-form-item label="角色描述">
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
@@ -80,7 +76,6 @@ export default {
       selectedRow: [],
       colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {
         prop: 'departmentName', label: '部门名称'}, {prop: 'describe', label: '角色描述'}],
-      data: [],
       defaultProps: {
         children: 'child',
         label: 'name'
@@ -89,13 +84,7 @@ export default {
   },
   mounted() {
     this.getPages('/role/page')
-    this.axios.get(this.prefixAddr + '/department/selectDepartmentTree')
-        .then(res => {
-          if (res.data.code.toString() === '200') {
-            this.data = res.data.data
-          } else {this.data = []}
-        })
-        .catch()
+    this.getDepartmentTree('/department/selectDepartmentTree')
   },
   methods: {
     currentChange(val, row) {
@@ -152,19 +141,6 @@ export default {
         userIds:this.relatedValue
       })}
     },
-//输入框树形结构
-    treeNode() {
-      this.nodeClick()
-    },
-    focus() {
-      this.focusInput()
-    },
-    blur(e) {
-      this.blurInput(e)
-    },
-    select(data) {
-      this.selectTree(data)
-    },
     handleClose(done) {
       this.$confirm('确认关闭？')
           .then(() => {
@@ -172,7 +148,6 @@ export default {
           })
           .catch(() => {})
     },
-
   }
 }
 </script>
@@ -197,26 +172,6 @@ export default {
 
       &:nth-child(4) {
         margin-bottom: 0;
-      }
-    }
-
-    .departmentItem {
-      position: relative;
-
-      .tree {
-        display: none;
-        position: absolute;
-        border: 1px solid #DCDFE6;
-        padding-right: 10px;
-        width: 215px;
-        border-radius: 4px;
-        margin-top: 5px;
-        z-index: 999;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-      }
-
-      .treeVisible {
-        display: block;
       }
     }
   }

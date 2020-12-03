@@ -23,8 +23,8 @@
         关联小组
       </el-button>
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="700px">
-      <el-form label-position="right" label-width="100px" :inline="true" :model="editFormInfo" size="small"
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="710px">
+      <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="权限名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
@@ -37,14 +37,8 @@
         <el-form-item label="权限描述">
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <!--        <el-form-item label="依赖菜单ID">-->
-        <!--          <el-input v-model="editFormInfo.menuId" suffix-icon="xxx"></el-input>-->
-        <!--        </el-form-item>-->
-        <el-form-item label="依赖菜单" class="departmentItem" prop="menuName">
-          <el-input v-model="editFormInfo.menuName" readonly :suffix-icon="iconName" @focus="focusDepartment"
-                    @blur="blurDepartment" ref="treeInput"></el-input>
-          <el-tree :data="treeData" :props="defaultProps" @node-click="selectDepartment" class="tree" :class="{treeVisible}"
-                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+        <el-form-item label="依赖菜单" prop="menuId" style="height: 32px">
+          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" />
         </el-form-item>
         <el-form-item label="是否需要范围" prop="isNeededScope">
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"
@@ -80,26 +74,17 @@
 import Table from '@/components/permission/Table'
 import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
+import SelectTree from '@/components/permission/SelectTree'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Permission',
-  components: {Table, SvgIcon, DeleteRow},
+  components: {Table, SvgIcon, DeleteRow,SelectTree},
   mixins: [mixins],
   data() {
     return {
-      colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'type', label: '权限类型'}, {prop: 'describe', label: '权限描述'}],
-      transformData: [],
+      colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}],
       value: [],
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
-      },
-      relatedTitle: '',
-      relatedDialogVisible: false,
-      permissionVal: [],
-      postVal: [],
-      groupVal: [],
-      transformType: '',
     }
   },
   mounted() {
@@ -144,21 +129,6 @@ export default {
     },
     confirmDelete() {
       this.confirmDeleteRow('/permission/delete', '/permission/page')
-    },
-//数据下拉树
-    treeNode() {
-      this.nodeClick()
-    },
-    focusDepartment() {
-      this.focusInput()
-    },
-    blurDepartment() {
-      this.blurInput()
-    },
-    selectDepartment(data) {
-      this.selectTree(data)
-      this.editFormInfo.menuName = data.name
-      this.editFormInfo.menuId = data.id
     },
 //关联权限范围，岗位，小组
     relatedPermission() {
@@ -205,24 +175,6 @@ export default {
     > .el-form-item {
       margin-bottom: 18px;
     }
-    .departmentItem{
-      position: relative;
-      .tree{
-        display: none;
-        position: absolute;
-        border: 1px solid #DCDFE6;
-        padding-right: 10px;
-        width: 215px;
-        border-radius: 4px;
-        margin-top: 5px;
-        z-index: 999;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-      }
-      .treeVisible{
-        display: block;
-      }
-    }
-
   }
 }
 </style>

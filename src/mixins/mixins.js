@@ -13,15 +13,12 @@ export const mixins = {
       selectedRow: [],
       editFormInfo: {},
       searchData: {},
-      treeVisible: false,
-      isFocus: false,
-      iconName: 'el-icon-arrow-down',
-      treeData: [],
       defaultProps: {
         children: 'children',
         label: 'name',
         value:'id',
       },
+      treeData:[],
       departmentClassifyDrop: [],
       departmentLevelDrop: [],
       rankDrop: [],
@@ -40,7 +37,6 @@ export const mixins = {
       rules: {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
         code: [{required: true, message: '编码不能为空', trigger: 'change'}],
-        // departmentName: [{required: true, message: '部门名称不能为空', trigger: 'change'}],
         departmentId: [{required: true, message: '部门名称不能为空', trigger: 'change'}],
         sort: [{type: 'number', message: '排序必须为数字值'}],
         password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
@@ -60,12 +56,21 @@ export const mixins = {
         level2: [{required: true, message: '部门级别不能为空', trigger: 'change'}],
         selection: [{required: true, message: '选用标志不能为空', trigger: 'change'}],
         type: [{required: true, message: '类型不能为空', trigger: 'change'}],
-        menuName: [{required: true, message: '依赖菜单不能为空', trigger: 'change'}],
+        menuId: [{required: true, message: '依赖菜单不能为空', trigger: 'change'}],
         isNeededScope: [{required: true, message: '是否需要范围必须', trigger: 'change'}],
       }
     }
   },
   methods: {
+    getDepartmentTree(treeUrl){
+      this.axios.get(this.prefixAddr + treeUrl)
+        .then(res => {
+          if (res.data.code.toString() === '200') {
+            this.treeData = res.data.data
+          } else {this.treeData = []}
+        })
+        .catch()
+    },
     getPages(url, formInline) {
       this.axios.get(this.prefixAddr + url, {
         params: {
@@ -101,7 +106,7 @@ export const mixins = {
     },
     addRow() {
       this.dialogType = 'add'
-      this.editFormInfo = {}
+      this.editFormInfo = {isNeededScope:false}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
@@ -167,43 +172,6 @@ export const mixins = {
           } else {this.$message.error(this.data.msg)}
         })
         .catch(error => {this.$message.error('删除失败' + error)})
-    },
-//数据下拉树
-    nodeClick() {
-      // this.isFocus = true
-      // this.treeVisible = true
-      // this.$refs.treeInput.focus()
-      // this.iconName = 'el-icon-arrow-up'
-    },
-    focusInput() {
-      this.treeVisible = true
-      this.iconName = 'el-icon-arrow-up'
-    },
-    blurInput(e) {
-      // this.isFocus = false
-      let isOther = e.relatedTarget == null || e.relatedTarget.closest("div.el-tree")
-        == null || e.relatedTarget.closest("div.el-tree").id != "floatTree";
-
-      if (isOther) {
-        this.treeVisible = false;
-        this.iconName = 'el-icon-arrow-down'
-      } else {
-        e.target.focus();
-      }
-
-      // setTimeout(() => {
-      //   if (this.isFocus !== true) {
-      //     this.treeVisible = false
-      //     this.iconName = 'el-icon-arrow-down'
-      //   }
-      // }, 100)
-    },
-    selectTree(data) {
-      this.editFormInfo.departmentName = data.name
-      this.editFormInfo.departmentId = data.id
-      this.$refs.treeInput.blur()
-      this.treeVisible = false
-
     },
 //下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务
     getDropList(key) {
