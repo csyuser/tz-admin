@@ -12,8 +12,8 @@ Vue.use(ElementUI);
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
-Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
-// Vue.prototype.prefixAddr = '/api';
+// Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
+Vue.prototype.prefixAddr = '/api';
 
 
 
