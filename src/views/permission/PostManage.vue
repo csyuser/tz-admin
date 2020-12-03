@@ -29,11 +29,12 @@
         <el-form-item label="岗位编码" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="部门名称" class="departmentItem" prop="departmentName">
-          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @click.native="focus" @focus="focus" @blur="blur" placeholder="请选择"
-                    ref="treeInput"></el-input>
-          <el-tree id="floatTree" :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"
-                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>
+        <el-form-item label="部门名称" class="departmentItem" prop="departmentId">
+<!--          <el-input readonly v-model="editFormInfo.departmentName" :suffix-icon="iconName" @click.native="focus" @focus="focus" @blur="blur" placeholder="请选择"-->
+<!--                    ref="treeInput"></el-input>-->
+<!--          <el-tree id="floatTree" :data="data" :props="defaultProps" @node-click="select" class="tree" :class="{treeVisible}"-->
+<!--                   @node-expand="treeNode" @node-collapse="treeNode"></el-tree>-->
+          <SelectTree v-model="editFormInfo.departmentId" :options="data" :props="defaultProps" />
         </el-form-item>
         <el-form-item label="角色描述">
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
@@ -67,11 +68,12 @@
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
+import SelectTree from '@/components/permission/SelectTree'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'PostManage',
-  components: {Table, DeleteRow, SvgIcon},
+  components: {Table, DeleteRow, SvgIcon,SelectTree},
   mixins:[mixins],
   data() {
     return {

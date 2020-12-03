@@ -1,14 +1,4 @@
 export const mixins = {
-  watch: {
-    form: {
-      handler(form){
-        if(this.isShowSelect){
-          this.$refs.selectTree.filter(form.departmentName);
-        }
-      },
-      deep: true,//深度监听，重要
-    },
-  },
   data() {
     return {
       page: 1,
@@ -29,7 +19,8 @@ export const mixins = {
       treeData: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        value:'id',
       },
       departmentClassifyDrop: [],
       departmentLevelDrop: [],
@@ -49,7 +40,8 @@ export const mixins = {
       rules: {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
         code: [{required: true, message: '编码不能为空', trigger: 'change'}],
-        departmentName: [{required: true, message: '部门名称不能为空', trigger: 'change'}],
+        // departmentName: [{required: true, message: '部门名称不能为空', trigger: 'change'}],
+        departmentId: [{required: true, message: '部门名称不能为空', trigger: 'change'}],
         sort: [{type: 'number', message: '排序必须为数字值'}],
         password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
         status: [{required: true, message: '状态不能为空', trigger: 'change'}],
