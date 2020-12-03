@@ -32,8 +32,11 @@
                        :key="parentMenu.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="菜单地址" prop="url">
+        <el-form-item label="菜单地址">
           <el-input v-model="editFormInfo.url" suffix-icon="xxx"></el-input>
+        </el-form-item>
+        <el-form-item label="图标名称">
+          <el-input v-model="editFormInfo.icon" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

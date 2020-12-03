@@ -12,7 +12,7 @@
         </el-menu-item>
         <el-submenu :index="lists.id" v-for="lists in menuList" :key="lists.id">
           <template slot="title">
-            <i class="el-icon-location"></i>
+            <SvgIcon :icon-name="lists.icon"></SvgIcon>
             <span>{{ lists.name }}</span>
           </template>
           <el-menu-item v-for="list in lists.children" :key="list.id" :index="list.url" @click="selectMenu(list)">
@@ -33,8 +33,11 @@
 </template>
 
 <script>
+import SvgIcon from '@/components/SvgIcon'
+
 export default {
   name: 'NavMenu',
+  components:{SvgIcon},
   data() {
     return {
       selected: '',
