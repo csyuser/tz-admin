@@ -10,10 +10,10 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
-      <el-button size="small" class="update" @click="relatedPermission">
-        <SvgIcon icon-name="permission"></SvgIcon>
-        关联权限范围
-      </el-button>
+<!--      <el-button size="small" class="update" @click="relatedPermission">-->
+<!--        <SvgIcon icon-name="permission"></SvgIcon>-->
+<!--        关联权限范围-->
+<!--      </el-button>-->
       <el-button size="small" class="update" @click="relatedPost">
         <SvgIcon icon-name="post"></SvgIcon>
         关联岗位

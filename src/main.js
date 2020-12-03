@@ -12,8 +12,8 @@ Vue.use(ElementUI);
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
-// Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
-Vue.prototype.prefixAddr = '/api';
+Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
+// Vue.prototype.prefixAddr = '/api';
 
 
 
@@ -27,8 +27,8 @@ axios.interceptors.request.use(function (config) {
 });
 axios.interceptors.response.use(function (response) {
   if (response.data.code === -200){
-    // ElementUI.Message.error('登陆错误，请重新登录')
-    // router.push('/')
+    ElementUI.Message.error('请重新登录')
+    router.push('/')
   }
   return response;
 }, function (error) {
