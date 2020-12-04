@@ -63,7 +63,7 @@ export const mixins = {
   },
   methods: {
     getDepartmentTree(treeUrl){
-      this.axios.get(this.prefixAddr + treeUrl)
+      this.axios.get(treeUrl)
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.treeData = res.data.data
@@ -72,7 +72,7 @@ export const mixins = {
         .catch()
     },
     getPages(url, formInline) {
-      this.axios.get(this.prefixAddr + url, {
+      this.axios.get( url, {
         params: {
           page: this.page,
           pageSize: this.pageSize,
@@ -130,7 +130,7 @@ export const mixins = {
             editData = this.editFormInfo
           } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.editFormInfo}}
           if (this.dialogType !== 'view') {
-            this.axios.post(this.prefixAddr + saveUrl, {...editData})
+            this.axios.post(saveUrl, {...editData})
               .then(res => {
                 if (res.data.code.toString() === '200') {
                   this.$message.success('保存成功')
@@ -164,7 +164,7 @@ export const mixins = {
     },
     confirmDeleteRow(deleteUrl, pageUrl) {
       this.deleteDialogVisible = false
-      this.axios.post(this.prefixAddr + deleteUrl, {ids: this.deleteIds})
+      this.axios.post(deleteUrl, {ids: this.deleteIds})
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.$message.success('删除成功')
@@ -175,7 +175,7 @@ export const mixins = {
     },
 //下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务
     getDropList(key) {
-      this.axios.get(this.prefixAddr + '/dropList/getDropListByKey', {
+      this.axios.get('/dropList/getDropListByKey', {
         params: {dropListKey: key}
       }).then(res => {
         if (res.data.code.toString() === '200') {
@@ -192,7 +192,7 @@ export const mixins = {
         this.$message.error('请选择一行数据')
         return
       }
-      this.axios.get(this.prefixAddr + treeUrl, {
+      this.axios.get(treeUrl, {
         params: {...params}
       }).then(res => {
         if (res.data.code.toString() === '200') {
@@ -208,7 +208,7 @@ export const mixins = {
     },
     confirmRelate(saveUrl, params) {
       this.relatedDialogVisible = false
-      this.axios.post(this.prefixAddr + saveUrl, {
+      this.axios.post(saveUrl, {
         ...params
       }).then(res => {
         if (res.data.code.toString() === '200') {

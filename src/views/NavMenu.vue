@@ -57,7 +57,7 @@ export default {
   mounted() {
     this.$store.commit('fetch')
     this.selected = this.$store.state.selectedMenu
-    this.axios.get(this.prefixAddr + '/menu/selectMenuTree')
+    this.axios.get('/menu/selectMenuTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.menuList = res.data.data

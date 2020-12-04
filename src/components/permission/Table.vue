@@ -197,8 +197,6 @@ export default {
       this.selectedRow.forEach(item => {
         this.$refs.multipleTable.toggleRowSelection(item, true)
       })
-      console.log('table组件的选中行')
-      console.log(this.selectedRow)
       this.$emit('postSelect', this.selectedRow)
     },
     selectAllRows(selection) {
@@ -207,7 +205,6 @@ export default {
           this.$refs.multipleTable.toggleRowSelection(child, false)
         })
       }
-      console.log(selection.length)
       if (selection.length > 0) {
         selection.forEach(item => {
           this.selectedRow.push(item)

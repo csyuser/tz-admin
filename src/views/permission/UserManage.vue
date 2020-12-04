@@ -96,7 +96,7 @@ export default {
   mounted() {
     this.getPages('/user/page')
     this.getDepartmentTree('/department/selectDepartmentTree')
-    this.axios.get(this.prefixAddr + '/dropList/selectPerson')
+    this.axios.get('/dropList/selectPerson')
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.userCodes = res.data.data

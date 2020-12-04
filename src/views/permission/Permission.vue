@@ -89,7 +89,7 @@ export default {
   },
   mounted() {
     this.getPages('/permission/page')
-    this.axios.get(this.prefixAddr + '/menu/selectMenuTree')
+    this.axios.get('/menu/selectMenuTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.treeData = res.data.data

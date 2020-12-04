@@ -72,7 +72,7 @@ export default new Vuex.Store({
     //   if (state.dialogType === 'add'){
     //     editData = state.departmentInfo
     //   }else if (state.dialogType === 'update'){editData = {id:state.selectedRow.id,...state.departmentInfo}}
-    //   this.axios.post(this.prefixAddr + '/department/save',{...editData})
+    //   this.axios.post('/department/save',{...editData})
     //     .then(res=>{
     //       if (res.data.code.toString() === '200'){
     //         this.$message.success('保存成功')
@@ -83,7 +83,7 @@ export default new Vuex.Store({
     // },
     // getPage(state,payload){
     //   const {url,page,pageSize} = payload
-    //   this.axios.get(this.prefixAddr + url, {
+    //   this.axios.get(url, {
     //     params: {page, pageSize}
     //   }).then(res => {
     //     console.log(res)

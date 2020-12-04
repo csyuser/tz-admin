@@ -12,15 +12,31 @@ Vue.use(ElementUI);
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
-// Vue.prototype.prefixAddr = 'http://192.168.99.132:8080/topcheer';
-Vue.prototype.prefixAddr = '/api';
+// Vue.prototype.prefixAddr = '';
+// Vue.prototype.prefixAddr = '/api';
+//  "BASE_URL": "http://192.168.99.132:8080/topcheer"
 
+let startApp = function () {
+  axios.get('/config.json').then((res) => {
+    // 基础地址
+    Vue.prototype.BASE_URL = res.data.BASE_URL;
+    new Vue({
+      router,
+      store,
+      render: h => h(App)
+    }).$mount('#app')
+  })
+}
 
+function getBseUrl(){
+  return Vue.prototype.BASE_URL
+}
 
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('token');
   config.headers.common['Authorization'] = token ? 'Bearer'+' ' + token :'';
+  config.baseURL = getBseUrl()
   return config;
 }, function (error) {
   return Promise.reject(error);
@@ -36,8 +52,5 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+startApp()
+

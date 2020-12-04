@@ -72,7 +72,7 @@ export default {
     },
   },
   mounted() {
-    // this.axios.get(this.prefixAddr + '/getCsrf', {})
+    // this.axios.get('/getCsrf', {})
     //     .then(res => {
     //       if (res.data.code === 200) {
     //         window.localStorage.setItem('token', res.data.data.token)
@@ -100,7 +100,7 @@ export default {
     },
     loginSubmit() {
       // this.$router.push('/HomePage')
-      this.axios.post(this.prefixAddr + '/auth',
+      this.axios.post('/auth',
           Qs.stringify({...this.loginInfo})
       ).then(res => {
         if (res.data.code === 200) {
@@ -125,7 +125,7 @@ export default {
       }
     },
     daveUser() {
-      this.axios.post(this.prefixAddr + '/user/selectUserPower',
+      this.axios.post('/user/selectUserPower',
           Qs.stringify({userId: this.userId}))
           .then(res => {
             if (res.data.code === 200) {

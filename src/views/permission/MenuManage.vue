@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     getMenu() {
-      this.axios.get(this.prefixAddr + '/dropList/selectMenu')
+      this.axios.get('/dropList/selectMenu')
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.parentMenus = res.data.data
