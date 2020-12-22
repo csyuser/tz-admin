@@ -32,7 +32,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上级部门"  style="height: 32px">
-          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
+          <SelectTree v-model="editFormInfo.parentId" :options="treeData" :props="defaultProps" />
         </el-form-item>
         <el-form-item label="行政区划">
           <el-input v-model="editFormInfo.regionName" suffix-icon="xxx"></el-input>

@@ -38,7 +38,7 @@ export const mixins = {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
         code: [{required: true, message: '编码不能为空', trigger: 'change'}],
         departmentId: [{required: true, message: '部门名称不能为空', trigger: 'change'}],
-        sort: [{type: 'number', message: '排序必须为数字值'}],
+        sort: [{pattern: /^\d*$/, required: false, message: '排序必须为数字值'}],
         password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
         status: [{required: true, message: '状态不能为空', trigger: 'change'}],
         post: [{required: true, message: '职务不能为空', trigger: 'change'}],
@@ -115,6 +115,8 @@ export const mixins = {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.editFormInfo = this.selectedRow[0]
+        console.log('this.selectedRow[0]')
+        console.log(this.selectedRow[0])
         this.editFormInfo.sort = this.selectedRow[0].sort && parseInt(this.selectedRow[0].sort)
         this.editDialogVisible = true
       } else {
