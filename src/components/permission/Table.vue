@@ -21,7 +21,7 @@
       <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
                 :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
                 :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
-                @select-all="selectAllRows"
+                @select-all="selectAllRows" @expand-change=xxx
                 :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
@@ -74,7 +74,8 @@ export default {
       tableData: [],
       cols: [],
       selectedRow: [],
-      children: []
+      children: [],
+      expand:[],
     }
   },
   mounted() {
@@ -111,9 +112,18 @@ export default {
     }
   },
   methods: {
-    // handleSizeChange(val) {
-    //   console.log(`每页 ${val} 条`)
-    // },
+    xxx(row, type) {
+      console.log('expandRow')
+      console.log(type)
+      let isContains = false
+      this.expand.forEach((item,index)=>{
+        if (item.rowId===row.id){
+          this.expand[index].type=type
+          isContains = true
+        }
+      })
+      if (isContains === false){this.expand.push({rowId: row.id, type:type})}
+    },
     handleCurrentChange(val) {
       this.$refs.multipleTable.clearSelection()
       this.selectedRow = []
@@ -145,17 +155,24 @@ export default {
         this.$message('取消操作')
       })
     },
-    //选中父元素，全选子元素
+//选中父元素，全选子元素
     selectRow(val, row) {
       let parent = {}
       if (val.indexOf(row) >= 0) {
         this.selectedRow.push(row)
         if (row.children) {
-          row.children.forEach(child => {
-            if (this.selectedRow.indexOf(child) < 0) {
-              this.selectedRow.push(child)
-            }
+          let isExpand = false
+          this.expand.forEach((item,index)=>{
+            if (item.rowId === row.id && this.expand[index].type===true){isExpand = true}
           })
+          if (this.expand.length>0 && isExpand === true){
+            row.children.forEach(child => {
+              if (this.selectedRow.indexOf(child) < 0) {
+                this.selectedRow.push(child)
+                this.children.push(child)
+              }
+            })
+          }
         }
         if (row.previousMenu && row.previousMenu !== '') {
           this.tableData.forEach(item => {
@@ -197,15 +214,20 @@ export default {
       this.selectedRow.forEach(item => {
         this.$refs.multipleTable.toggleRowSelection(item, true)
       })
+      console.log('this.selectedRow')
+      console.log(this.selectedRow)
       this.$emit('postSelect', this.selectedRow)
     },
     selectAllRows(selection) {
       if (this.children.length > 0) {
         this.children.forEach(child => {
-          this.$refs.multipleTable.toggleRowSelection(child, false)
+          let index = selection.indexOf(child)
+          selection.splice(index, 1)
         })
       }
       if (selection.length > 0) {
+        this.children = []
+        this.selectedRow = []
         selection.forEach(item => {
           this.selectedRow.push(item)
           if (item.children) {
@@ -217,13 +239,15 @@ export default {
             })
           }
         })
+        this.$refs.multipleTable.clearSelection()
+        this.selectedRow.forEach(item => {
+          this.$refs.multipleTable.toggleRowSelection(item, true)
+        })
       } else {
+        this.children = []
         this.selectedRow = []
+        this.$refs.multipleTable.clearSelection()
       }
-      this.$refs.multipleTable.clearSelection()
-      this.selectedRow.forEach(item => {
-        this.$refs.multipleTable.toggleRowSelection(item, true)
-      })
       this.$emit('postSelect', this.selectedRow)
     },
     dblclick(row) {
@@ -241,7 +265,7 @@ export default {
     selection(val) {
       return helper.selection(val)
     },
-    gender(val){
+    gender(val) {
       return helper.gender(val)
     }
   }

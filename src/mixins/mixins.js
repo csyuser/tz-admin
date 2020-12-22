@@ -106,7 +106,7 @@ export const mixins = {
     },
     addRow() {
       this.dialogType = 'add'
-      this.editFormInfo = {isNeededScope:false}
+      this.editFormInfo = {isNeededScope:'0'}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
@@ -115,8 +115,6 @@ export const mixins = {
       this.editDialogDisabled = false
       if (this.selectedRow.length === 1) {
         this.editFormInfo = this.selectedRow[0]
-        console.log('this.selectedRow[0]')
-        console.log(this.selectedRow[0])
         this.editFormInfo.sort = this.selectedRow[0].sort && parseInt(this.selectedRow[0].sort)
         this.editDialogVisible = true
       } else {
@@ -154,6 +152,7 @@ export const mixins = {
       this.editDialogDisabled = true
     },
     deleteRow() {
+      this.selectedRow.log
       this.deleteIds = []
       if (this.selectedRow.length > 0) {
         this.deleteDialogVisible = true
