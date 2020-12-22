@@ -1,4 +1,4 @@
 {
-    "BASE_URL": "http://192.168.99.132:8080/topcheer"
+    "BASE_URL": "/api"
 }
 

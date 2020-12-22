@@ -76,10 +76,6 @@ export default {
       selectedRow: [],
       colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {
         prop: 'departmentName', label: '部门名称'}, {prop: 'describe', label: '角色描述'}],
-      defaultProps: {
-        children: 'child',
-        label: 'name'
-      },
     }
   },
   mounted() {
