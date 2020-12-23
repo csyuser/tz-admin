@@ -104,9 +104,9 @@ export default {
           Qs.stringify({...this.loginInfo})
       ).then(res => {
         if (res.data.code.toString() === '200') {
+          window.localStorage.setItem('token', res.data.data.token)
           if (res.data.data['userList'].length > 1) {
             this.selectDialogVisible = true
-            window.localStorage.setItem('token', res.data.data.token)
             this.posts = res.data.data['userList']
           } else {
             // this.userId = res.data.data['userList'][0].id
