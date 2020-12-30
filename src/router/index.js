@@ -10,6 +10,7 @@ import Staff from '@/views/permission/Staff'
 import Department from '@/views/permission/Department'
 import Group from '@/views/permission/Group'
 import Permission from '@/views/permission/Permission'
+import Message from '@/components/homePage/Message'
 
 Vue.use(VueRouter)
 
@@ -56,6 +57,10 @@ const routes = [
         path: '/Permission',
         name: 'Permission',
         component: Permission,
+      },{
+        path: '/Message',
+        name: 'Message',
+        component: Message,
       },],
   },
 

@@ -26,7 +26,9 @@
         <span class="link" :class="unClickable" @click="toHomePage()">首页
           <!--          <router-link to="/Homepage" class="homeLink" :class="unClickable">首页</router-link>-->
         </span>
-        <span class="pathName">{{ selected }}</span></header>
+        <span class="pathName">{{ selected }}</span>
+        <Socket class="socket"></Socket>
+      </header>
       <router-view></router-view>
     </div>
   </div>
@@ -34,10 +36,11 @@
 
 <script>
 import SvgIcon from '@/components/SvgIcon'
+import Socket from '@/components/Socket'
 
 export default {
   name: 'NavMenu',
-  components:{SvgIcon},
+  components:{SvgIcon,Socket},
   data() {
     return {
       selected: '',
@@ -126,7 +129,7 @@ $mainBlue: #409eff;
     > header {
       width: 100%;
       height: calc(#{$headerHeight} + 10px);
-      padding-left: 15px;
+      padding:0 15px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid #d8dce5;
@@ -149,6 +152,10 @@ $mainBlue: #409eff;
       > .pathName {
         padding: 0.5em;
         color: #97a8be;
+      }
+      > .socket{
+        margin-left: auto;
+        margin-right: 15px;
       }
     }
   }
