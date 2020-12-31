@@ -1,5 +1,6 @@
 <template>
   <div class="socket-wrap">
+    <el-button @click="xxx">点我</el-button>
     <el-popover
         placement="bottom"
         trigger="click">
@@ -44,7 +45,7 @@ export default {
       console.log('你不配')
     } else {
       console.log('支持WebSocket')
-      let socketUrl = 'ws://192.168.11.240:8080/topcheer/websocket/' + this.userId
+      let socketUrl = 'ws://192.168.99.132:8080/topcheer/websocket/' + this.userId
       console.log(socketUrl)
       if (socket != null) {
         socket.close()
@@ -81,6 +82,11 @@ export default {
     goMessage(){
       if (this.$route.path !== '/Message') this.$router.push('/Message')
       this.$emit('update:pageHeader',{name:'消息中心'})
+    },
+    xxx(){
+      this.axios.get('websocket/websocketSend')
+      .then()
+      .catch()
     }
   }
 }
