@@ -3,7 +3,7 @@
     <section class="title">
       <h1>通知</h1>
       <div class="search">
-        <el-input class="nameSearch" size="small" :value="listInfo.name" placeholder="搜索通知">
+        <el-input class="nameSearch" size="small" v-model="listInfo.name" placeholder="搜索通知">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
         <el-select class="typeSearch" v-model="listInfo.type" placeholder="消息类型" size="small">
