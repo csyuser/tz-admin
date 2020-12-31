@@ -27,7 +27,7 @@
           <!--          <router-link to="/Homepage" class="homeLink" :class="unClickable">首页</router-link>-->
         </span>
         <span class="pathName">{{ selected }}</span>
-        <Socket class="socket"></Socket>
+        <Socket class="socket" @update:pageHeader="selectMenu"></Socket>
       </header>
       <router-view></router-view>
     </div>
@@ -76,14 +76,14 @@ export default {
   methods: {
     selectMenu(list) {
       if (list) {
-        this.selected = ' / ' + list.name + ' / ' + list.parentName
+        this.selected =list['parentName']?' / ' + list['parentName'] +' / ' + list.name:' / ' + list.name
       } else {
         this.selected = ''
       }
       window.localStorage.setItem('selectedMenu', this.selected)
     },
     toHomePage() {
-      if (this.selected!=''){
+      if (this.selected!==''){
         this.selected = ''
         window.localStorage.setItem('selectedMenu', this.selected)
         this.$router.push('/HomePage')

@@ -1,13 +1,21 @@
 <template>
   <div class="socket-wrap">
-    <button @click="xxx">点我</button>
-
     <el-popover
         placement="bottom"
         trigger="click">
       <section class="message-wrap">
         <div class="title">通知</div>
         <ul class="contentList">
+          <li @click="goMessage">消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1</li>
+          <li>消息2</li>
+          <li>消息1</li>
+          <li>消息2</li>
+          <li>消息1</li>
+          <li>消息2</li>
+          <li>消息1</li>
+          <li>消息2</li>
+          <li>消息1</li>
+          <li>消息2</li>
           <li>消息1</li>
           <li>消息2</li>
         </ul>
@@ -70,14 +78,9 @@ export default {
     }
   },
   methods:{
-    xxx(){
-      this.axios.get('websocket/websocketSend')
-      .then((res)=>{
-        console.log(res)
-      })
-    },
     goMessage(){
       if (this.$route.path !== '/Message') this.$router.push('/Message')
+      this.$emit('update:pageHeader',{name:'消息中心'})
     }
   }
 }
@@ -97,7 +100,7 @@ export default {
 }
 
 .message-wrap {
-  min-width: 340px;
+  width: 340px;
   margin: -12px;
 
   > .title {
@@ -106,11 +109,18 @@ export default {
     border-bottom: 1px solid #ddd;
   }
 
-  > .contentList {
+  > ul {
     margin: 0 5px;
+    max-height: 350px;
+    overflow: auto;
     > li{
       padding: 15px;
       border-bottom: 1px solid #ebebeb;
+      line-height: 1.5em;
+      cursor: pointer;
+      &:hover{
+        background: #f9f9f9;
+      }
     }
   }
 
