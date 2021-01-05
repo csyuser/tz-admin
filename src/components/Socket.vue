@@ -1,6 +1,6 @@
 <template>
   <div class="socket-wrap">
-    <el-button @click="xxx">点我</el-button>
+<!--    <el-button @click="xxx">点我</el-button>-->
     <el-popover
         placement="bottom"
         trigger="click">
@@ -83,11 +83,11 @@ export default {
       if (this.$route.path !== '/Message') this.$router.push('/Message')
       this.$emit('update:pageHeader',{name:'消息中心'})
     },
-    xxx(){
-      this.axios.get('websocket/websocketSend')
-      .then()
-      .catch()
-    }
+    // xxx(){
+    //   this.axios.get('websocket/websocketSend')
+    //   .then()
+    //   .catch()
+    // }
   }
 }
 </script>

@@ -28,6 +28,15 @@
         </span>
         <span class="pathName">{{ selected }}</span>
         <Socket class="socket" @update:pageHeader="selectMenu"></Socket>
+        <el-popover placement="bottom" trigger="click" class="user-wrap">
+          <section class="message-content-wrap">
+<!--            <div class="title">user</div>-->
+            <ul class="contentList">
+              <li>退出登录</li>
+            </ul>
+          </section>
+          <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" slot="reference"> user </el-avatar>
+        </el-popover>
       </header>
       <router-view></router-view>
     </div>
@@ -155,9 +164,50 @@ $mainBlue: #409eff;
       }
       > .socket{
         margin-left: auto;
-        margin-right: 15px;
+      }
+      > .user-wrap {
+        margin-left:36px;
+        &:hover{cursor: pointer}
+
       }
     }
+  }
+}
+.message-content-wrap {
+  width: 150px;
+  margin: -12px;
+
+  > .title {
+    padding: 10px 16px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+    color: #E13176;
+    font-size: 20px;
+  }
+
+  > ul {
+    margin: 0 5px;
+    max-height: 350px;
+    overflow: auto;
+    > li{
+      padding: 8px 16px;
+      border-bottom: 1px solid #ebebeb;
+      line-height: 1.5em;
+      cursor: pointer;
+      &:hover{
+        background: #f9f9f9;
+      }
+    }
+  }
+
+  > .dropDown {
+    cursor: pointer;
+    width: 100%;
+    display: inline-block;
+    background: #f9f9f9;
+    padding: 10px 16px;
+    text-align: center;
   }
 }
 </style>
