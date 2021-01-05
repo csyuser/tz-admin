@@ -59,7 +59,11 @@ export default {
       radio1: '',
       posts: [],
       userId: '',
-      token: ''
+      token: '',
+      userInfo:{
+        code:'',
+        name:''
+      },
     }
   },
   watch: {
@@ -111,8 +115,13 @@ export default {
           } else {
             // this.userId = res.data.data['userList'][0].id
             // this.daveUser()
+            this.userInfo.code = res.data.data['userList'][0].code
+            this.userInfo.name = res.data.data['userList'][0].name
             this.$router.push('/HomePage')
           }
+          console.log('this.userInfo')
+          console.log(this.userInfo)
+          window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
         } else {this.$message.error(res.data.msg)}
       })
           .catch()

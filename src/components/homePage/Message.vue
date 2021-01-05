@@ -20,7 +20,7 @@
         <span>{{ beautyTime(message['createTime']) }}</span>
       </li>
     </ul>
-    <el-pagination class="pagination" layout="prev, pager, next,total" :page-size="listInfo.pageSize" :total="count"
+    <el-pagination v-if="hasMessage" class="pagination" layout="prev, pager, next,total" :page-size="listInfo.pageSize" :total="count"
                    @current-change="currentChange"
                    :current-page="listInfo.page">
     </el-pagination>
@@ -43,7 +43,8 @@ export default {
         type: ''
       },
       count: null,
-      messagesList: []
+      messagesList: [],
+      hasMessage:false
     }
   },
   watch: {
@@ -77,7 +78,7 @@ export default {
       }).then((res) => {
         pageLoading.close()
         if (res.data.code.toString() === '200') {
-          console.log(res)
+          res.data.count>0?this.hasMessage=true:false
           this.count = res.data.count
           this.messagesList = res.data.data
         } else {this.$message.error(res.data.msg)}
