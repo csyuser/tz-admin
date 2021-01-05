@@ -45,7 +45,8 @@ export default {
       console.log('你不配')
     } else {
       console.log('支持WebSocket')
-      let socketUrl = 'ws://192.168.99.132:8080/topcheer/websocket/' + this.userId
+      // let socketUrl = this.wsUrl.replace('http','ws')+'/websocket/' + this.userId
+      let socketUrl = this.BASE_URL.replace('http','ws')+'/websocket/' + this.userId
       console.log(socketUrl)
       if (socket != null) {
         socket.close()
