@@ -44,7 +44,6 @@ axios.interceptors.request.use(function (config) {
 });
 axios.interceptors.response.use(function (response) {
   if (response.data.code && response.data.code.toString() === '-200'){
-    ElementUI.Message.error('请重新登录')
     router.push('/')
   }
   return response;
