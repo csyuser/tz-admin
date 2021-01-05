@@ -20,6 +20,7 @@ let startApp = function () {
   axios.get('/config.json').then((res) => {
     // 基础地址
     Vue.prototype.BASE_URL = res.data.BASE_URL;
+    Vue.prototype.wsUrl = res.data.wsUrl
     new Vue({
       router,
       store,

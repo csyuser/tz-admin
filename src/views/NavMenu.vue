@@ -36,7 +36,10 @@
             </ul>
 <!--            <p class="dropDown">退出登录</p>-->
           </section>
-          <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" slot="reference"> user </el-avatar>
+          <div class="userInfo" slot="reference">
+            <el-avatar class="portrait" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"> user </el-avatar>
+            <i class="el-icon-caret-bottom"></i>
+          </div>
         </el-popover>
       </header>
       <router-view></router-view>
@@ -185,6 +188,12 @@ $mainBlue: #409eff;
 
       }
     }
+  }
+}
+.userInfo{
+  display: flex;align-items: center;
+  .portrait{
+    margin-right: 0.2em;
   }
 }
 .message-content-wrap {
