@@ -2,20 +2,20 @@ const path =require ('path') //引入一个path模块，是nodejs的一个模块
 
 module.exports = {
   lintOnSave: false,
-  devServer: {
-    proxy:{
-      '/api': {
-        // target: 'http://192.168.11.240:8080/topcheer',
-        target: 'http://192.168.30.220:8080/topcheer',
-        // target: 'http://192.168.99.132:8080/topcheer',
-        ws: true,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '/', // rewrite path
-        },
-      },
-    }
-  },
+  // devServer: {
+  //   proxy:{
+  //     '/api': {
+  //       // target: 'http://192.168.11.240:8080/topcheer',
+  //       target: 'http://192.168.30.220:8080/topcheer',
+  //       // target: 'http://192.168.99.132:8080/topcheer',
+  //       ws: true,
+  //       changeOrigin: true,
+  //       pathRewrite: {
+  //         '^/api': '/', // rewrite path
+  //       },
+  //     },
+  //   }
+  // },
   chainWebpack: config =>{
     const dir = path.resolve(__dirname, 'src/assets/icons')
 //确定icon所在的目录，__dirname当前目录的意思
