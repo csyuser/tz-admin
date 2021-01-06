@@ -50,7 +50,7 @@ export const mixins = {
         email: [{type: 'email', required: true, message: '邮箱格式不正确', trigger: 'blur'}],
         idCard: [{required: true, message: '身份证号不能为空', trigger: 'blur'},
           {min: 18, max: 18, message: '请输入正确的身份证号', trigger: 'blur'}],
-        entryTime: [{type: 'date', required: true, message: '入职时间不能为空', trigger: 'change'}],
+        entryTime: [{required: true, message: '入职时间不能为空', trigger: 'change'}],
         url: [{required: true, message: '菜单地址不能为空', trigger: 'blur'}],
         classId: [{required: true, message: '部门分类不能为空', trigger: 'change'}],
         level2: [{required: true, message: '部门级别不能为空', trigger: 'change'}],
@@ -128,7 +128,8 @@ export const mixins = {
           let editData = {}
           if (this.dialogType === 'add') {
             editData = this.editFormInfo
-          } else if (this.dialogType === 'update') {editData = {id: this.selectedRow.id, ...this.editFormInfo}}
+          } else if (this.dialogType === 'update') {
+            editData = {id: this.selectedRow.id, ...this.editFormInfo}}
           if (this.dialogType !== 'view') {
             this.axios.post(saveUrl, {...editData})
               .then(res => {

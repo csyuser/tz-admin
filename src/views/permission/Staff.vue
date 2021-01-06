@@ -49,10 +49,10 @@
           <el-input v-model="editFormInfo['idCard']" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="入职时间" prop="entryTime">
-          <el-date-picker v-model="editFormInfo['entryTime']" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
+          <el-date-picker v-model="editFormInfo['entryTime']" value-format="yyyy-MM-dd" placeholder="选择日期" style="width: 215px"></el-date-picker>
         </el-form-item>
         <el-form-item label="离职时间">
-          <el-date-picker v-model="editFormInfo['departureTime']" type="date" placeholder="选择日期" style="width: 215px"></el-date-picker>
+          <el-date-picker v-model="editFormInfo['departureTime']" value-format="yyyy-MM-dd" placeholder="选择日期" style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

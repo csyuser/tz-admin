@@ -46,6 +46,7 @@ axios.interceptors.request.use(function (config) {
 })
 axios.interceptors.response.use(function (response) {
   if (response.data.code && response.data.code.toString() === '-200') {
+    console.log('执行了')
     LoginAgain()
   }
   return response
