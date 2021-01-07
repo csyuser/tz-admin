@@ -12,33 +12,42 @@
 </template>
 
 <script>
+import Qs from 'qs'
+
 export default {
   name: 'AvatarUploader',
   data() {
     return {
       imageUrl: '',
-      imgId:''
+      imgId: ''
     }
   },
-  computed:{
-    uploadUrl: function (){
+  computed: {
+    uploadUrl: function () {
       return this.BASE_URL + '/file/upload'
     },
-    headersToken:function (){
+    headersToken: function () {
       return {Authorization: window.localStorage.getItem('token')}
     }
   },
-  watch:{
-    imgId(newValue,oldValue){
-      if (oldValue !== ''){
-        console.log(oldValue)
+  watch: {
+    imgId(newValue, oldValue) {
+      if (oldValue !== '') {
+        this.axios.post('/file/deleteFileById',
+            Qs.stringify({id: oldValue})
+        )
+            .then(res => {
+              if (res.data.code.toString() != '200') {this.$message.error(res.data.msg)}
+            })
+            .catch()
       }
     }
   },
   methods: {
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      this.imgId = res.data.data.id
+      this.imgId = res.data.id
+      this.$emit('update:img',this.imgId)
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'

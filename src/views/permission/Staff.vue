@@ -8,14 +8,20 @@
         <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @currentChange="currentChange"
-           @add="add" @update="update" @postSelect="selectRow"
-           @delete="deleteRows" @dblclick="view"></Table>
+    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" :is-card="isCard"
+           @currentChange="currentChange" @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows"
+           @dblclick="view">
+      <span class="showCard">
+        <span>卡片显示</span>
+        <el-switch v-model="isCard"></el-switch>
+      </span>
+    </Table>
+    <Card v-if="isCard"></Card>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
       <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small" class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="头像" class="avatar">
-          <AvatarUploader></AvatarUploader>
+          <AvatarUploader @update:img="updateImg"></AvatarUploader>
         </el-form-item>
         <el-form-item label="人员名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
@@ -25,12 +31,14 @@
         </el-form-item>
         <el-form-item label="职务" prop="post">
           <el-select v-model="editFormInfo.post">
-            <el-option :label="item['dropName']" :value="item['id']" v-for="item in postDrop" :key="item.id"></el-option>
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in postDrop"
+                       :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="职级" prop="rank">
           <el-select v-model="editFormInfo['rank']">
-            <el-option :label="item['dropName']" :value="item['id']" v-for="item in rankDrop" :key="item.id"></el-option>
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in rankDrop"
+                       :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
@@ -40,7 +48,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
-          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps"/>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
           <el-input v-model="editFormInfo.phone" suffix-icon="xxx"></el-input>
@@ -52,15 +60,18 @@
           <el-input v-model="editFormInfo['idCard']" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="入职时间" prop="entryTime">
-          <el-date-picker v-model="editFormInfo['entryTime']" value-format="yyyy-MM-dd" placeholder="选择日期" style="width: 215px"></el-date-picker>
+          <el-date-picker v-model="editFormInfo['entryTime']" value-format="yyyy-MM-dd" placeholder="选择日期"
+                          style="width: 215px"></el-date-picker>
         </el-form-item>
         <el-form-item label="离职时间">
-          <el-date-picker v-model="editFormInfo['departureTime']" value-format="yyyy-MM-dd" placeholder="选择日期" style="width: 215px"></el-date-picker>
+          <el-date-picker v-model="editFormInfo['departureTime']" value-format="yyyy-MM-dd" placeholder="选择日期"
+                          style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
       <div class='userInfo' v-if="this.dialogType !== 'add'">
         <h3>用户列表</h3>
-        <Table :colsHead="userColsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" :needButton="false"></Table>
+        <Table :colsHead="userColsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
+               :needButton="false"></Table>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
@@ -78,32 +89,41 @@ import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import AvatarUploader from '@/components/permission/AvatarUploader'
+import Card from '@/components/permission/Card'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Staff',
-  components: {Table,DeleteRow,SelectTree,AvatarUploader},
-  mixins:[mixins],
+  components: {Table, DeleteRow, SelectTree, AvatarUploader,Card},
+  mixins: [mixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'},
-        {prop: 'rankName', label: '职级'}, {prop: 'sex', label: '性别'},{prop: 'departmentName', label: '部门名称'},{prop: 'phone', label: '电话'},
-        {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'}, {prop: 'entryTime', label: '入职时间'},{prop: 'departureTime', label: '离职时间'}],
-      userInfo:{},
-      userColsHead:[{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'}]
+        {prop: 'rankName', label: '职级'}, {prop: 'sex', label: '性别'}, {
+          prop: 'departmentName',
+          label: '部门名称'
+        }, {prop: 'phone', label: '电话'},
+        {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'}, {
+          prop: 'entryTime',
+          label: '入职时间'
+        }, {prop: 'departureTime', label: '离职时间'}],
+      userInfo: {},
+      userColsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'}],
+      isCard: false,
+      imgId:''
     }
   },
   mounted() {
     this.getPages('/person/page')
-      this.getDepartmentTree('/department/selectDepartmentTree')
-      this.getDropList('3')
-      this.getDropList('7')
+    this.getDepartmentTree('/department/selectDepartmentTree')
+    this.getDropList('3')
+    this.getDropList('7')
   },
   methods: {
-    currentChange(val,row){
+    currentChange(val, row) {
       this.currentPageChange(val, row, '/person/page')
     },
-    getUserPages(){console.log('请求用户列表')},
+    getUserPages() {console.log('请求用户列表')},
 //表格增删改查
     selectRow(val) {
       this.selectedRows(val)
@@ -120,17 +140,17 @@ export default {
       this.updateRow()
       if (this.editDialogVisible) {this.getUserPages()}
     },
-    confirmEdit(){
+    confirmEdit() {
       this.confirmEditRow('/person/save', '/person/page')
     },
-    view(row){
+    view(row) {
       this.dialogTitle = '查看权限信息'
       this.viewRow(row)
     },
     deleteRows() {
       this.deleteRow()
     },
-    confirmDelete(){
+    confirmDelete() {
       this.confirmDeleteRow('/person/delete', '/person/page')
     },
     handleClose(done) {
@@ -140,8 +160,11 @@ export default {
           })
           .catch(() => {})
     },
+    updateImg(value){
+      this.imgId = value
+    }
+  },
 
-  }
 }
 </script>
 
@@ -150,25 +173,39 @@ export default {
   padding: 20px;
 
   > .searchForm {
+    position: relative;
+
     > .selectInput {
       width: 100px;
     }
   }
+
+  > .table {
+    .showCard {
+      margin-left: 10px;
+      > span{margin-right: 0.5em}
+    }
+  }
+
   .addForm {
     margin-top: -15px;
+
     > .el-form-item {
       margin-bottom: 18px;
     }
-    > .avatar{
+
+    > .avatar {
       width: 100%;
       display: flex;
       align-items: center;
     }
   }
-  .userInfo{
+
+  .userInfo {
     border-top: 1px solid #ebebeb;
     padding: 15px 0;
-    > h3{
+
+    > h3 {
       font-weight: bold;
       margin-bottom: 10px;
     }

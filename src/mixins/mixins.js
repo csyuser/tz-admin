@@ -122,14 +122,16 @@ export const mixins = {
       }
     },
     confirmEditRow(saveUrl, pageUrl) {
+      console.log('this.imgId')
+      console.log(this.imgId)
       this.$refs.editDialog.validate((valid) => {
         if (valid) {
           this.editDialogVisible = false
           let editData = {}
           if (this.dialogType === 'add') {
-            editData = this.editFormInfo
+            editData = {...this.editFormInfo,photoId:this.imgId}
           } else if (this.dialogType === 'update') {
-            editData = {id: this.selectedRow.id, ...this.editFormInfo}}
+            editData = {id: this.selectedRow.id, ...this.editFormInfo,photoId:this.imgId}}
           if (this.dialogType !== 'view') {
             this.axios.post(saveUrl, {...editData})
               .then(res => {
