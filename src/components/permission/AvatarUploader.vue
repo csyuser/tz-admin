@@ -38,8 +38,7 @@ export default {
   methods: {
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      console.log('上传成功')
-      console.log(res)
+      this.imgId = res.data.data.id
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'

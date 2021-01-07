@@ -95,14 +95,15 @@ export default {
   },
   mounted() {
     this.getPages('/person/page')
-    this.getDepartmentTree('/department/selectDepartmentTree')
-    this.getDropList('3')
-    this.getDropList('7')
+      this.getDepartmentTree('/department/selectDepartmentTree')
+      this.getDropList('3')
+      this.getDropList('7')
   },
   methods: {
     currentChange(val,row){
       this.currentPageChange(val, row, '/person/page')
     },
+    getUserPages(){console.log('请求用户列表')},
 //表格增删改查
     selectRow(val) {
       this.selectedRows(val)
@@ -117,6 +118,7 @@ export default {
     update() {
       this.dialogTitle = '编辑人员'
       this.updateRow()
+      if (this.editDialogVisible) {this.getUserPages()}
     },
     confirmEdit(){
       this.confirmEditRow('/person/save', '/person/page')
