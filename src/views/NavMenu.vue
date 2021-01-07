@@ -27,7 +27,7 @@
           <!--          <router-link to="/Homepage" class="homeLink" :class="unClickable">首页</router-link>-->
         </span>
         <span class="pathName">{{ selected }}</span>
-        <Socket class="socket" @update:pageHeader="selectMenu"></Socket>
+        <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-bell"></Socket>
         <el-popover placement="bottom" trigger="click" class="user-wrap">
           <section class="message-content-wrap">
             <div class="title">{{this.userInfo.name}}</div>

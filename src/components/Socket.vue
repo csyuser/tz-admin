@@ -1,6 +1,5 @@
 <template>
   <div class="socket-wrap">
-<!--    <el-button @click="xxx">点我</el-button>-->
     <el-popover
         placement="bottom"
         trigger="click">
@@ -23,7 +22,7 @@
         <a class="dropDown" @click="goMessage">查看全部通知</a>
       </section>
       <el-badge slot="reference" :value="newsCount" :max="max" class="item">
-        <i class="el-icon-bell"></i>
+        <i :class="iconName"></i>
       </el-badge>
     </el-popover>
   </div>
@@ -32,6 +31,12 @@
 <script>
 export default {
   name: 'Socket',
+  props:{
+    iconName:{
+      type:String,
+      required:true,
+    }
+  },
   data() {
     return {
       newsCount: 10,

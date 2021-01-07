@@ -9,10 +9,10 @@ export default new Vuex.Store({
   state: {
     selectedMenu:'',
     userInfo:{},
-    // cellStyle:{
-    //   'font-size':'12px',
-    //   'padding':'11px 0',
-    // },
+    cellStyle:{
+      'font-size':'12px',
+      'padding':'11px 0',
+    },
     // editDialogVisible:false,
     // editDialogDisabled:true,
     // deleteDialogVisible:false,

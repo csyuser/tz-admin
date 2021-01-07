@@ -14,6 +14,9 @@
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
       <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small" class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="头像" class="avatar">
+          <AvatarUploader></AvatarUploader>
+        </el-form-item>
         <el-form-item label="人员名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
@@ -32,8 +35,8 @@
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-select v-model="editFormInfo['sex']">
-            <el-option label="女" :value="0"></el-option>
-            <el-option label="男" :value="1"></el-option>
+            <el-option label="女" value="0"></el-option>
+            <el-option label="男" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
@@ -55,6 +58,10 @@
           <el-date-picker v-model="editFormInfo['departureTime']" value-format="yyyy-MM-dd" placeholder="选择日期" style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
+      <div class='userInfo' v-if="this.dialogType !== 'add'">
+        <h3>用户列表</h3>
+        <Table :colsHead="userColsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" :needButton="false"></Table>
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -70,17 +77,20 @@
 import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
+import AvatarUploader from '@/components/permission/AvatarUploader'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Staff',
-  components: {Table,DeleteRow,SelectTree},
+  components: {Table,DeleteRow,SelectTree,AvatarUploader},
   mixins:[mixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'},
         {prop: 'rankName', label: '职级'}, {prop: 'sex', label: '性别'},{prop: 'departmentName', label: '部门名称'},{prop: 'phone', label: '电话'},
         {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'}, {prop: 'entryTime', label: '入职时间'},{prop: 'departureTime', label: '离职时间'}],
+      userInfo:{},
+      userColsHead:[{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'}]
     }
   },
   mounted() {
@@ -143,8 +153,22 @@ export default {
     }
   }
   .addForm {
+    margin-top: -15px;
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .avatar{
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+  }
+  .userInfo{
+    border-top: 1px solid #ebebeb;
+    padding: 15px 0;
+    > h3{
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   }
 

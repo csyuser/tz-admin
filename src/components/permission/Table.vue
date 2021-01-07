@@ -1,6 +1,6 @@
 <template>
   <div class="table-wrap">
-    <div class="buttons">
+    <div class="buttons" v-if="needButton">
       <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增
       </el-button>
       <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑
@@ -23,7 +23,7 @@
                 :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
                 @select-all="selectAllRows" @expand-change=expandChange
                 :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="selection" width="55" v-if="needButton"></el-table-column>
         <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"
@@ -61,6 +61,10 @@ export default {
     pageSize: {type: Number},
     page: {type: Number},
     tableName: {type: String},
+    needButton:{
+      type:Boolean,
+      default:true
+    }
     // tableName:{type: Array},
   },
   data() {

@@ -38,7 +38,7 @@ function LoginAgain() {
 
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('token')
-  config.headers.common['Authorization'] = token ? 'Bearer' + ' ' + token : ''
+  config.headers.common['Authorization'] = token ? token : ''
   config.baseURL = getBseUrl()
   return config
 }, function (error) {
