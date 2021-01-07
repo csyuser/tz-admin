@@ -116,6 +116,7 @@ export const mixins = {
       if (this.selectedRow.length === 1) {
         this.editFormInfo = this.selectedRow[0]
         this.editFormInfo.sort = this.selectedRow[0].sort && parseInt(this.selectedRow[0].sort)
+        this.imgId = this.editFormInfo['photoId']
         this.editDialogVisible = true
       } else {
         this.$message.error('请选择一行数据')

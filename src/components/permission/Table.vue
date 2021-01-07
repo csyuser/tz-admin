@@ -8,7 +8,7 @@
       <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除
       </el-button>
       <slot></slot>
-      <el-popover placement="bottom" trigger="click" class="popover-button">
+      <el-popover placement="bottom" trigger="click" class="popover-button" v-if="!isCard">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
         <el-checkbox-group v-model="checkedLabels" :style="{display:'flex','flex-direction':'column'}"
                            @change="handleCheckedChange">
@@ -17,7 +17,7 @@
         <el-button size="small" icon="el-icon-s-grid" class="checkbox-button" slot="reference"></el-button>
       </el-popover>
     </div>
-    <div class="table-wrap">
+    <div class="table-wrap" v-if="!isCard">
       <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
                 :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
                 :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
@@ -64,7 +64,11 @@ export default {
     needButton:{
       type:Boolean,
       default:true
-    }
+    },
+    isCard:{
+      type:Boolean,
+      default: false
+    },
     // tableName:{type: Array},
   },
   data() {

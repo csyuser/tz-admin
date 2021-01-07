@@ -6,7 +6,7 @@
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload">
-    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+    <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
   </el-upload>
 </template>
@@ -19,7 +19,16 @@ export default {
   data() {
     return {
       imageUrl: '',
-      imgId: ''
+    }
+  },
+  props:{
+    imgPath:{
+      type:String,
+      default:''
+    },
+    imgId: {
+      type:String,
+      default:''
     }
   },
   computed: {
@@ -30,24 +39,32 @@ export default {
       return {Authorization: window.localStorage.getItem('token')}
     }
   },
+  mounted() {
+    this.imageUrl = this.imgPath
+  },
   watch: {
-    imgId(newValue, oldValue) {
-      if (oldValue !== '') {
-        this.axios.post('/file/deleteFileById',
-            Qs.stringify({id: oldValue})
-        )
-            .then(res => {
-              if (res.data.code.toString() != '200') {this.$message.error(res.data.msg)}
-            })
-            .catch()
-      }
+    imgId: {
+      handler(newValue, oldValue) {
+        if (oldValue && oldValue !== '') {
+          this.axios.post('/file/deleteFileById',
+              Qs.stringify({id: oldValue})
+          )
+              .then(res => {
+                if (res.data.code.toString() !== '200') {this.$message.error(res.data.msg)}
+              })
+              .catch()
+        }
+      },
+      immediate: true,
+    },
+    imgPath(newValue){
+      this.imageUrl = newValue
     }
   },
   methods: {
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      this.imgId = res.data.id
-      this.$emit('update:img',this.imgId)
+      this.$emit('update:img',res.data.id)
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
@@ -67,7 +84,7 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-$avatarWidth: 50px;
+$avatar-width: 50px;
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -83,9 +100,9 @@ $avatarWidth: 50px;
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: $avatarWidth;
-  height: $avatarWidth;
-  line-height: $avatarWidth;
+  width: $avatar-width;
+  height: $avatar-width;
+  line-height: $avatar-width;
   text-align: center;
   border: 1px dashed #d9d9d9;
   background: #fbfdff;
@@ -93,8 +110,8 @@ $avatarWidth: 50px;
 }
 
 .avatar {
-  width: $avatarWidth;
-  height: $avatarWidth;
+  width: $avatar-width;
+  height: $avatar-width;
   display: block;
 }
 </style>

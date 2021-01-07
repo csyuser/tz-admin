@@ -8,7 +8,8 @@
         <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" :is-card="isCard"
+    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
+           :is-card="isCard"
            @currentChange="currentChange" @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows"
            @dblclick="view">
       <span class="showCard">
@@ -16,12 +17,14 @@
         <el-switch v-model="isCard"></el-switch>
       </span>
     </Table>
-    <Card v-if="isCard"></Card>
+    <Card v-if="isCard" :title-list="cardListHead"></Card>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
-      <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small" class="addForm"
+      <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small"
+               class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="头像" class="avatar">
-          <AvatarUploader @update:img="updateImg"></AvatarUploader>
+          <AvatarUploader @update:img="updateImg" :img-path="editFormInfo['photoPath']"
+                          :img-id="imgId"></AvatarUploader>
         </el-form-item>
         <el-form-item label="人员名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
@@ -94,23 +97,19 @@ import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Staff',
-  components: {Table, DeleteRow, SelectTree, AvatarUploader,Card},
+  components: {Table, DeleteRow, SelectTree, AvatarUploader, Card},
   mixins: [mixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'},
-        {prop: 'rankName', label: '职级'}, {prop: 'sex', label: '性别'}, {
-          prop: 'departmentName',
-          label: '部门名称'
-        }, {prop: 'phone', label: '电话'},
-        {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'}, {
-          prop: 'entryTime',
-          label: '入职时间'
-        }, {prop: 'departureTime', label: '离职时间'}],
+        {prop: 'rankName', label: '职级'}, {prop: 'sex', label: '性别'}, {prop: 'departmentName', label: '部门名称'},
+        {prop: 'phone', label: '电话'}, {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'},
+        {prop: 'entryTime', label: '入职时间'}, {prop: 'departureTime', label: '离职时间'}],
       userInfo: {},
       userColsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'}],
       isCard: false,
-      imgId:''
+      imgId: '',
+      cardListHead: [{prop: 'name', label: '人员名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'phone', label: '联系电话'}, {prop: 'email', label: '电子邮箱'}]
     }
   },
   mounted() {
@@ -160,7 +159,7 @@ export default {
           })
           .catch(() => {})
     },
-    updateImg(value){
+    updateImg(value) {
       this.imgId = value
     }
   },
@@ -183,7 +182,10 @@ export default {
   > .table {
     .showCard {
       margin-left: 10px;
-      > span{margin-right: 0.5em}
+
+      > span {
+        margin-right: 0.5em
+      }
     }
   }
 
