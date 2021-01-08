@@ -16,9 +16,9 @@ export const mixins = {
       defaultProps: {
         children: 'children',
         label: 'name',
-        value:'id',
+        value: 'id',
       },
-      treeData:[],
+      treeData: [],
       departmentClassifyDrop: [],
       departmentLevelDrop: [],
       rankDrop: [],
@@ -62,7 +62,7 @@ export const mixins = {
     }
   },
   methods: {
-    getDepartmentTree(treeUrl){
+    getDepartmentTree(treeUrl) {
       this.axios.get(treeUrl)
         .then(res => {
           if (res.data.code.toString() === '200') {
@@ -72,7 +72,7 @@ export const mixins = {
         .catch()
     },
     getPages(url, formInline) {
-      this.axios.get( url, {
+      this.axios.get(url, {
         params: {
           page: this.page,
           pageSize: this.pageSize,
@@ -106,33 +106,36 @@ export const mixins = {
     },
     addRow() {
       this.dialogType = 'add'
-      this.editFormInfo = {isNeededScope:'0'}
+      this.editFormInfo = {isNeededScope: '0'}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
     updateRow() {
       this.dialogType = 'update'
       this.editDialogDisabled = false
-      if (this.selectedRow.length === 1) {
-        this.editFormInfo = this.selectedRow[0]
-        this.editFormInfo.sort = this.selectedRow[0].sort && parseInt(this.selectedRow[0].sort)
-        this.imgId = this.editFormInfo['photoId']
-        this.editDialogVisible = true
-      } else {
-        this.$message.error('请选择一行数据')
-      }
+      // if (this.selectedRow.length === 1) {
+      //   this.editFormInfo = this.selectedRow[0]
+      //   this.editFormInfo.sort = this.selectedRow[0].sort && parseInt(this.selectedRow[0].sort)
+      //   this.imgId = this.editFormInfo['photoId']
+      //   this.editDialogVisible = true
+      // } else {
+      //   this.$message.error('请选择一行数据')
+      // }
+      let info = this.getMessage()
+      this.editFormInfo = info
+      this.editFormInfo.sort = info.sort && parseInt(info.sort)
+      this.imgId = info['photoId']
     },
     confirmEditRow(saveUrl, pageUrl) {
-      console.log('this.imgId')
-      console.log(this.imgId)
       this.$refs.editDialog.validate((valid) => {
         if (valid) {
           this.editDialogVisible = false
           let editData = {}
           if (this.dialogType === 'add') {
-            editData = {...this.editFormInfo,photoId:this.imgId}
+            editData = {...this.editFormInfo, photoId: this.imgId}
           } else if (this.dialogType === 'update') {
-            editData = {id: this.selectedRow.id, ...this.editFormInfo,photoId:this.imgId}}
+            editData = {id: this.selectedRow.id, ...this.editFormInfo, photoId: this.imgId}
+          }
           if (this.dialogType !== 'view') {
             this.axios.post(saveUrl, {...editData})
               .then(res => {
@@ -148,10 +151,17 @@ export const mixins = {
         }
       })
     },
-    viewRow(row) {
+    viewRow(row,cardId) {
+      let info
+      if (this.isCard){
+        this.tableDatas.data.forEach(item=>{
+          if (item.id === cardId) {info = item}
+        })
+      }else {info = row}
+      console.log(info)
       this.dialogType = 'view'
-      this.editFormInfo = row
-      this.editFormInfo.sort = row.sort && parseInt(row.sort)
+      this.editFormInfo = info
+      this.editFormInfo.sort = info.sort && parseInt(row.sort)
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },
@@ -177,6 +187,23 @@ export const mixins = {
           } else {this.$message.error(this.data.msg)}
         })
         .catch(error => {this.$message.error('删除失败' + error)})
+    },
+//获取行或者卡片数据
+    getMessage() {
+      console.log('this.cardCheckList')
+      console.log(this.cardCheckList)
+      let info = {}
+      if (this.isCard && this.cardCheckList.length === 1){
+        let cardId = this.cardCheckList[0]
+        this.tableDatas.data.forEach(item=>{
+          if (item.id === cardId) info = item
+        })
+        this.editDialogVisible = true
+      }else if (!this.isCard && this.selectedRow.length === 1){
+        info = this.selectedRow[0]
+        this.editDialogVisible = true
+      }else {this.$message.error('请选择一行数据')}
+      return info
     },
 //下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务
     getDropList(key) {

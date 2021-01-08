@@ -17,14 +17,13 @@
         <el-switch v-model="isCard"></el-switch>
       </span>
     </Table>
-    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data"></Card>
+    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" @update:cardCheck="cardCheck" @dblclickCard="view2"></Card>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
       <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="头像" class="avatar">
-          <AvatarUploader @update:img="updateImg" :img-path="editFormInfo['photoPath']"
-                          :img-id="imgId"></AvatarUploader>
+          <AvatarUploader @update:img="updateImg" :img-path="editFormInfo['photoPath']"></AvatarUploader>
         </el-form-item>
         <el-form-item label="人员名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
@@ -109,6 +108,7 @@ export default {
       userColsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'}],
       isCard: false,
       imgId: '',
+      cardCheckList:[],
       cardListHead: [{prop: 'name', label: '人员名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'phone', label: '联系电话'}, {prop: 'email', label: '电子邮箱'}]
     }
   },
@@ -146,6 +146,9 @@ export default {
       this.dialogTitle = '查看权限信息'
       this.viewRow(row)
     },
+    view2(id){
+      this.viewRow('',id)
+    },
     deleteRows() {
       this.deleteRow()
     },
@@ -159,8 +162,12 @@ export default {
           })
           .catch(() => {})
     },
+//获取子组件的数据
     updateImg(value) {
       this.imgId = value
+    },
+    cardCheck(val){
+      this.cardCheckList = val
     }
   },
 

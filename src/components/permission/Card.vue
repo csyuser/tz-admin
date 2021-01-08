@@ -1,17 +1,19 @@
 <template>
-  <el-checkbox-group v-model="checkList" class="checkCard" ref="checkCard">
-    <el-card class="box-card" v-for="list in cardList" :key="list.id" ref="boxCard">
-      <div class="avatar">
-        <el-avatar :size="80" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-        <el-checkbox :label="list.id" class="checkCards"></el-checkbox>
-      </div>
-      <el-form label-position="right" label-width="70px" :model="list" size="small" class="content">
-        <el-form-item :label="title.label" v-for="title in titleList" :key="title.prop" class="contentList">
-          <el-input v-model="list[title.prop]" class="input-wrap" readonly></el-input>
-        </el-form-item>
-      </el-form>
-    </el-card>
-  </el-checkbox-group>
+  <div class="cardWrap">
+    <el-checkbox-group v-model="checkList" class="checkCard" ref="checkCard">
+      <el-card class="box-card" v-for="list in cardList" :key="list.id" ref="boxCard">
+        <div class="avatar"  @dblclick="$emit('dblclickCard',list.id)">
+          <el-avatar :size="80" :src="list.photoPath"></el-avatar>
+          <el-checkbox :label="list.id" class="checkCards" @change="checkChanged"></el-checkbox>
+        </div>
+        <el-form label-position="right" label-width="70px" :model="list" size="small" class="content">
+          <el-form-item :label="title.label" v-for="title in titleList" :key="title.prop" class="contentList">
+            <el-input v-model="list[title.prop]" class="input-wrap" readonly></el-input>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </el-checkbox-group>
+  </div>
 </template>
 
 <script>
@@ -29,6 +31,15 @@ export default {
       required: true
     }
   },
+  methods: {
+    checkChanged() {
+      this.$emit('update:cardCheck', this.checkList)
+    },
+    shishiClick(){
+      console.log('双击了')
+    }
+  },
+
 }
 </script>
 
@@ -39,6 +50,10 @@ export default {
   flex-wrap: wrap;
   font-size: inherit;
   margin-top: 20px;
+
+  &:hover {
+    cursor: pointer
+  }
 
   .box-card {
     margin-bottom: 10px;
