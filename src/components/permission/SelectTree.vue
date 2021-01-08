@@ -4,7 +4,7 @@
              :props="props" :expand-on-click-node="false" :filter-node-method="filterNode" :default-expand-all="false"
              @node-click="onClickNode">
     </el-tree>
-    <el-input slot="reference" ref="input" v-model="labelModel" clearable  class="xxx"
+    <el-input slot="reference" ref="input" v-model="labelModel" clearable
               :style="`width: ${width}px`" :class="{ 'rotate': showStatus }" suffix-icon="el-icon-arrow-down"
               :placeholder="placeholder">
     </el-input>
@@ -175,29 +175,39 @@ export default {
   cursor: pointer;
   overflow: hidden;
 }
+
 .el-input.el-input--suffix.rotate .el-input__suffix {
   transform: rotate(180deg);
 }
+
 .select-tree {
   max-height: 350px;
   overflow-y: scroll;
 }
+
 /* 菜单滚动条 */
 .select-tree::-webkit-scrollbar {
   z-index: 11;
   width: 6px;
 }
+
 .select-tree::-webkit-scrollbar-track,
 .select-tree::-webkit-scrollbar-corner {
   background: #fff;
 }
+
 .select-tree::-webkit-scrollbar-thumb {
   border-radius: 5px;
   width: 6px;
   background: #b4bccc;
 }
+
 .select-tree::-webkit-scrollbar-track-piece {
   background: #fff;
   width: 6px;
+}
+
+.el-form-item__error {
+  margin-top: -10px;
 }
 </style>

@@ -70,11 +70,6 @@
                           style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
-      <div class='userInfo' v-if="this.dialogType !== 'add'">
-        <h3>用户列表</h3>
-        <Table :colsHead="userColsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
-               :needButton="false"></Table>
-      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -105,7 +100,6 @@ export default {
         {prop: 'phone', label: '电话'}, {prop: 'email', label: '电子邮箱'}, {prop: 'idCard', label: '身份证号'},
         {prop: 'entryTime', label: '入职时间'}, {prop: 'departureTime', label: '离职时间'}],
       userInfo: {},
-      userColsHead: [{prop: 'name', label: '人员名称'}, {prop: 'code', label: '员工编码'}, {prop: 'postName', label: '职务'}],
       isCard: false,
       imgId: '',
       cardCheckList:[],
