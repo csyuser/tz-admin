@@ -8,7 +8,8 @@
         </div>
         <el-form label-position="right" label-width="70px" :model="list" size="small" class="content">
           <el-form-item :label="title.label" v-for="title in titleList" :key="title.prop" class="contentList">
-            <el-input v-model="list[title.prop]" class="input-wrap" readonly></el-input>
+            <el-input v-model="list[title.prop]" :class="`${inputWidth}-input-wrap`" v-if="title.prop!== 'status'" readonly></el-input>
+            <el-input :value="userStatus(list[title.prop])" :class="`${inputWidth}-input-wrap`" v-if="title.prop === 'status'" readonly></el-input>
           </el-form-item>
         </el-form>
       </el-card>
@@ -17,6 +18,7 @@
 </template>
 
 <script>
+import {helper} from '@/views/method'
 export default {
   name: 'Card',
   data() {
@@ -29,11 +31,16 @@ export default {
     cardList: {
       type: Array,
       required: true
-    }
+    },
+    inputWidth:{type:String}
   },
   methods: {
     checkChanged() {
       this.$emit('update:cardCheck', this.checkList)
+    },
+    //用户状态，用户状态1正常2锁定3注销
+    userStatus(level) {
+      return helper.userStatus(level)
     },
   },
 
@@ -89,7 +96,15 @@ export default {
       .contentList {
         margin: 0;
 
-        .input-wrap ::v-deep {
+        .small-input-wrap ::v-deep {
+          > input {
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            width: 90px;
+          }
+        }
+        .middle-input-wrap ::v-deep {
           > input {
             border: none;
             border-radius: 0;

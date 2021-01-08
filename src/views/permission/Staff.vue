@@ -8,8 +8,7 @@
         <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
-           :is-card="isCard"
+    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" :is-card="isCard"
            @currentChange="currentChange" @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows"
            @dblclick="view">
       <span class="showCard">
@@ -17,7 +16,7 @@
         <el-switch v-model="isCard"></el-switch>
       </span>
     </Table>
-    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
+    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" input-width="middle" @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
       <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"

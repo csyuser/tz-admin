@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
-           @currentChange="currentChange"
+           @currentChange="currentChange" class="table" :is-card="isCard"
            @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows" @dblclick="view">
       <el-button size="small" class="update" @click="relatedPost">
         <SvgIcon icon-name="post"></SvgIcon>
@@ -19,7 +19,12 @@
         <SvgIcon icon-name="group"></SvgIcon>
         关联小组
       </el-button>
+      <span class="showCard">
+        <span>卡片显示</span>
+        <el-switch v-model="isCard"></el-switch>
+      </span>
     </Table>
+    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" input-width="small" @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
     <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
       <el-transfer
           filterable
@@ -66,7 +71,7 @@
         </el-form-item>
       </el-form>
       <StaffDialog :staffFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData" v-if="dialogType!=='add'"></StaffDialog>
-     <AuthorityListDialog :table-datas1="permissionList"></AuthorityListDialog>
+     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -85,12 +90,12 @@ import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import StaffDialog from '@/components/permission/dialog/StaffDialog'
 import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
-
+import Card from '@/components/permission/Card'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon, DeleteRow,SelectTree,StaffDialog,AuthorityListDialog},
+  components: {Table, SvgIcon, DeleteRow,SelectTree,StaffDialog,AuthorityListDialog,Card},
   mixins:[mixins],
   data() {
     return {
@@ -100,7 +105,7 @@ export default {
       staffInfo:{},
       isCard: false,
       cardCheckList:[],
-      cardListHead: [{prop: 'name', label: '人员名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'phone', label: '联系电话'}, {prop: 'email', label: '电子邮箱'}],
+      cardListHead: [{prop: 'name', label: '用户名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '用户状态'},],
       permissionList:[],
       loading:false
     }
@@ -173,6 +178,13 @@ export default {
       let id = this.isCard?this.cardCheckList[0]:row.id
       this.getUserInfo(id)
     },
+    cardView(id){
+      this.dialogTitle = '查看人员信息'
+      this.dialogType = 'view'
+      this.editDialogVisible = true
+      this.editDialogDisabled = true
+      this.getUserInfo(id)
+    },
     deleteRows() {
       this.deleteRow()
     },
@@ -208,8 +220,16 @@ export default {
         id = this.selectedRow[0].id
       }else {this.$message.error('请选择至少一行数据')}
       return id
+    },
+    //获取子组件的数据
+    updateImg(value) {
+      this.imgId = value
+    },
+    cardCheck(val){
+      this.cardCheckList = val
     }
   },
+
 }
 </script>
 
@@ -220,6 +240,15 @@ export default {
   > .searchForm {
     > .selectInput {
       width: 100px;
+    }
+  }
+  > .table {
+    .showCard {
+      margin-left: 10px;
+
+      > span {
+        margin-right: 0.5em
+      }
     }
   }
 
