@@ -30,7 +30,7 @@
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
-          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="editFormInfo.sort" suffix-icon="xxx"></el-input>

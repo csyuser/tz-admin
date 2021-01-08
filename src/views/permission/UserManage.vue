@@ -33,7 +33,7 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="660px">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="用户名称" prop="name">
@@ -61,9 +61,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
-          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" />
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
       </el-form>
+      <StaffDialog :editFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData"></StaffDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -80,22 +81,29 @@ import Table from '@/components/permission/Table'
 import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
+import StaffDialog from '@/components/permission/dialog/StaffDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon, DeleteRow,SelectTree},
+  components: {Table, SvgIcon, DeleteRow,SelectTree,StaffDialog},
   mixins:[mixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
         {prop: 'riskLevel', label: '风险等级'}, {prop: 'status', label: '用户状态'}],
       userCodes: [],
+      staffInfo:{},
+      isCard: false,
+      cardCheckList:[],
+      cardListHead: [{prop: 'name', label: '人员名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'phone', label: '联系电话'}, {prop: 'email', label: '电子邮箱'}]
     }
   },
   mounted() {
     this.getPages('/user/page')
     this.getDepartmentTree('/department/selectDepartmentTree')
+    this.getDropList('3')
+    this.getDropList('7')
     this.axios.get('/dropList/selectPerson')
         .then(res => {
           if (res.data.code.toString() === '200') {
@@ -143,7 +151,10 @@ export default {
     },
     update() {
       this.dialogTitle = '编辑用户'
-      this.updateRow()
+      this.dialogType = 'update'
+      this.editDialogDisabled = false
+      let id = this.getUserId()
+      this.getUserInfo(id)
     },
     confirmEdit() {
       this.confirmEditRow('/user/save', '/user/page')
@@ -158,6 +169,31 @@ export default {
     confirmDelete() {
       this.confirmDeleteRow('/user/delete', '/user/page')
     },
+//获取用户详情
+    getUserInfo(id){
+      this.axios.get('/user/selectUserInfo', {
+        params: {userId:id}
+      }).then(res => {
+        if (res.data.code.toString() === '200') {
+          this.editFormInfo = res.data.data
+          this.staffInfo = res.data.data['person']
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+          .catch()
+    },
+    getUserId(){
+      let id
+      if (this.isCard && this.cardCheckList.length === 1){
+        id = this.cardCheckList[0]
+        this.editDialogVisible = true
+      }else if (!this.isCard && this.selectedRow.length === 1){
+        this.editDialogVisible = true
+        id = this.selectedRow[0].id
+      }else {this.$message.error('请选择至少一行数据')}
+      return id
+    }
   },
 }
 </script>
@@ -173,8 +209,14 @@ export default {
   }
 
   .addForm {
+    margin-top: -15px;
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .avatar {
+      width: 100%;
+      display: flex;
+      align-items: center;
     }
   }
 }

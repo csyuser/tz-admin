@@ -143,13 +143,13 @@ export const mixins = {
         }
       })
     },
-    viewRow(row,cardId) {
+    viewRow(row, cardId) {
       let info
-      if (this.isCard){
-        this.tableDatas.data.forEach(item=>{
+      if (this.isCard) {
+        this.tableDatas.data.forEach(item => {
           if (item.id === cardId) {info = item}
         })
-      }else {info = row}
+      } else {info = row}
       console.log(info)
       this.dialogType = 'view'
       this.editFormInfo = info
@@ -174,29 +174,29 @@ export const mixins = {
 //获取行或者卡片数据
     getUpdateMessage() {
       let info = {}
-      if (this.isCard && this.cardCheckList.length === 1){
+      if (this.isCard && this.cardCheckList.length === 1) {
         let cardId = this.cardCheckList[0]
-        this.tableDatas.data.forEach(item=>{
+        this.tableDatas.data.forEach(item => {
           if (item.id === cardId) info = item
         })
         this.editDialogVisible = true
-      }else if (!this.isCard && this.selectedRow.length === 1){
+      } else if (!this.isCard && this.selectedRow.length === 1) {
         info = this.selectedRow[0]
         this.editDialogVisible = true
-      }else {this.$message.error('请选择一行数据')}
+      } else {this.$message.error('请选择一行数据')}
       return info
     },
     getDeleteIds() {
       let Ids = []
-      if (this.isCard && this.cardCheckList.length >= 1){
+      if (this.isCard && this.cardCheckList.length >= 1) {
         Ids = this.cardCheckList
         this.deleteDialogVisible = true
-      }else if (!this.isCard && this.selectedRow.length >= 1){
+      } else if (!this.isCard && this.selectedRow.length >= 1) {
         this.deleteDialogVisible = true
         this.selectedRow.forEach(row => {
           Ids.push(row.id)
         })
-      }else {this.$message.error('请选择至少一行数据')}
+      } else {this.$message.error('请选择至少一行数据')}
       return Ids
     },
 //下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务

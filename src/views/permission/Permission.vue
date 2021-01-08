@@ -38,7 +38,7 @@
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="依赖菜单" prop="menuId" style="height: 32px">
-          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" />
+          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="是否需要范围" prop="isNeededScope">
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"

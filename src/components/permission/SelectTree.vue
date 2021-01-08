@@ -1,5 +1,5 @@
 <template>
-  <el-popover ref="popover" placement="bottom-start" trigger="click" @show="onShowPopover" @hide="onHidePopover">
+  <el-popover ref="popover" placement="bottom-start" trigger="click" @show="onShowPopover" @hide="onHidePopover" :disabled="disabled1">
     <el-tree ref="tree" class="select-tree" highlight-current :style="`min-width: ${treeWidth}`" :data="data"
              :props="props" :expand-on-click-node="false" :filter-node-method="filterNode" :default-expand-all="false"
              @node-click="onClickNode">
@@ -41,6 +41,9 @@ export default {
         children: 'children',
       }),
     },
+    disabled:{
+      type: Boolean,
+    }
   },
 // 设置绑定参数
   model: {
@@ -79,7 +82,12 @@ export default {
       labelModel: '',
 // 实际请求传值
       valueModel: '0',
+      disabled1:false
     }
+  },
+  mounted() {
+    this.disabled1 = this.disabled
+    console.log(this.disabled)
   },
   created() {
 // 检测输入框原有值并显示对应 label

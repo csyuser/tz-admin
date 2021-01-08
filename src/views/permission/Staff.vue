@@ -50,7 +50,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
-          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps"/>
+          <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
           <el-input v-model="editFormInfo.phone" suffix-icon="xxx"></el-input>
