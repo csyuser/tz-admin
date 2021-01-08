@@ -7,16 +7,9 @@
       </div>
       <el-form label-position="right" label-width="70px" :model="list" size="small" class="content">
         <el-form-item :label="title.label" v-for="title in titleList" :key="title.prop" class="contentList">
-<!--          <span>{{ list[title.prop] }}</span>-->
-                    <el-input v-model="list[title.prop]" class="input-wrap" readonly></el-input>
+          <el-input v-model="list[title.prop]" class="input-wrap" readonly></el-input>
         </el-form-item>
       </el-form>
-      <!--      <ul class="">-->
-      <!--        <li class=""  v-for="title in titleList" :key="title.prop">-->
-      <!--            <span>{{ title.label }}</span>-->
-      <!--            <span>{{list[title.prop]}}</span>-->
-      <!--        </li>-->
-      <!--      </ul>-->
     </el-card>
   </el-checkbox-group>
 </template>
@@ -27,46 +20,28 @@ export default {
   data() {
     return {
       checkList: [],
-      cardList: [{name: '用户1', id: 1, departmentName: '开发部', phone: '1220101201', email: '12014520136@163.com'},
-        {name: '用户2', id: 2, code: '001', departmentName: '开发部', phone: '1220101201', email: '1251000000000456@163.com'},
-        {name: '用户3', id: 3, code: '001', departmentName: '开发部', phone: '1220101201', email: '1251456@163.com'},
-        {name: '用户4', id: 4, code: '004', departmentName: '开发部', phone: '1220101201', email: '1251456@163.com'},
-        {name: '用户5', id: 5, code: '005', departmentName: '开发部',phone: '1220101201', email: '1251456@163.com',},
-        {name: '用户5', id: 6, code: '005', departmentName: '开发部',phone: '1220101201', email: '1251456@163.com',},
-        {name: '用户5', id:7, code: '005', departmentName: '开发部',phone: '1220101201', email: '1251456@163.com',},
-        {name: '用户5', id: 8, code: '005', departmentName: '开发部',phone: '1220101201', email: '1251456@163.com',},
-      ],
-      // cardStyle:{},
-      // checkCardStyle:{}
     }
   },
   props: {
     titleList: {type: Array},
+    cardList: {
+      type: Array,
+      required: true
+    }
   },
-  mounted() {
-    // this.$nextTick(()=>{
-    //   console.log('执行了')
-    //   const checkCardWidth = this.$refs.checkCard.$el['offsetWidth']
-    //   const cardNumber =  parseInt(checkCardWidth / 250)
-    //   this.cardStyle = {marginRight:(checkCardWidth - cardNumber*250)/cardNumber + 'px'}
-    //   this.checkCardStyle = {marginRight:-(checkCardWidth - cardNumber*250)/cardNumber + 'px'}
-    // })
-  }
 }
 </script>
 
 <style scoped lang='scss'>
 .checkCard {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   flex-wrap: wrap;
-  margin-right:-10px;
   font-size: inherit;
+  margin-top: 20px;
 
   .box-card {
-    width: 250px;
     margin-bottom: 10px;
-    margin-right: 10px;
 
     & ::v-deep {
       .el-card__body {
@@ -79,20 +54,29 @@ export default {
       justify-content: center;
       margin-bottom: 10px;
       position: relative;
-      > .checkCards{
-      color: #ffffff;
-      position: absolute;
-      right: -5px;
-      top: -5px;
-    }
+
+      > .checkCards {
+        font-size: 0;
+        position: absolute;
+        right: 0px;
+        top: -5px;
+
+        ::v-deep {
+          .el-checkbox__label {
+            font-size: 0;
+          }
+        }
+      }
     }
 
     .content {
       display: flex;
       flex-direction: column;
       align-items: center;
+
       .contentList {
         margin: 0;
+
         .input-wrap ::v-deep {
           > input {
             border: none;
@@ -103,27 +87,39 @@ export default {
         }
       }
     }
+  }
+}
 
-    //ul {
-    //  display: flex;
-    //  flex-direction: column;
-    //  align-items: center;
-    //
-    //  > li {
-    //    padding: 5px 0;
-    //    background-color: #fff;
-    //    display: inline-block;
-    //    //width: 230px;
-    //    > span {
-    //      //display: inline-block;
-    //      &:first-child {
-    //        margin-right: 1em;
-    //        text-align: right;
-    //        width: 50%;
-    //      }
-    //    }
-    //  }
-    //}
+@media (min-width: 1200px) {
+  .checkCard {
+    margin-right: -1%;
+
+    .box-card {
+      width: 24%;
+      margin-right: 1%;
+    }
+  }
+}
+
+@media (max-width: 1199px) {
+  .checkCard {
+    margin-right: -1.34%;
+
+    .box-card {
+      width: 32%;
+      margin-right: 1.33%;
+    }
+  }
+}
+
+@media (min-width: 1920px) {
+  .checkCard {
+    margin-right: -0.7%;
+
+    .box-card {
+      width: 16%;
+      margin-right: 0.66%;
+    }
   }
 }
 

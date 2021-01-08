@@ -17,7 +17,7 @@
         <el-switch v-model="isCard"></el-switch>
       </span>
     </Table>
-    <Card v-if="isCard" :title-list="cardListHead"></Card>
+    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data"></Card>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
       <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"
@@ -170,7 +170,8 @@ export default {
 <style scoped lang='scss'>
 .staff-wrap {
   padding: 20px;
-
+  height: calc(100% - 60px);
+  overflow: auto;
   > .searchForm {
     position: relative;
 
