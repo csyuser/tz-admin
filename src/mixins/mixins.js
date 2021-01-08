@@ -113,15 +113,7 @@ export const mixins = {
     updateRow() {
       this.dialogType = 'update'
       this.editDialogDisabled = false
-      // if (this.selectedRow.length === 1) {
-      //   this.editFormInfo = this.selectedRow[0]
-      //   this.editFormInfo.sort = this.selectedRow[0].sort && parseInt(this.selectedRow[0].sort)
-      //   this.imgId = this.editFormInfo['photoId']
-      //   this.editDialogVisible = true
-      // } else {
-      //   this.$message.error('请选择一行数据')
-      // }
-      let info = this.getMessage()
+      let info = this.getUpdateMessage()
       this.editFormInfo = info
       this.editFormInfo.sort = info.sort && parseInt(info.sort)
       this.imgId = info['photoId']
@@ -166,16 +158,7 @@ export const mixins = {
       this.editDialogDisabled = true
     },
     deleteRow() {
-      this.selectedRow.log
-      this.deleteIds = []
-      if (this.selectedRow.length > 0) {
-        this.deleteDialogVisible = true
-        this.selectedRow.forEach(row => {
-          this.deleteIds.push(row.id)
-        })
-      } else {
-        this.$message.error('请选择至少一行数据')
-      }
+      this.deleteIds = this.getDeleteIds()
     },
     confirmDeleteRow(deleteUrl, pageUrl) {
       this.deleteDialogVisible = false
@@ -189,9 +172,7 @@ export const mixins = {
         .catch(error => {this.$message.error('删除失败' + error)})
     },
 //获取行或者卡片数据
-    getMessage() {
-      console.log('this.cardCheckList')
-      console.log(this.cardCheckList)
+    getUpdateMessage() {
       let info = {}
       if (this.isCard && this.cardCheckList.length === 1){
         let cardId = this.cardCheckList[0]
@@ -204,6 +185,19 @@ export const mixins = {
         this.editDialogVisible = true
       }else {this.$message.error('请选择一行数据')}
       return info
+    },
+    getDeleteIds() {
+      let Ids = []
+      if (this.isCard && this.cardCheckList.length >= 1){
+        Ids = this.cardCheckList
+        this.deleteDialogVisible = true
+      }else if (!this.isCard && this.selectedRow.length >= 1){
+        this.deleteDialogVisible = true
+        this.selectedRow.forEach(row => {
+          Ids.push(row.id)
+        })
+      }else {this.$message.error('请选择至少一行数据')}
+      return Ids
     },
 //下拉框 1部门分类，2部门级别，3职级，4权限类型，5权限范围类型，6权限关联类型，7职务
     getDropList(key) {

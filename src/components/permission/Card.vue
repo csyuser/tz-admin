@@ -35,9 +35,6 @@ export default {
     checkChanged() {
       this.$emit('update:cardCheck', this.checkList)
     },
-    shishiClick(){
-      console.log('双击了')
-    }
   },
 
 }

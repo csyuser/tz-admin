@@ -17,7 +17,7 @@
         <el-switch v-model="isCard"></el-switch>
       </span>
     </Table>
-    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" @update:cardCheck="cardCheck" @dblclickCard="view2"></Card>
+    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
       <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"
@@ -143,10 +143,11 @@ export default {
       this.confirmEditRow('/person/save', '/person/page')
     },
     view(row) {
-      this.dialogTitle = '查看权限信息'
+      this.dialogTitle = '查看人员信息'
       this.viewRow(row)
     },
-    view2(id){
+    cardView(id){
+      this.dialogTitle = '查看人员信息'
       this.viewRow('',id)
     },
     deleteRows() {
