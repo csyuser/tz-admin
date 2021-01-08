@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import Qs from 'qs'
 
 export default {
   name: 'AvatarUploader',
@@ -21,15 +20,11 @@ export default {
       imageUrl: '',
     }
   },
-  props:{
-    imgPath:{
-      type:String,
-      default:''
+  props: {
+    imgPath: {
+      type: String,
+      default: ''
     },
-    imgId: {
-      type:String,
-      default:''
-    }
   },
   computed: {
     uploadUrl: function () {
@@ -43,28 +38,14 @@ export default {
     this.imageUrl = this.imgPath
   },
   watch: {
-    imgId: {
-      handler(newValue, oldValue) {
-        if (oldValue && oldValue !== '') {
-          this.axios.post('/file/deleteFileById',
-              Qs.stringify({id: oldValue})
-          )
-              .then(res => {
-                if (res.data.code.toString() !== '200') {this.$message.error(res.data.msg)}
-              })
-              .catch()
-        }
-      },
-      immediate: true,
-    },
-    imgPath(newValue){
+    imgPath(newValue) {
       this.imageUrl = newValue
     }
   },
   methods: {
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
-      this.$emit('update:img',res.data.id)
+      this.$emit('update:img', res.data.id)
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
