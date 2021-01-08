@@ -150,7 +150,6 @@ export const mixins = {
           if (item.id === cardId) {info = item}
         })
       } else {info = row}
-      console.log(info)
       this.dialogType = 'view'
       this.editFormInfo = info
       this.editFormInfo.sort = info.sort && parseInt(row.sort)

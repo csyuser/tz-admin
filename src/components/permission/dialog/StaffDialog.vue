@@ -1,53 +1,53 @@
 <template>
   <div class="dialogWrap">
     <h3>人员信息</h3>
-    <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
+    <el-form label-position="right" label-width="85px" :inline="true" :model="staffFormInfo" size="small"
              class="addForm" :disabled="true">
       <el-form-item label="人员头像" class="avatar">
-        <el-avatar :src="editFormInfo['photoPath']" shape="square"></el-avatar>
+        <el-avatar :src="staffFormInfo['photoPath']" shape="square"></el-avatar>
       </el-form-item>
       <el-form-item label="人员名称">
-        <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-input v-model="staffFormInfo.name" suffix-icon="xxx"></el-input>
       </el-form-item>
       <el-form-item label="人员编码" prop="code">
-        <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
+        <el-input v-model="staffFormInfo.code" suffix-icon="xxx"></el-input>
       </el-form-item>
       <el-form-item label="职务" prop="post">
-        <el-select v-model="editFormInfo.post">
+        <el-select v-model="staffFormInfo.post">
           <el-option :label="item['dropName']" :value="item['id']" v-for="item in postDrop"
                      :key="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="职级" prop="rank">
-        <el-select v-model="editFormInfo['rank']">
+        <el-select v-model="staffFormInfo['rank']">
           <el-option :label="item['dropName']" :value="item['id']" v-for="item in rankDrop"
                      :key="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
-        <el-select v-model="editFormInfo['sex']">
+        <el-select v-model="staffFormInfo['sex']">
           <el-option label="女" value="0"></el-option>
           <el-option label="男" value="1"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
-        <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" disabled/>
+        <SelectTree v-model="staffFormInfo.departmentId" :options="treeData" :props="defaultProps" disabled/>
       </el-form-item>
       <el-form-item label="联系电话" prop="phone">
-        <el-input v-model="editFormInfo.phone" suffix-icon="xxx"></el-input>
+        <el-input v-model="staffFormInfo.phone" suffix-icon="xxx"></el-input>
       </el-form-item>
       <el-form-item label="联系邮箱" prop="email">
-        <el-input v-model="editFormInfo.email" suffix-icon="xxx"></el-input>
+        <el-input v-model="staffFormInfo.email" suffix-icon="xxx"></el-input>
       </el-form-item>
       <el-form-item label="身份证号码" prop="idCard">
-        <el-input v-model="editFormInfo['idCard']" suffix-icon="xxx"></el-input>
+        <el-input v-model="staffFormInfo['idCard']" suffix-icon="xxx"></el-input>
       </el-form-item>
       <el-form-item label="入职时间" prop="entryTime">
-        <el-date-picker v-model="editFormInfo['entryTime']" value-format="yyyy-MM-dd" placeholder="选择日期"
+        <el-date-picker v-model="staffFormInfo['entryTime']" value-format="yyyy-MM-dd" placeholder="选择日期"
                         style="width: 215px"></el-date-picker>
       </el-form-item>
       <el-form-item label="离职时间">
-        <el-date-picker v-model="editFormInfo['departureTime']" value-format="yyyy-MM-dd" placeholder="选择日期"
+        <el-date-picker v-model="staffFormInfo['departureTime']" value-format="yyyy-MM-dd" placeholder="选择日期"
                         style="width: 215px"></el-date-picker>
       </el-form-item>
     </el-form>
@@ -62,7 +62,6 @@ export default {
   components:{SelectTree},
   data(){
     return{
-      formInfo:{},
       dialogDisabled:false,
       defaultProps: {
         children: 'children',
@@ -72,7 +71,7 @@ export default {
     }
   },
   props:{
-    editFormInfo:{
+    staffFormInfo:{
       type:Object,
     },
     postDrop:{
@@ -91,12 +90,11 @@ export default {
 <style scoped lang='scss'>
 .dialogWrap{
   border-top: 1px solid #dcdfe6;
-  margin-top: 10px;
   > h3{
     line-height: 20px;
     font-size: 18px;
     color: #303133;
-    margin-top: 10px;
+    margin-top: 18px;
   }
 }
 .addForm {

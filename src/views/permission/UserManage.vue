@@ -33,7 +33,7 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'660px':'970px'">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="用户名称" prop="name">
@@ -64,7 +64,7 @@
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
       </el-form>
-      <StaffDialog :editFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData"></StaffDialog>
+      <StaffDialog :staffFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData" v-if="dialogType!=='add'"></StaffDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -161,7 +161,11 @@ export default {
     },
     view(row) {
       this.dialogTitle = '查看用户信息'
-      this.viewRow(row)
+      this.dialogType = 'view'
+      this.editDialogVisible = true
+      this.editDialogDisabled = true
+      let id = this.isCard?this.cardCheckList[0]:row.id
+      this.getUserInfo(id)
     },
     deleteRows() {
       this.deleteRow()
@@ -171,6 +175,7 @@ export default {
     },
 //获取用户详情
     getUserInfo(id){
+      this.staffInfo = {}
       this.axios.get('/user/selectUserInfo', {
         params: {userId:id}
       }).then(res => {
