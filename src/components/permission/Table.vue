@@ -38,7 +38,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="tableName != 'menu'"
+      <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="(tableName !== 'menu' && needButton)"
                      :current-page="page"
                      :page-sizes="[10, 20, 30, 40]"
                      :page-size="pageSize"
@@ -57,7 +57,7 @@ export default {
   name: 'Table',
   props: {
     colsHead: {type: Array},
-    tableDatas: {type: Object},
+    tableDatas: {type: [Object,Array]},
     pageSize: {type: Number},
     page: {type: Number},
     tableName: {type: String},
@@ -69,7 +69,6 @@ export default {
       type:Boolean,
       default: false
     },
-    // tableName:{type: Array},
   },
   data() {
     return {
@@ -111,9 +110,14 @@ export default {
 //监听表格数据传递
     tableDatas: {
       handler(newVal) {
-        this.tableData = newVal.data
-        this.total = newVal.count
+        if (newVal.data){
+          this.tableData = newVal.data
+          this.total = newVal.count
+        }else if (newVal.length && newVal.length>=1) {
+          this.tableData = newVal
+        }else {this.tableData = []}
         this.selectedRow = []
+        console.log(this.tableData)
       },
       immediate: true,
       deep: true

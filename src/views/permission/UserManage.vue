@@ -33,7 +33,8 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'660px':'970px'">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'660px':'970px'" v-loading.fullscreen="loading"
+               element-loading-background="rgba(255, 255, 255, 0.5)">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="用户名称" prop="name">
@@ -65,6 +66,7 @@
         </el-form-item>
       </el-form>
       <StaffDialog :staffFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData" v-if="dialogType!=='add'"></StaffDialog>
+     <AuthorityListDialog :table-datas1="permissionList"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -82,11 +84,13 @@ import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import StaffDialog from '@/components/permission/dialog/StaffDialog'
+import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
+
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon, DeleteRow,SelectTree,StaffDialog},
+  components: {Table, SvgIcon, DeleteRow,SelectTree,StaffDialog,AuthorityListDialog},
   mixins:[mixins],
   data() {
     return {
@@ -96,7 +100,9 @@ export default {
       staffInfo:{},
       isCard: false,
       cardCheckList:[],
-      cardListHead: [{prop: 'name', label: '人员名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'phone', label: '联系电话'}, {prop: 'email', label: '电子邮箱'}]
+      cardListHead: [{prop: 'name', label: '人员名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'phone', label: '联系电话'}, {prop: 'email', label: '电子邮箱'}],
+      permissionList:[],
+      loading:false
     }
   },
   mounted() {
@@ -175,13 +181,17 @@ export default {
     },
 //获取用户详情
     getUserInfo(id){
+      this.loading = true
       this.staffInfo = {}
+      this.permissionList = []
       this.axios.get('/user/selectUserInfo', {
         params: {userId:id}
       }).then(res => {
+        this.loading = false
         if (res.data.code.toString() === '200') {
           this.editFormInfo = res.data.data
           this.staffInfo = res.data.data['person']
+          this.permissionList = res.data.data['permissionList']
         } else {
           this.$message.error(res.data.msg)
         }
