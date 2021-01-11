@@ -62,7 +62,8 @@ export default {
       token: '',
       userInfo:{
         code:'',
-        name:''
+        name:'',
+        id:''
       },
       loading: false,
     }
@@ -120,6 +121,7 @@ export default {
             // this.daveUser()
             this.userInfo.code = res.data.data['userList'][0].code
             this.userInfo.name = res.data.data['userList'][0].name
+            this.userInfo.id = res.data.data['userList'][0].id
             this.$router.push('/HomePage')
           }
           console.log('this.userInfo')
@@ -145,6 +147,10 @@ export default {
           Qs.stringify({userId: this.userId}))
           .then(res => {
             if (res.data.code === 200) {
+              this.userInfo.code = res.data.data['curUser'].code
+              this.userInfo.name = res.data.data['curUser'].name
+              this.userInfo.id = res.data.data['curUser'].id
+              window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
               this.$router.push('/HomePage')
             } else {this.$message.error(res.data.msg)}
           })

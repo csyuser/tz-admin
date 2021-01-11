@@ -17,7 +17,6 @@
         <el-button size="small" icon="el-icon-s-grid" class="checkbox-button" slot="reference"></el-button>
       </el-popover>
     </div>
-    <slot name="newsButton" v-if="isNews"></slot>
     <div class="table-wrap" v-if="!isCard">
       <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
                 :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
@@ -35,6 +34,8 @@
             <span v-else-if="col.prop === 'status'">{{ userStatus(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'selection'">{{ selection(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'sex'">{{ gender(scope.row[col.prop]) }} </span>
+            <span v-else-if="col.prop === 'createTime'">{{ formatTime(scope.row[col.prop]) }} </span>
+            <span v-else-if="col.prop === 'type'">{{ newsType(scope.row[col.prop]) }} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
@@ -74,10 +75,6 @@ export default {
       type:Boolean,
       default: false
     },
-    isNews:{
-      type:Boolean,
-      default: false
-    }
   },
   data() {
     return {
@@ -126,7 +123,6 @@ export default {
           this.tableData = newVal
         }else {this.tableData = []}
         this.selectedRow = []
-        console.log(this.tableData)
       },
       immediate: true,
       deep: true
@@ -233,8 +229,6 @@ export default {
       this.selectedRow.forEach(item => {
         this.$refs.multipleTable.toggleRowSelection(item, true)
       })
-      console.log('this.selectedRow')
-      console.log(this.selectedRow)
       this.$emit('postSelect', this.selectedRow)
     },
     selectAllRows(selection) {
@@ -286,6 +280,12 @@ export default {
     },
     gender(val) {
       return helper.gender(val)
+    },
+    formatTime(val) {
+      return helper.formatTime(val)
+    },
+    newsType(val){
+      return helper.newsType(val)
     }
   }
 }

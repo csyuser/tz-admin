@@ -28,7 +28,7 @@
         </span>
         <span class="pathName">{{ selected }}</span>
         <div class="news">
-          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-chat-dot-round" news-type="chat"></Socket>
+          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-chat-dot-round" news-type="chat" ref="socket"></Socket>
           <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-bell" news-type="notification"></Socket>
         </div>
         <el-popover placement="bottom" trigger="click" class="user-wrap">
@@ -88,6 +88,9 @@ export default {
         })
         .catch()
     this.userInfo = this.$store.state.userInfo
+    this.$nextTick(()=>{
+      this.$refs.socket.getSocket()
+    })
   },
   computed: {
     unClickable() {

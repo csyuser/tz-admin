@@ -7,17 +7,6 @@
         <div class="title">通知</div>
         <ul class="contentList">
           <li @click="goMessage">消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
         </ul>
         <a class="dropDown" @click="goMessage">查看全部通知</a>
       </section>
@@ -25,17 +14,6 @@
         <div class="title">私信</div>
         <ul class="contentList">
           <li @click="goMessage">消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
-          <li>消息1</li>
-          <li>消息2</li>
         </ul>
         <a class="dropDown" @click="goMessage">查看全部通知</a>
       </section>
@@ -67,8 +45,7 @@ export default {
     }
   },
   mounted() {
-    this.getSocket()
-
+    this.$store.commit('getUserInfo')
   },
   methods: {
     goMessage() {
@@ -76,6 +53,7 @@ export default {
       this.$emit('update:pageHeader', {name: '消息中心'})
     },
     getSocket() {
+      let userId = this.$store.state.userInfo.id
       let socket
       if (typeof (WebSocket) == 'undefined') {
         console.log('你不配')
@@ -90,8 +68,8 @@ export default {
         socket = new WebSocket(socketUrl)
         //打开事件
         socket.onopen = function () {
-          console.log('websocket已打开')
-          //socket.send("这是来自客户端的消息" + location.href + new Date());
+          let sendMsg = {toUserId:userId,content: "reload"}
+          socket.send(JSON.stringify(sendMsg));
         }
         //获得消息事件
         socket.onmessage = function (data) {
@@ -107,9 +85,6 @@ export default {
         }
       }
     },
-    getUnreadCount(){
-
-    }
   }
 }
 </script>
