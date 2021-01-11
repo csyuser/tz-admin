@@ -27,17 +27,22 @@
           <!--          <router-link to="/Homepage" class="homeLink" :class="unClickable">首页</router-link>-->
         </span>
         <span class="pathName">{{ selected }}</span>
-        <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-bell"></Socket>
+        <div class="news">
+          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-chat-dot-round" news-type="chat"></Socket>
+          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-bell" news-type="notification"></Socket>
+        </div>
         <el-popover placement="bottom" trigger="click" class="user-wrap">
           <section class="message-content-wrap">
-            <div class="title">{{this.userInfo.name}}</div>
+            <div class="title">{{ this.userInfo.name }}</div>
             <ul class="contentList">
               <li @click="logOut">退出登录</li>
             </ul>
-<!--            <p class="dropDown">退出登录</p>-->
+            <!--            <p class="dropDown">退出登录</p>-->
           </section>
           <div class="userInfo" slot="reference">
-            <el-avatar class="portrait" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"> user </el-avatar>
+            <el-avatar class="portrait" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg">
+              user
+            </el-avatar>
             <i class="el-icon-caret-bottom"></i>
           </div>
         </el-popover>
@@ -49,11 +54,11 @@
 
 <script>
 import SvgIcon from '@/components/SvgIcon'
-import Socket from '@/components/Socket'
+import Socket from '@/components/homePage/news/Socket'
 
 export default {
   name: 'NavMenu',
-  components:{SvgIcon,Socket},
+  components: {SvgIcon, Socket},
   data() {
     return {
       selected: '',
@@ -68,7 +73,7 @@ export default {
         //   list: [{menuTitle: '系统工具', menuName: '生成代码', id: '2-1', path: '/2-1'}, {menuTitle: '系统工具', menuName: '存储管理', id: '2-2', path: '/2-1'}]
         // }
       ],
-      userInfo:{}
+      userInfo: {}
     }
   },
   mounted() {
@@ -82,7 +87,7 @@ export default {
           } else {this.menuList = []}
         })
         .catch()
-    this.userInfo =  this.$store.state.userInfo
+    this.userInfo = this.$store.state.userInfo
   },
   computed: {
     unClickable() {
@@ -92,28 +97,28 @@ export default {
   methods: {
     selectMenu(list) {
       if (list) {
-        this.selected =list['parentName']?' / ' + list['parentName'] +' / ' + list.name:' / ' + list.name
+        this.selected = list['parentName'] ? ' / ' + list['parentName'] + ' / ' + list.name : ' / ' + list.name
       } else {
         this.selected = ''
       }
       window.localStorage.setItem('selectedMenu', this.selected)
     },
     toHomePage() {
-      if (this.selected!==''){
+      if (this.selected !== '') {
         this.selected = ''
         window.localStorage.setItem('selectedMenu', this.selected)
         this.$router.push('/HomePage')
       }
     },
-    logOut(){
-      this.axios.get('/logoutUser',{params:{username:this.userInfo.code}})
-      .then(res=>{
-        if (res.data.code.toString() === '200'){
-          this.$router.push('/')
-          window.localStorage.clear()
-        }
-      })
-      .catch()
+    logOut() {
+      this.axios.get('/logoutUser', {params: {username: this.userInfo.code}})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.$router.push('/')
+              window.localStorage.clear()
+            }
+          })
+          .catch()
     }
   }
 }
@@ -155,7 +160,7 @@ $mainBlue: #409eff;
     > header {
       width: 100%;
       height: calc(#{$headerHeight} + 10px);
-      padding:0 15px;
+      padding: 0 15px;
       display: flex;
       align-items: center;
       border-bottom: 1px solid #d8dce5;
@@ -166,9 +171,11 @@ $mainBlue: #409eff;
           color: $mainBlue;
           cursor: pointer;
         }
+
         &.unClickable {
           color: #97a8be;
           cursor: default;
+
           &:hover {
             color: #97a8be;
           }
@@ -179,23 +186,37 @@ $mainBlue: #409eff;
         padding: 0.5em;
         color: #97a8be;
       }
-      > .socket{
+
+      > .news {
         margin-left: auto;
+        display: flex;
+        margin-top: 10px;
+        > .socket{
+          margin-left: 2em;
+        }
       }
+
       > .user-wrap {
-        margin-left:36px;
-        &:hover{cursor: pointer}
+        margin-left: 36px;
+
+        &:hover {
+          cursor: pointer
+        }
 
       }
     }
   }
 }
-.userInfo{
-  display: flex;align-items: center;
-  .portrait{
+
+.userInfo {
+  display: flex;
+  align-items: center;
+
+  .portrait {
     margin-right: 0.2em;
   }
 }
+
 .message-content-wrap {
   width: 150px;
   margin: -12px;
@@ -211,12 +232,14 @@ $mainBlue: #409eff;
     margin: 0 5px;
     max-height: 350px;
     overflow: auto;
-    > li{
+
+    > li {
       padding: 8px 16px;
       border-bottom: 1px solid #ebebeb;
       line-height: 1.5em;
       cursor: pointer;
-      &:hover{
+
+      &:hover {
         background: #f9f9f9;
       }
     }

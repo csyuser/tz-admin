@@ -17,13 +17,14 @@
         <el-button size="small" icon="el-icon-s-grid" class="checkbox-button" slot="reference"></el-button>
       </el-popover>
     </div>
+    <slot name="newsButton" v-if="isNews"></slot>
     <div class="table-wrap" v-if="!isCard">
       <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
                 :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
                 :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
                 @select-all="selectAllRows" @expand-change=expandChange
                 :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-        <el-table-column type="selection" width="55" v-if="needButton"></el-table-column>
+        <el-table-column type="selection" width="55" v-if="needPage"></el-table-column>
         <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"
@@ -38,7 +39,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="(tableName !== 'menu' && needButton)"
+      <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="(tableName !== 'menu' && needPage)"
                      :current-page="page"
                      :page-sizes="[10, 20, 30, 40]"
                      :page-size="pageSize"
@@ -65,10 +66,18 @@ export default {
       type:Boolean,
       default:true
     },
+    needPage:{
+      type:Boolean,
+      default:true
+    },
     isCard:{
       type:Boolean,
       default: false
     },
+    isNews:{
+      type:Boolean,
+      default: false
+    }
   },
   data() {
     return {

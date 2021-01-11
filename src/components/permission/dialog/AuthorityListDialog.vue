@@ -1,7 +1,7 @@
 <template>
   <div class="dialogWrap">
     <h3>权限信息</h3>
-    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas1" :needButton="false">
+    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas1" :needButton="false" :needPage="false">
     </Table>
   </div>
 </template>

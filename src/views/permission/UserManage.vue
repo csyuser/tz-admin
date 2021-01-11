@@ -218,7 +218,7 @@ export default {
       }else if (!this.isCard && this.selectedRow.length === 1){
         this.editDialogVisible = true
         id = this.selectedRow[0].id
-      }else {this.$message.error('请选择至少一行数据')}
+      }else {this.$message.error('请选择一行数据')}
       return id
     },
     //获取子组件的数据
