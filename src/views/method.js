@@ -16,7 +16,7 @@ const helper = {
     return dayjs(string).format('YYYY-M-D H:mm')
   },
   newsType(val){
-    if (val === '0') {return '未读'} else if (val === '1') {return '已读'}
+    if (val === '1') {return '未读'} else if (val === '0') {return '已读'}
   }
 }
 

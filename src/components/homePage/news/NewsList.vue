@@ -2,21 +2,14 @@
   <div class="newsList-wrap">{{ newsType }}
     <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item class="input">
-        <el-input v-model="searchData.title" placeholder="输入标题" size="small" suffix-icon="xxx"></el-input>
+        <el-input v-model="title" placeholder="输入标题" size="small" suffix-icon="xxx"></el-input>
       </el-form-item>
       <el-form-item class="input">
-        <el-select v-model="searchData['shot']" placeholder="消息状态" clearable size="small">
+        <el-select v-model="searchData['type']" placeholder="消息状态" clearable size="small">
           <el-option label="已读" value="0"></el-option>
           <el-option label="未读" value="1"></el-option>
         </el-select>
       </el-form-item>
-      <!--      <el-form-item class="input">-->
-      <!--        <el-select v-model="searchData['type']" placeholder="消息分类" clearable size="small">-->
-      <!--          <el-option label="全部" value="all"></el-option>-->
-      <!--          <el-option label="接收" value="received"></el-option>-->
-      <!--          <el-option label="已发送" value="send"></el-option>-->
-      <!--        </el-select>-->
-      <!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
@@ -30,21 +23,21 @@
         <i class="el-icon-reading"></i>
         查看详情
       </el-button>
-      <el-button size="small" class="update" @click="relatedPost">
+      <el-button size="small" class="update" @click="remarkRead">
         <i class="el-icon-check"></i>
         标为已读
       </el-button>
-      <el-button size="small" class="update" @click="relatedPost">
+      <el-button size="small" class="update" @click="remarkAllRead">
         <i class="el-icon-check"></i>
         全部标为已读
       </el-button>
-      <el-button size="small" class="update" @click="relatedPost"
+      <el-button size="small" class="update" @click="reply"
                  v-if="searchData.queryType === '1' && isReply">
         <i class="el-icon-chat-line-round"></i>
         回复
       </el-button>
     </div>
-    <el-tabs v-model="searchData.privateType" class="tab" @tab-click="chooseTab">
+    <el-tabs v-model="searchData.privateType" class="tab" v-if="searchData.queryType === '1'">
       <el-tab-pane label="收件箱" name="1">
         <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
                :need-button="false"
@@ -58,11 +51,13 @@
         </Table>
       </el-tab-pane>
     </el-tabs>
+    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
+           :need-button="false" v-if="searchData.queryType === '0'"
+           @currentChange="currentChange" @postSelect="selectRow" @dblclick="view('double')" :is-news="true">
+    </Table>
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%">
       <NewsDialog></NewsDialog>
       <span slot="footer" class="dialog-footer">
-<!--    <el-button @click="dialogVisible = false">取 消</el-button>-->
-        <!--    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
   </span>
     </el-dialog>
   </div>
@@ -71,6 +66,7 @@
 <script>
 import Table from '@/components/permission/Table'
 import NewsDialog from '@/components/homePage/news/NewsDialog'
+import Qs from 'qs'
 
 export default {
   name: 'NewsList',
@@ -81,20 +77,14 @@ export default {
         prop: 'createTime',
         label: '接收时间'
       }],
-      tableDatas: [{name: '管理员1', type: '已读', title: '标题1', id: '1', createTime: '已发送'}, {
-        name: '管理员2',
-        type: '已读',
-        title: '标题2',
-        id: '2',
-        createTime: '已发送'
-      },
-        {name: '管理员3', type: '已读', title: '标题3', id: '3', createTime: '接收'},],
+      tableDatas: [],
       page: 1,
       pageSize: 10,
+      title: '',
       searchData: {
-        privateType:'', //接收1，已发送0
+        privateType: '1', //接收1，已发送0
         queryType: '',//通知0，私信1
-        type:'',//已读0，1未读
+        type: '',//已读0，1未读
       },
       newsType: '',
       isReply: true,
@@ -105,8 +95,20 @@ export default {
   },
   mounted() {
     this.$store.commit('getUserInfo')
-    this.getPages()
+    // this.getPages()
     this.searchData.queryType = this.$route.params.queryType
+  },
+  watch: {
+    searchData: {
+      handler() {
+        console.log('执行了')
+        this.getPages()
+      },
+      deep: true
+    },
+    $route(to) {
+      this.searchData.queryType = to.params.queryType
+    }
   },
   methods: {
     currentChange() {
@@ -126,31 +128,56 @@ export default {
         this.dialogVisible = true
       } else {this.$message.error('请选择一行数据')}
     },
-    relatedPost() {
-      console.log('relatedPost')
-    },
     search() {
-      console.log('查询消息')
+      this.getPages(this.title)
     },
-    chooseTab(){
-      this.getPages()
+    remarkRead() {
+      let ids = []
+      if (this.selectedRow.length >= 1) {
+        console.log('选择的行数据')
+        console.log(this.selectedRow)
+        this.selectedRow.forEach(item => {
+          console.log('遍历选择的行')
+          console.log(item)
+          if (item.type === '1') {ids.push(item.id)}
+        })
+        let data = {type:'0',list:JSON.stringify(ids)}
+        this.saveReceiveTime(data)
+      } else {this.$message.error('请至少选择一行数据')}
     },
-    getPages() {
+    remarkAllRead() {this.saveReceiveTime('0', [], this.searchData.queryType, true)},
+    reply() {},
+    getPages(title) {
+      let privateType = this.searchData.queryType === '0' ? '' : this.searchData.privateType
       this.axios.get('/messages/page', {
         params: {
           toUserId: this.$store.state.userInfo.id,
-          type:this.searchData.type,
-          privateType:this.searchData.privateType,
-          queryType:this.searchData.queryType,
+          type: this.searchData.type,
+          privateType,
+          queryType: this.searchData.queryType,
+          title,
         }
       })
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
+          .then(res => {
+            if (res.data.code.toString() === '200') {
               this.tableDatas = res.data
-            }else {this.$message.error(res.data.data.msg)}
+            } else {this.$message.error(res.data.msg)}
           })
           .catch()
     },
+    saveReceiveTime(data) {
+      // let obj = {type, list, queryType, isAll}
+      //
+      // console.log('type')
+      // console.log(obj)
+      this.axios.post('/messages/saveReceiveTime', Qs.stringify({...data}))
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              console.log(res)
+            } else {this.$message.error(res.data.msg)}
+          })
+          .catch()
+    }
   },
 }
 </script>
