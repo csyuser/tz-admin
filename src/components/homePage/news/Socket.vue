@@ -3,17 +3,10 @@
     <el-popover
         placement="bottom"
         trigger="click">
-      <section class="message-wrap" v-if="newsType==='notification'">
-        <div class="title">通知</div>
+      <section class="message-wrap">
+        <div class="title">{{queryType === '1'? '私信' : '系统消息'}}</div>
         <ul class="contentList">
-          <li @click="goMessage">消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1</li>
-        </ul>
-        <a class="dropDown" @click="goMessage">查看全部通知</a>
-      </section>
-      <section class="message-wrap" v-if="newsType==='chat'">
-        <div class="title">私信</div>
-        <ul class="contentList">
-          <li @click="goMessage">消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1消息1</li>
+          <li @click="goMessage" v-for="list in newsList" :key="list.id">{{list.content}}</li>
         </ul>
         <a class="dropDown" @click="goMessage">查看全部通知</a>
       </section>
@@ -32,14 +25,19 @@ export default {
       type: String,
       required: true,
     },
-    newsType: {
+    queryType: {
       type: String,
       required: true
-    }
+    },
+    newsCount:{
+      type: [Number,String],
+    },
+    newsList:{
+      type:Array
+    },
   },
   data() {
     return {
-      newsCount: 10,
       max: 99,
       userId: '1'
     }
@@ -49,41 +47,8 @@ export default {
   },
   methods: {
     goMessage() {
-      if (this.$route.path !== `/newsList/${this.newsType}`) this.$router.push(`/newsList/${this.newsType}`)
+      if (this.$route.path !== `/newsList/${this.queryType}`) this.$router.push(`/newsList/${this.queryType}`)
       this.$emit('update:pageHeader', {name: '消息中心'})
-    },
-    getSocket() {
-      let userId = this.$store.state.userInfo.id
-      let socket
-      if (typeof (WebSocket) == 'undefined') {
-        console.log('你不配')
-      } else {
-        console.log('支持WebSocket')
-        let socketUrl = this.wsUrl + '/websocket/' + this.userId
-        console.log(socketUrl)
-        if (socket != null) {
-          socket.close()
-          socket = null
-        }
-        socket = new WebSocket(socketUrl)
-        //打开事件
-        socket.onopen = function () {
-          let sendMsg = {toUserId:userId,content: "reload"}
-          socket.send(JSON.stringify(sendMsg));
-        }
-        //获得消息事件
-        socket.onmessage = function (data) {
-          console.log('data')
-          console.log(JSON.parse(data.data))
-        }
-        socket.onclose = function () {
-          console.log('websocket已关闭')
-        }
-        //发生了错误事件
-        socket.onerror = function () {
-          console.log('websocket发生了错误')
-        }
-      }
     },
   }
 }

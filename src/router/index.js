@@ -58,7 +58,7 @@ const routes = [
         name: 'Permission',
         component: Permission,
       },{
-        path: '/NewsList/:newsType',
+        path: '/NewsList/:queryType',
         name: 'NewsList',
         component: NewsList,
       },],

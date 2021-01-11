@@ -28,8 +28,10 @@
         </span>
         <span class="pathName">{{ selected }}</span>
         <div class="news">
-          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-chat-dot-round" news-type="chat" ref="socket"></Socket>
-          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-bell" news-type="notification"></Socket>
+          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-chat-dot-round" query-type="1"
+                  :news-count="socketData.privateCount" :news-list="socketData['privateList']"></Socket>
+          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-bell" query-type="0"
+                  :news-count="socketData.sysCount" :news-list="socketData['sysList']"></Socket>
         </div>
         <el-popover placement="bottom" trigger="click" class="user-wrap">
           <section class="message-content-wrap">
@@ -55,6 +57,7 @@
 <script>
 import SvgIcon from '@/components/SvgIcon'
 import Socket from '@/components/homePage/news/Socket'
+import {socket} from '@/assets/control/socket'
 
 export default {
   name: 'NavMenu',
@@ -73,10 +76,13 @@ export default {
         //   list: [{menuTitle: '系统工具', menuName: '生成代码', id: '2-1', path: '/2-1'}, {menuTitle: '系统工具', menuName: '存储管理', id: '2-2', path: '/2-1'}]
         // }
       ],
-      userInfo: {}
+      userInfo: {},
+      privateCount: 0,
+      sysCount: 0,
+      socketData: {}
     }
   },
-  mounted() {
+  async mounted() {
     this.$store.commit('getUserInfo')
     this.$store.commit('fetch')
     this.selected = this.$store.state.selectedMenu
@@ -88,9 +94,7 @@ export default {
         })
         .catch()
     this.userInfo = this.$store.state.userInfo
-    this.$nextTick(()=>{
-      this.$refs.socket.getSocket()
-    })
+    this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
   },
   computed: {
     unClickable() {
@@ -194,7 +198,8 @@ $mainBlue: #409eff;
         margin-left: auto;
         display: flex;
         margin-top: 10px;
-        > .socket{
+
+        > .socket {
           margin-left: 2em;
         }
       }

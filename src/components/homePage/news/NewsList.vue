@@ -22,7 +22,7 @@
       </el-form-item>
     </el-form>
     <div class="buttons">
-      <el-button size="small" class="update" type="primary" v-if="$route.params.newsType === 'chat'">
+      <el-button size="small" class="update" type="primary" v-if="searchData.queryType === '1'">
         <i class="el-icon-plus"></i>
         新建
       </el-button>
@@ -39,7 +39,7 @@
         全部标为已读
       </el-button>
       <el-button size="small" class="update" @click="relatedPost"
-                 v-if="$route.params.newsType === 'chat' && isReply">
+                 v-if="searchData.queryType === '1' && isReply">
         <i class="el-icon-chat-line-round"></i>
         回复
       </el-button>
@@ -71,7 +71,6 @@
 <script>
 import Table from '@/components/permission/Table'
 import NewsDialog from '@/components/homePage/news/NewsDialog'
-import dayjs from 'dayjs'
 
 export default {
   name: 'NewsList',
@@ -93,8 +92,8 @@ export default {
       page: 1,
       pageSize: 10,
       searchData: {
-        privateType:'1', //接收1，已发送0
-        queryType: '1',//通知0，私信1
+        privateType:'', //接收1，已发送0
+        queryType: '',//通知0，私信1
         type:'',//已读0，1未读
       },
       newsType: '',
@@ -107,6 +106,7 @@ export default {
   mounted() {
     this.$store.commit('getUserInfo')
     this.getPages()
+    this.searchData.queryType = this.$route.params.queryType
   },
   methods: {
     currentChange() {
