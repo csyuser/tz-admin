@@ -1,55 +1,82 @@
 <template>
   <div class="content-wrap">
     <div class="title-wrap">
-      <h2 class="title">标题1</h2>
+      <div class="title-headers">
+        <h2 class="title">{{ newsContent.title }}</h2>
+        <el-button size="small" type="primary" plain><i class="el-icon-chat-line-round"></i>回复</el-button>
+      </div>
       <ul class="notes">
-        <li><span>发件人：</span><span>xxx</span></li>
-        <li><span>发送时间：</span><span>2020-12-4</span></li>
+        <li><span>发件人：</span><span>{{ newsContent['fromUserName'] }}</span></li>
+        <li><span>发送时间：</span><span>{{ formatTime(newsContent['createTime']) }}</span></li>
       </ul>
     </div>
     <section>
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
-      这是一段内容
+      {{ newsContent['content'] }}
     </section>
   </div>
 </template>
 
 <script>
+import {helper} from '@/views/method'
+
 export default {
-name: "NewsContent"
+  name: 'NewsContent',
+  data() {
+    return {
+      newsId: '',
+      newsContent:{}
+    }
+  },
+  mounted() {
+    this.newsId = this.$route.params.newsId
+    this.getNewsContent()
+  },
+  methods: {
+    getNewsContent() {
+      this.axios.get('/messages/selectMessageById', {params: {id: this.newsId}})
+          .then(res => {
+            if (res.data.code.toString() === '200'){
+              this.newsContent = res.data.data
+            }else {this.$message.error(res.data.msg)}
+          })
+          .catch()
+    },
+    formatTime(val){
+     return helper.formatTime(val)
+    }
+  }
 }
 </script>
 
 <style scoped lang='scss'>
-.content-wrap{
+.content-wrap {
   color: #666666;
-  > .title-wrap{
-    > .title{
+  padding: 20px;
+  overflow: auto;
+  > .title-wrap {
+    > .title-headers{
       margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      > .title {
+       font-size: 20px;
+        margin-right: 2em;
+      }
     }
-    > ul{
+    > ul {
       display: flex;
       font-size: 12px;
       color: #858585;
       margin-bottom: 10px;
-      > li{
+
+      > li {
         margin-right: 2em;
       }
     }
+  }
+  section{
+    text-indent:2em;
+    line-height: 2em;
   }
 }
 </style>

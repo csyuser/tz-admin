@@ -76,7 +76,7 @@ export default {
     return {
       colsHead: [{prop: 'title', label: '标题'}, {prop: 'fromUserName', label: '发送人'}, {prop: 'type', label: '状态'}, {
         prop: 'createTime',
-        label: '接收时间'
+        label: '发送时间'
       }],
       tableDatas: [],
       page: 1,
@@ -125,17 +125,6 @@ export default {
         this.$router.push(`/newsContent/${id}`)
         this.saveReceiveTime(data)
       } else {this.$message.error('请选择一行数据')}
-
-      // this.dialogTitle = '查看信息详情'
-      // if (!val.id && this.selectedRow.length === 1) {
-      //   this.dialogVisible = true
-      //   let id = this.selectedRow[0].id
-      //   this.dialogReadData = {type:'1',list:id}
-      // } else if (val.id) {
-      //   this.dialogVisible = true
-      //   let id = val.id
-      //   this.dialogReadData =  {type:'1',list:id}
-      // } else {this.$message.error('请选择一行数据')}
     },
     search() {
       this.getPages(this.title)

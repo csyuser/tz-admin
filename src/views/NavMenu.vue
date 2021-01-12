@@ -153,7 +153,8 @@ $mainBlue: #409eff;
 
   > .right {
     width: calc(100% - #{$sideWidth});
-
+    display: flex;
+    flex-direction: column;
     > header {
       width: 100%;
       height: calc(#{$headerHeight} + 10px);
