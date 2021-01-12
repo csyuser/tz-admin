@@ -6,7 +6,7 @@
       <el-form :model="loginInfo" class="login-form" v-loading="loading" element-loading-background="rgba(255, 255, 255, 0.5)">
         <el-form-item class="user-item">
           <el-input v-model="loginInfo.username" placeholder="请输入用户名" class="input-wrap" :class="{focusUser}">
-            <img slot="prefix" :src="require('../assets/images/'+userImg)">
+            <img slot="prefix" :src="require('../assets/images/'+userImg)" alt="">
           </el-input>
         </el-form-item>
         <el-form-item>
