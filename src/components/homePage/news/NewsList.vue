@@ -23,11 +23,11 @@
         <i class="el-icon-reading"></i>
         查看详情
       </el-button>
-      <el-button size="small" class="update" @click="remarkRead">
+      <el-button size="small" class="update" @click="remarkRead" v-if="searchData.queryType === '0' || searchData.privateType === '1'">
         <i class="el-icon-check"></i>
         标为已读
       </el-button>
-      <el-button size="small" class="update" @click="remarkAllRead">
+      <el-button size="small" class="update" @click="remarkAllRead" v-if="searchData.queryType === '0' || searchData.privateType === '1'">
         <i class="el-icon-check"></i>
         全部标为已读
       </el-button>
@@ -41,21 +41,21 @@
       <el-tab-pane label="收件箱" name="1">
         <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
                :need-button="false"
-               @currentChange="currentChange" @postSelect="selectRow" @dblclick="view('double')" :is-news="true">
+               @currentChange="currentChange" @postSelect="selectRow" @dblclick="view" :is-news="true">
         </Table>
       </el-tab-pane>
       <el-tab-pane label="已发消息" name="0">
         <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
                :need-button="false"
-               @currentChange="currentChange" @postSelect="selectRow" @dblclick="view('double')" :is-news="true">
+               @currentChange="currentChange" @postSelect="selectRow" @dblclick="view" :is-news="true">
         </Table>
       </el-tab-pane>
     </el-tabs>
     <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
            :need-button="false" v-if="searchData.queryType === '0'"
-           @currentChange="currentChange" @postSelect="selectRow" @dblclick="view('double')" :is-news="true">
+           @currentChange="currentChange" @postSelect="selectRow" @dblclick="view" :is-news="true">
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" @close="closeDialog">
       <NewsDialog></NewsDialog>
       <span slot="footer" class="dialog-footer">
   </span>
@@ -91,6 +91,7 @@ export default {
       selectedRow: [],
       dialogVisible: false,
       dialogTitle: '',
+      dialogReadData:{}
     }
   },
   mounted() {
@@ -120,13 +121,20 @@ export default {
         this.selectedRow.push(item)
       })
     },
-    view(type) {
+    view(val) {
       this.dialogTitle = '查看信息详情'
-      if (type !== 'double' && this.selectedRow.length === 1) {
+      if (!val.id && this.selectedRow.length === 1) {
         this.dialogVisible = true
-      } else if (type === 'double') {
+        let id = this.selectedRow[0].id
+        this.dialogReadData = {type:'1',list:id}
+      } else if (val.id) {
         this.dialogVisible = true
+        let id = val.id
+        this.dialogReadData =  {type:'1',list:id}
       } else {this.$message.error('请选择一行数据')}
+    },
+    closeDialog(){
+      this.saveReceiveTime(this.dialogReadData)
     },
     search() {
       this.getPages(this.title)
@@ -134,28 +142,37 @@ export default {
     remarkRead() {
       let ids = []
       if (this.selectedRow.length >= 1) {
-        console.log('选择的行数据')
-        console.log(this.selectedRow)
         this.selectedRow.forEach(item => {
-          console.log('遍历选择的行')
-          console.log(item)
           if (item.type === '1') {ids.push(item.id)}
         })
-        let data = {type:'0',list:JSON.stringify(ids)}
+        let data = {type:'0',list:ids.join(',')}
         this.saveReceiveTime(data)
       } else {this.$message.error('请至少选择一行数据')}
     },
-    remarkAllRead() {this.saveReceiveTime('0', [], this.searchData.queryType, true)},
+    remarkAllRead() {
+      let data = {type:'0',queryType:this.searchData.queryType,isAll:true}
+      this.saveReceiveTime(data)
+    },
     reply() {},
     getPages(title) {
+      let toUserId
+      let fromUserId
+      if (this.searchData.privateType === '0'){
+        fromUserId = this.$store.state.userInfo.id
+        toUserId = ''
+      }else if (this.searchData.privateType === '1'){
+        toUserId = this.$store.state.userInfo.id
+        fromUserId = ''
+      }
       let privateType = this.searchData.queryType === '0' ? '' : this.searchData.privateType
       this.axios.get('/messages/page', {
         params: {
-          toUserId: this.$store.state.userInfo.id,
           type: this.searchData.type,
-          privateType,
           queryType: this.searchData.queryType,
+          toUserId,
+          privateType,
           title,
+          fromUserId
         }
       })
           .then(res => {
@@ -166,14 +183,10 @@ export default {
           .catch()
     },
     saveReceiveTime(data) {
-      // let obj = {type, list, queryType, isAll}
-      //
-      // console.log('type')
-      // console.log(obj)
       this.axios.post('/messages/saveReceiveTime', Qs.stringify({...data}))
           .then(res => {
             if (res.data.code.toString() === '200') {
-              console.log(res)
+              this.getPages()
             } else {this.$message.error(res.data.msg)}
           })
           .catch()
@@ -203,7 +216,7 @@ export default {
       }
 
       .el-tabs__nav-wrap::after {
-        height: 0px;
+        height: 0;
       }
     }
   }
