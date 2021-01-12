@@ -68,7 +68,7 @@ const routes = [
         name: 'NewsContent',
         component: NewsContent,
       },{
-        path: '/NewsReply/:contentId',
+        path: '/NewsReply/:contentId?',
         name: 'NewsReply',
         component: NewsReply,
       },],

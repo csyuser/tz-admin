@@ -71,9 +71,9 @@ export default {
     },
   },
   mounted() {
-    this.getTreeData(this.contentId)
     this.contentId = this.$route.params.contentId
-    this.getNewsContent(this.contentId)
+    this.contentId && this.getNewsContent(this.contentId)
+    this.getTreeData()
   },
   methods: {
     getTreeData() {
@@ -116,7 +116,7 @@ export default {
               this.replyInfo.title = oldData.title
               this.replyInfo.toUserIds = oldData.fromUserId
               this.defaultChecked = oldData.fromUserId
-              this.checked = [{label: oldData['fromUserName'], id: oldData.fromUserId,treeType:'user'}]
+              this.checked = [{label: oldData['fromUserName'], id: oldData.fromUserId, treeType: 'user'}]
             } else {this.$message.error(res.data.msg)}
           })
           .catch()
