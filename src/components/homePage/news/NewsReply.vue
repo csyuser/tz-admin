@@ -5,7 +5,8 @@
       <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small">
       </el-input>
       <el-tree :data="treeData" :props="defaultProps" show-checkbox class="tree" ref="tree" node-key="id"
-               :filter-node-method="filterNode" :default-expanded-keys="[defaultChecked]" :default-checked-keys="[defaultChecked]" @check="checkClick"></el-tree>
+               :filter-node-method="filterNode" :default-expanded-keys="[defaultChecked]"
+               :default-checked-keys="[defaultChecked]" @check="checkClick"></el-tree>
     </div>
     <el-form ref="form" :model="replyInfo" label-width="80px" size="small" class="form">
       <el-form-item label="收件人" class="noBorder">
@@ -25,6 +26,8 @@
 </template>
 
 <script>
+import {helper} from '@/views/method'
+
 export default {
   name: 'NewsReply',
   data() {
@@ -33,7 +36,7 @@ export default {
         toName: '',
         title: '',
         content: '',
-        toUserIds:[]
+        toUserIds: []
       },
       treeData: [],
       defaultProps: {
@@ -41,17 +44,34 @@ export default {
         label: 'label'
       },
       filterText: '',
-      contentId:'',
-      defaultChecked:''
+      checked: [],
+      contentId: '',
+      defaultChecked: ''
     }
   },
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val)
-    }
+    },
+    checked: {
+      handler(newVal) {
+        let names = []
+        let ids = []
+        newVal.forEach(item => {
+          if (item['treeType'] === 'user') {
+            names.push(item.label)
+            ids.push(item.id)
+          }
+        })
+        this.replyInfo.toName = names.join(',')
+        this.replyInfo.toUserIds = ids
+      },
+      immediate: true,
+      deep: true
+    },
   },
   mounted() {
-    this.getTreeData()
+    this.getTreeData(this.contentId)
     this.contentId = this.$route.params.contentId
     this.getNewsContent(this.contentId)
   },
@@ -66,52 +86,43 @@ export default {
           .catch()
     },
     onSend() {
-      console.log(this.replyInfo)
       this.sendNews()
     },
     checkClick() {
-      let checked = this.$refs.tree.getCheckedNodes()
-      let names = []
-      let ids = []
-      checked.forEach(item => {
-        if (item['treeType'] === 'user') {
-          names.push(item.label)
-          ids.push(item.id)
-        }
-      })
-      this.replyInfo.toName = names.join(',')
-      this.replyInfo.toUserIds = ids
+      this.checked = this.$refs.tree.getCheckedNodes()
+      this.defaultChecked = ''
     },
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
     },
-    isReply(contentId){
-      if (contentId){
-        this.getNewsContent()
-      }
-    },
-    sendNews(){
-      this.axios.post('/messages/sendMsgToUser',{...this.replyInfo})
-      .then(res=>{
-        if (res.data.code.toString() === '200'){
-          this.$message.success('发送成功')
-        }else {this.$message.error('发送失败')}
-      })
-      .catch()
-    },
-    getNewsContent() {
-      this.axios.get('/messages/selectMessageById', {params: {id: this.contentId}})
+    sendNews() {
+      this.axios.post('/messages/sendMsgToUser', {...this.replyInfo})
           .then(res => {
             if (res.data.code.toString() === '200') {
-              this.replyInfo.toName = res.data.data['fromUserName']
-              this.replyInfo.content = res.data.data.content
-              this.replyInfo.title = res.data.data.title
-              this.replyInfo.toUserIds = res.data.data.fromUserId
-              this.defaultChecked = res.data.data.fromUserId
+              this.$message.success('发送成功')
+              this.$router.back()
+            } else {this.$message.error('发送失败')}
+          })
+          .catch()
+    },
+    getNewsContent(id) {
+      this.axios.get('/messages/selectMessageById', {params: {id: id}})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              let oldData = res.data.data
+              let oldNews = `\n\n\n\n————————————————————————\n原始消息内容:\n发件人：${oldData['fromUserName']}\n发件时间：${this.formatTime(oldData['createTime'])}\n正文：`
+              this.replyInfo.content = oldNews + res.data.data.content
+              this.replyInfo.title = oldData.title
+              this.replyInfo.toUserIds = oldData.fromUserId
+              this.defaultChecked = oldData.fromUserId
+              this.checked = [{label: oldData['fromUserName'], id: oldData.fromUserId,treeType:'user'}]
             } else {this.$message.error(res.data.msg)}
           })
           .catch()
+    },
+    formatTime(val) {
+      return helper.formatTime(val)
     },
   }
 }
