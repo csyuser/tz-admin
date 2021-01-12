@@ -23,11 +23,13 @@
         <i class="el-icon-reading"></i>
         查看详情
       </el-button>
-      <el-button size="small" class="update" @click="remarkRead" v-if="searchData.queryType === '0' || searchData.privateType === '1'">
+      <el-button size="small" class="update" @click="remarkRead"
+                 v-if="searchData.queryType === '0' || searchData.privateType === '1'">
         <i class="el-icon-check"></i>
         标为已读
       </el-button>
-      <el-button size="small" class="update" @click="remarkAllRead" v-if="searchData.queryType === '0' || searchData.privateType === '1'">
+      <el-button size="small" class="update" @click="remarkAllRead"
+                 v-if="searchData.queryType === '0' || searchData.privateType === '1'">
         <i class="el-icon-check"></i>
         全部标为已读
       </el-button>
@@ -41,36 +43,35 @@
       <el-tab-pane label="收件箱" name="1">
         <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
                :need-button="false"
-               @currentChange="currentChange" @postSelect="selectRow" @dblclick="view" :is-news="true">
+               @currentChange="currentChange" @postSelect="selectRow" is-news="true">
         </Table>
       </el-tab-pane>
       <el-tab-pane label="已发消息" name="0">
         <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
                :need-button="false"
-               @currentChange="currentChange" @postSelect="selectRow" @dblclick="view" :is-news="true">
+               @currentChange="currentChange" @postSelect="selectRow" :is-news="true">
         </Table>
       </el-tab-pane>
     </el-tabs>
     <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
            :need-button="false" v-if="searchData.queryType === '0'"
-           @currentChange="currentChange" @postSelect="selectRow" @dblclick="view" :is-news="true">
+           @currentChange="currentChange" @postSelect="selectRow" :is-news="true">
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%" @close="closeDialog">
-      <NewsDialog></NewsDialog>
-      <span slot="footer" class="dialog-footer">
-  </span>
-    </el-dialog>
+<!--    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="80%" @close="closeDialog">-->
+<!--      <NewsDialog></NewsDialog>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--  </span>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
 <script>
 import Table from '@/components/permission/Table'
-import NewsDialog from '@/components/homePage/news/NewsDialog'
 import Qs from 'qs'
 
 export default {
   name: 'NewsList',
-  components: {Table, NewsDialog},
+  components: {Table},
   data() {
     return {
       colsHead: [{prop: 'title', label: '标题'}, {prop: 'fromUserName', label: '发送人'}, {prop: 'type', label: '状态'}, {
@@ -89,9 +90,6 @@ export default {
       newsType: '',
       isReply: true,
       selectedRow: [],
-      dialogVisible: false,
-      dialogTitle: '',
-      dialogReadData:{}
     }
   },
   mounted() {
@@ -102,7 +100,6 @@ export default {
   watch: {
     searchData: {
       handler() {
-        console.log('执行了')
         this.getPages()
       },
       deep: true
@@ -121,20 +118,24 @@ export default {
         this.selectedRow.push(item)
       })
     },
-    view(val) {
-      this.dialogTitle = '查看信息详情'
-      if (!val.id && this.selectedRow.length === 1) {
-        this.dialogVisible = true
+    view() {
+      if (this.selectedRow.length === 1) {
         let id = this.selectedRow[0].id
-        this.dialogReadData = {type:'1',list:id}
-      } else if (val.id) {
-        this.dialogVisible = true
-        let id = val.id
-        this.dialogReadData =  {type:'1',list:id}
+        let data = {type: '1', list: id}
+        this.$router.push(`/newsContent/${id}`)
+        this.saveReceiveTime(data)
       } else {this.$message.error('请选择一行数据')}
-    },
-    closeDialog(){
-      this.saveReceiveTime(this.dialogReadData)
+
+      // this.dialogTitle = '查看信息详情'
+      // if (!val.id && this.selectedRow.length === 1) {
+      //   this.dialogVisible = true
+      //   let id = this.selectedRow[0].id
+      //   this.dialogReadData = {type:'1',list:id}
+      // } else if (val.id) {
+      //   this.dialogVisible = true
+      //   let id = val.id
+      //   this.dialogReadData =  {type:'1',list:id}
+      // } else {this.$message.error('请选择一行数据')}
     },
     search() {
       this.getPages(this.title)
@@ -145,22 +146,22 @@ export default {
         this.selectedRow.forEach(item => {
           if (item.type === '1') {ids.push(item.id)}
         })
-        let data = {type:'0',list:ids.join(',')}
+        let data = {type: '0', list: ids.join(',')}
         this.saveReceiveTime(data)
       } else {this.$message.error('请至少选择一行数据')}
     },
     remarkAllRead() {
-      let data = {type:'0',queryType:this.searchData.queryType,isAll:true}
+      let data = {type: '0', queryType: this.searchData.queryType, isAll: true}
       this.saveReceiveTime(data)
     },
     reply() {},
     getPages(title) {
       let toUserId
       let fromUserId
-      if (this.searchData.privateType === '0'){
+      if (this.searchData.privateType === '0') {
         fromUserId = this.$store.state.userInfo.id
         toUserId = ''
-      }else if (this.searchData.privateType === '1'){
+      } else if (this.searchData.privateType === '1') {
         toUserId = this.$store.state.userInfo.id
         fromUserId = ''
       }

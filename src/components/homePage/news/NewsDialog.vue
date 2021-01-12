@@ -9,6 +9,21 @@
   </div>
   <section>
     这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
+    这是一段内容
   </section>
 </div>
 </template>
@@ -22,14 +37,16 @@ name: "NewsDialog"
 <style scoped lang='scss'>
 .dialog-wrap{
   color: #666666;
+  margin-top: -20px;
   > .title-wrap{
     > .title{
-
+      margin-bottom: 10px;
     }
     > ul{
       display: flex;
       font-size: 12px;
       color: #858585;
+      margin-bottom: 10px;
       > li{
         margin-right: 2em;
       }
