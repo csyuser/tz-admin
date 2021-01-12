@@ -68,6 +68,7 @@
 <script>
 import Table from '@/components/permission/Table'
 import Qs from 'qs'
+import {socket} from '@/assets/control/socket'
 
 export default {
   name: 'NewsList',
@@ -179,6 +180,7 @@ export default {
       this.axios.post('/messages/saveReceiveTime', Qs.stringify({...data}))
           .then(res => {
             if (res.data.code.toString() === '200') {
+              socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
               this.getPages()
             } else {this.$message.error(res.data.msg)}
           })

@@ -91,6 +91,15 @@ export default {
       return {unClickable: this.selected === ''}
     }
   },
+  watch:{
+    socketData: {
+      handler(newVal) {
+        this.socketData = newVal
+      },
+      immediate: true,
+      deep: true
+    },
+  },
   methods: {
     selectMenu(list) {
       if (list) {

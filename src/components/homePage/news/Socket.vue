@@ -10,7 +10,7 @@
         </ul>
         <a class="dropDown" @click="goMessage">查看全部通知</a>
       </section>
-      <el-badge slot="reference" :value="newsCount" :max="max" class="item">
+      <el-badge slot="reference" :value="newsCount=== 0?'':newsCount" :max="max" class="item">
         <i :class="iconName"></i>
       </el-badge>
     </el-popover>
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'Socket',
   props: {
