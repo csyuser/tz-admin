@@ -129,7 +129,10 @@ export default {
           window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
         } else {this.$message.error(res.data.msg)}
       })
-          .catch()
+          .catch(()=>{
+            this.loading = false
+            this.$message.error('登陆失败')
+          })
     },
     radioChange(value) {
       this.userId = value
