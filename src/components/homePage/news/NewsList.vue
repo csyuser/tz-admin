@@ -15,7 +15,7 @@
       </el-form-item>
     </el-form>
     <div class="buttons">
-      <el-button size="small" class="update" type="primary" v-if="searchData.queryType === '1'">
+      <el-button size="small" class="update" type="primary" v-if="searchData.queryType === '1'" @click="addNews">
         <i class="el-icon-plus"></i>
         新建
       </el-button>
@@ -142,6 +142,9 @@ export default {
     remarkAllRead() {
       let data = {type: '0', queryType: this.searchData.queryType, isAll: true}
       this.saveReceiveTime(data)
+    },
+    addNews(){
+      this.$router.push('/newsReply/ ')
     },
     reply() {},
     getPages(title) {

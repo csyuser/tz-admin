@@ -41,7 +41,7 @@ export default {
         label: 'label'
       },
       filterText: '',
-      checked: [],
+      contentId:''
     }
   },
   watch: {
@@ -51,6 +51,7 @@ export default {
   },
   mounted() {
     this.getTreeData()
+    this.contentId = this.$route.params.contentId
   },
   methods: {
     getTreeData() {
