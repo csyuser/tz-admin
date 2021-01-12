@@ -1,0 +1,141 @@
+<template>
+  <div class="reply-wrap">
+    <div class="tree-wrap">
+      <h3>选择收件人</h3>
+      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small">
+      </el-input>
+      <el-tree :data="treeData" :props="defaultProps" show-checkbox class="tree" ref="tree"
+               :filter-node-method="filterNode" @check="checkClick"></el-tree>
+    </div>
+    <el-form ref="form" :model="replyInfo" label-width="80px" size="small" class="form">
+      <el-form-item label="收件人" class="noBorder">
+        <el-input v-model="replyInfo.toName" readonly></el-input>
+      </el-form-item>
+      <el-form-item label="标题" class="noBorder">
+        <el-input v-model="replyInfo.title"></el-input>
+      </el-form-item>
+      <el-form-item label="正文" class="texArea">
+        <el-input type="textarea" v-model="replyInfo.content" :rows="30"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSend" size="small">立即发送</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'NewsReply',
+  data() {
+    return {
+      replyInfo: {
+        toName: '',
+        title: '',
+        content: '',
+        toUserIds:[]
+      },
+      treeData: [],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      filterText: '',
+      checked: [],
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
+    }
+  },
+  mounted() {
+    this.getTreeData()
+  },
+  methods: {
+    getTreeData() {
+      this.axios.get('/messages/selectDepartmentUserTree')
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.treeData = res.data.data
+            } else {this.$message.error(res.data.msg)}
+          })
+          .catch()
+    },
+    onSend() {
+      console.log(this.replyInfo)
+      this.sendNews()
+    },
+    checkClick() {
+      let checked = this.$refs.tree.getCheckedNodes()
+      let names = []
+      let ids = []
+      checked.forEach(item => {
+        if (item['treeType'] === 'user') {
+          names.push(item.label)
+          ids.push(item.id)
+        }
+      })
+      this.replyInfo.toName = names.join(',')
+      this.replyInfo.toUserIds = ids
+    },
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
+    sendNews(){
+      this.axios.post('/messages/sendMsgToUser',{...this.replyInfo})
+      .then(res=>{
+        if (res.data.code.toString() === '200'){
+          this.$message.success('发送成功')
+        }else {this.$message.error('发送失败')}
+      })
+      .catch()
+    }
+  }
+}
+</script>
+
+<style scoped lang='scss'>
+.reply-wrap {
+  padding-right: 20px;
+  display: flex;
+  height: 100%;
+
+  > .tree-wrap {
+    padding: 20px 10px 20px 20px;
+    border-right: 1px solid #DCDFE6;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+
+    > h3 {
+      padding-bottom: 10px;
+    }
+
+    > .tree {
+      padding: 10px 10px 0 0;
+    }
+  }
+
+  > .form {
+    width: 100%;
+    padding-top: 20px;
+
+    > .noBorder {
+      &::v-deep {
+        .el-input__inner {
+          border: none;
+          border-radius: 0;
+          border-bottom: 1px solid #DCDFE6;
+        }
+      }
+    }
+
+    > .texArea::v-deep {
+      .el-textarea__inner {
+        padding: 20px;
+      }
+    }
+  }
+}
+
+</style>

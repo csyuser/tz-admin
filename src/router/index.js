@@ -12,6 +12,7 @@ import Group from '@/views/permission/Group'
 import Permission from '@/views/permission/Permission'
 import NewsList from '@/components/homePage/news/NewsList'
 import NewsContent from '@/components/homePage/news/NewsContent'
+import NewsReply from '@/components/homePage/news/NewsReply'
 
 Vue.use(VueRouter)
 
@@ -66,6 +67,10 @@ const routes = [
         path: '/NewsContent/:newsId',
         name: 'NewsContent',
         component: NewsContent,
+      },{
+        path: '/NewsReply/:contentId',
+        name: 'NewsReply',
+        component: NewsReply,
       },],
   },
 

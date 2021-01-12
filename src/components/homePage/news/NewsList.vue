@@ -180,7 +180,7 @@ export default {
             } else {this.$message.error(res.data.msg)}
           })
           .catch()
-    }
+    },
   },
 }
 </script>

@@ -29,13 +29,6 @@ function getBseUrl() {
   return Vue.prototype.BASE_URL
 }
 
-function LoginAgain() {
-  router.beforeEach((to, from, next) => {
-    if (from.name !== 'Login' && to.name === 'Login') next({name: 'Login'})
-    else next()
-  })
-}
-
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('token')
   config.headers.common['Authorization'] = token ? token : ''
@@ -46,7 +39,7 @@ axios.interceptors.request.use(function (config) {
 })
 axios.interceptors.response.use(function (response) {
   if (response.data.code && response.data.code.toString() === '-200') {
-    LoginAgain()
+    if (router.currentRoute.name!=='Login'){router.push('/')}
   }
   return response
 }, function (error) {

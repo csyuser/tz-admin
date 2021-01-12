@@ -3,7 +3,10 @@
     <div class="title-wrap">
       <div class="title-headers">
         <h2 class="title">{{ newsContent.title }}</h2>
-        <el-button size="small" type="primary" plain><i class="el-icon-chat-line-round"></i>回复</el-button>
+        <el-button size="small" type="primary" plain @click="reply">
+          <i class="el-icon-chat-line-round"></i>
+          回复
+        </el-button>
       </div>
       <ul class="notes">
         <li><span>发件人：</span><span>{{ newsContent['fromUserName'] }}</span></li>
@@ -24,7 +27,7 @@ export default {
   data() {
     return {
       newsId: '',
-      newsContent:{}
+      newsContent: {}
     }
   },
   mounted() {
@@ -35,14 +38,17 @@ export default {
     getNewsContent() {
       this.axios.get('/messages/selectMessageById', {params: {id: this.newsId}})
           .then(res => {
-            if (res.data.code.toString() === '200'){
+            if (res.data.code.toString() === '200') {
               this.newsContent = res.data.data
-            }else {this.$message.error(res.data.msg)}
+            } else {this.$message.error(res.data.msg)}
           })
           .catch()
     },
-    formatTime(val){
-     return helper.formatTime(val)
+    formatTime(val) {
+      return helper.formatTime(val)
+    },
+    reply(){
+      this.$router.push(`/NewsReply/${this.newsId}`)
     }
   }
 }
@@ -53,16 +59,19 @@ export default {
   color: #666666;
   padding: 20px;
   overflow: auto;
+
   > .title-wrap {
-    > .title-headers{
+    > .title-headers {
       margin-bottom: 10px;
       display: flex;
       align-items: center;
+
       > .title {
-       font-size: 20px;
+        font-size: 20px;
         margin-right: 2em;
       }
     }
+
     > ul {
       display: flex;
       font-size: 12px;
@@ -74,8 +83,9 @@ export default {
       }
     }
   }
-  section{
-    text-indent:2em;
+
+  section {
+    text-indent: 2em;
     line-height: 2em;
   }
 }
