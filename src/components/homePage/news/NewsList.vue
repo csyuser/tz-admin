@@ -33,11 +33,11 @@
         <i class="el-icon-check"></i>
         全部标为已读
       </el-button>
-      <el-button size="small" class="update" @click="reply"
-                 v-if="searchData.queryType === '1' && isReply">
-        <i class="el-icon-chat-line-round"></i>
-        回复
-      </el-button>
+<!--      <el-button size="small" class="update" @click="reply"-->
+<!--                 v-if="searchData.queryType === '1' && isReply">-->
+<!--        <i class="el-icon-chat-line-round"></i>-->
+<!--        回复-->
+<!--      </el-button>-->
     </div>
     <el-tabs v-model="searchData.privateType" class="tab" v-if="searchData.queryType === '1'">
       <el-tab-pane label="收件箱" name="1">

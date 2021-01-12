@@ -4,8 +4,8 @@
       <h3>选择收件人</h3>
       <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small">
       </el-input>
-      <el-tree :data="treeData" :props="defaultProps" show-checkbox class="tree" ref="tree"
-               :filter-node-method="filterNode" @check="checkClick"></el-tree>
+      <el-tree :data="treeData" :props="defaultProps" show-checkbox class="tree" ref="tree" node-key="id"
+               :filter-node-method="filterNode" :default-expanded-keys="[defaultChecked]" :default-checked-keys="[defaultChecked]" @check="checkClick"></el-tree>
     </div>
     <el-form ref="form" :model="replyInfo" label-width="80px" size="small" class="form">
       <el-form-item label="收件人" class="noBorder">
@@ -41,7 +41,8 @@ export default {
         label: 'label'
       },
       filterText: '',
-      contentId:''
+      contentId:'',
+      defaultChecked:''
     }
   },
   watch: {
@@ -52,6 +53,7 @@ export default {
   mounted() {
     this.getTreeData()
     this.contentId = this.$route.params.contentId
+    this.getNewsContent(this.contentId)
   },
   methods: {
     getTreeData() {
@@ -84,6 +86,11 @@ export default {
       if (!value) return true
       return data.label.indexOf(value) !== -1
     },
+    isReply(contentId){
+      if (contentId){
+        this.getNewsContent()
+      }
+    },
     sendNews(){
       this.axios.post('/messages/sendMsgToUser',{...this.replyInfo})
       .then(res=>{
@@ -92,7 +99,20 @@ export default {
         }else {this.$message.error('发送失败')}
       })
       .catch()
-    }
+    },
+    getNewsContent() {
+      this.axios.get('/messages/selectMessageById', {params: {id: this.contentId}})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.replyInfo.toName = res.data.data['fromUserName']
+              this.replyInfo.content = res.data.data.content
+              this.replyInfo.title = res.data.data.title
+              this.replyInfo.toUserIds = res.data.data.fromUserId
+              this.defaultChecked = res.data.data.fromUserId
+            } else {this.$message.error(res.data.msg)}
+          })
+          .catch()
+    },
   }
 }
 </script>
