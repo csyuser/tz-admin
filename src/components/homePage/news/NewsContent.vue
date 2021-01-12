@@ -1,13 +1,17 @@
 <template>
   <div class="content-wrap">
     <div class="title-wrap">
-      <div class="title-headers">
-        <h2 class="title">{{ newsContent.title }}</h2>
+      <div class="buttons">
+        <el-button size="small" type="primary" plain @click="reply">
+          <i class="el-icon-back"></i>
+          返回
+        </el-button>
         <el-button size="small" type="primary" plain @click="reply">
           <i class="el-icon-chat-line-round"></i>
           回复
         </el-button>
       </div>
+        <h2 class="title">{{ newsContent.title }}</h2>
       <ul class="notes">
         <li><span>发件人：</span><span>{{ newsContent['fromUserName'] }}</span></li>
         <li><span>发送时间：</span><span>{{ formatTime(newsContent['createTime']) }}</span></li>
@@ -47,7 +51,7 @@ export default {
     formatTime(val) {
       return helper.formatTime(val)
     },
-    reply(){
+    reply() {
       this.$router.push(`/NewsReply/${this.newsId}`)
     }
   }
@@ -61,15 +65,14 @@ export default {
   overflow: auto;
 
   > .title-wrap {
-    > .title-headers {
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
+    > .buttons{
+      margin-bottom: 15px;
+    }
 
-      > .title {
-        font-size: 20px;
-        margin-right: 2em;
-      }
+    > .title {
+      font-size: 20px;
+      margin-right: 2em;
+      margin-bottom: 10px;
     }
 
     > ul {
