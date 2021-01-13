@@ -49,7 +49,6 @@ export default {
   methods: {
     goMessage() {
       if (this.$route.path !== `/newsList/${this.queryType}`) this.$router.push(`/newsList/${this.queryType}`)
-      this.$emit('update:pageHeader', ['消息中心'])
     },
   }
 }

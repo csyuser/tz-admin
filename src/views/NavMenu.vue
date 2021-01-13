@@ -15,7 +15,7 @@
             <SvgIcon :icon-name="lists.icon"></SvgIcon>
             <span>{{ lists.name }}</span>
           </template>
-          <el-menu-item v-for="list in lists.children" :key="list.id" :index="list.url" @click="selectMenu(list)">
+          <el-menu-item v-for="list in lists.children" :key="list.id" :index="list.url">
             {{ list.name }}
           </el-menu-item>
         </el-submenu>
@@ -24,13 +24,13 @@
     <div class="right">
       <header>
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: '/HomePage' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/HomePage'}">首页</el-breadcrumb-item>
           <el-breadcrumb-item v-for="item in nowBreadcrumb" :key="item">{{ item }}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="news">
-          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-chat-dot-round" query-type="1"
+          <Socket class="socket" icon-name="el-icon-chat-dot-round" query-type="1"
                   :news-count="socketData.privateCount" :news-list="socketData['privateList']"></Socket>
-          <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-bell" query-type="0"
+          <Socket class="socket" icon-name="el-icon-bell" query-type="0"
                   :news-count="socketData.sysCount" :news-list="socketData['sysList']"></Socket>
         </div>
         <el-popover placement="bottom" trigger="click" class="user-wrap">
@@ -104,25 +104,18 @@ export default {
     },
     async $route(to) {
       this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
-      this.breadcrumbList.forEach(item=>{
-        if (item.url === to.path){
-          this.nowBreadcrumb = item.list
-          window.localStorage.setItem('selectedMenu', JSON.stringify(item.list))
-        }
-      })
+      if (to.path === '/HomePage'){this.nowBreadcrumb = []}
+      else {
+        this.breadcrumbList.forEach(item=>{
+          if (item.url === to.path){
+            this.nowBreadcrumb = item.list
+          }
+        })
+      }
+      window.localStorage.setItem('selectedMenu', JSON.stringify(this.nowBreadcrumb))
     },
   },
   methods: {
-    selectMenu(list) {
-      console.log(list)
-      // this.nowBreadcrumb = []
-      // console.log('list')
-      // console.log(list)
-      // if (list) {
-      //   if (list['parentName']) {this.nowBreadcrumb.push(list['parentName'], list.name)} else {this.nowBreadcrumb.push(list.name)}
-      // }
-      // window.localStorage.setItem('selectedMenu', JSON.stringify(this.nowBreadcrumb))
-    },
     logOut() {
       this.axios.get('/logoutUser', {params: {username: this.userInfo.code}})
           .then(res => {
@@ -137,6 +130,7 @@ export default {
       let list = []
       let url = ''
       let breadList = []
+      breadList.push({list:['私信'],url:'/newsList/1'},{list:['通知'],url:'/newsList/0'},)
       let getBreadList = (val) => {
         val.forEach(item => {
           item['parentName'] && list.push(item['parentName'])
