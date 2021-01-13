@@ -38,8 +38,7 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'660px':'970px'" v-loading.fullscreen="loading"
-               element-loading-background="rgba(255, 255, 255, 0.5)">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'660px':'970px'">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="用户名称" prop="name">
@@ -107,7 +106,6 @@ export default {
       cardCheckList:[],
       cardListHead: [{prop: 'name', label: '用户名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '用户状态'},],
       permissionList:[],
-      loading:false
     }
   },
   mounted() {
@@ -193,13 +191,11 @@ export default {
     },
 //获取用户详情
     getUserInfo(id){
-      this.loading = true
       this.staffInfo = {}
       this.permissionList = []
       this.axios.get('/user/selectUserInfo', {
         params: {userId:id}
       }).then(res => {
-        this.loading = false
         if (res.data.code.toString() === '200') {
           this.editFormInfo = res.data.data
           this.staffInfo = res.data.data['person']

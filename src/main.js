@@ -29,17 +29,26 @@ function getBseUrl() {
   return Vue.prototype.BASE_URL
 }
 
+let loading
 axios.interceptors.request.use(function (config) {
   let token = window.localStorage.getItem('token')
   config.headers.common['Authorization'] = token ? token : ''
   config.baseURL = getBseUrl()
+  loading = ElementUI.Loading.service({
+    lock: true,
+    background: 'rgba(255, 255, 255, 0.5)'
+  })
+  setTimeout(() => {
+    loading.close()
+  }, 10000)
   return config
 }, function (error) {
   return Promise.reject(error)
 })
 axios.interceptors.response.use(function (response) {
+  if (response) {loading.close()}
   if (response.data.code && response.data.code.toString() === '-200') {
-    if (router.currentRoute.name!=='Login'){router.push('/')}
+    if (router.currentRoute.name !== 'Login') {router.push('/')}
   }
   return response
 }, function (error) {

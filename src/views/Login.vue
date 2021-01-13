@@ -3,7 +3,7 @@
     <div class="title">欢迎你，登录{{ systemName }}用户管理系统</div>
     <div class="login-form-wrap">
       <p class="form-title">用户登录</p>
-      <el-form :model="loginInfo" class="login-form" v-loading="loading" element-loading-background="rgba(255, 255, 255, 0.5)">
+      <el-form :model="loginInfo" class="login-form">
         <el-form-item class="user-item">
           <el-input v-model="loginInfo.username" placeholder="请输入用户名" class="input-wrap" :class="{focusUser}">
             <img slot="prefix" :src="require('../assets/images/'+userImg)" alt="">
@@ -65,7 +65,6 @@ export default {
         name:'',
         id:''
       },
-      loading: false,
     }
   },
   watch: {
@@ -105,12 +104,9 @@ export default {
       val.username.length > 0 && val.password.length > 0 ? this.clickable = true : this.clickable = false
     },
     loginSubmit() {
-      // this.$router.push('/HomePage')
-      this.loading = true
       this.axios.post('/auth',
           Qs.stringify({...this.loginInfo})
       ).then(res => {
-        this.loading = false
         if (res.data.code.toString() === '200') {
           window.localStorage.setItem('token', 'Bearer ' + res.data.data.token)
           if (res.data.data['userList'].length > 1) {
@@ -130,7 +126,6 @@ export default {
         } else {this.$message.error(res.data.msg)}
       })
           .catch(()=>{
-            this.loading = false
             this.$message.error('登陆失败')
           })
     },
