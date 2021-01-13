@@ -18,7 +18,7 @@
       </ul>
     </div>
     <section>
-      {{ newsContent['content'] }}
+      <el-input type="textarea" v-model="newsContent['content']" :rows="30" class="content" readonly></el-input>
     </section>
   </div>
 </template>
@@ -88,8 +88,11 @@ export default {
   }
 
   section {
-    text-indent: 2em;
-    line-height: 2em;
+    > .content ::v-deep{
+      .el-textarea__inner {
+        padding: 20px;
+      }
+    }
   }
 }
 </style>
