@@ -123,8 +123,10 @@ export default {
     view() {
       if (this.selectedRow.length === 1) {
         let id = this.selectedRow[0].id
-        let data = {type: '1', list: id}
-        this.saveReceiveTime(data)
+        if (this.selectedRow[0].type === '1'){
+          let data = {type: '1', list: id}
+          this.saveReceiveTime(data)
+        }
         this.$router.push(`/newsContent/${id}`)
       } else {this.$message.error('请选择一行数据')}
     },
