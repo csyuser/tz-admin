@@ -6,7 +6,7 @@
       </div>
       <el-menu :default-active="$route.path" class="el-menu-vertical-demo sidebar" router unique-opened
                background-color="#304156" text-color="#fff" active-text-color="#409eff">
-        <el-menu-item index="/HomePage" @click="selectMenu()">
+        <el-menu-item index="/HomePage">
           <i class="el-icon-menu"></i>
           <span slot="title">首页</span>
         </el-menu-item>
