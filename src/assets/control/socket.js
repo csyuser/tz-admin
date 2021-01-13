@@ -20,8 +20,6 @@ const socket = {
         }
         //获得消息事件
         socket.onmessage = function (data) {
-          console.log('data')
-          console.log(JSON.parse(data.data))
           resolve(JSON.parse(data.data))
         }
         socket.onclose = function () {

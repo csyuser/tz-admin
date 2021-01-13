@@ -96,6 +96,7 @@ export default {
     this.$store.commit('getUserInfo')
     // this.getPages()
     this.searchData.queryType = this.$route.params.queryType
+    console.log(this.$route.path)
   },
   watch: {
     searchData: {
@@ -184,7 +185,7 @@ export default {
       this.axios.post('/messages/saveReceiveTime', Qs.stringify({...data}))
           .then(res => {
             if (res.data.code.toString() === '200') {
-              this.$store.commit('getSocket',true)
+              this.$store.commit('setSocket',true)
               this.getPages()
             } else {this.$message.error(res.data.msg)}
           })

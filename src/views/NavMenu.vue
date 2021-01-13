@@ -23,9 +23,10 @@
     </div>
     <div class="right">
       <header>
-        <span class="link" :class="unClickable" @click="toHomePage()">首页
-        </span>
-        <span class="pathName">{{ selected }}</span>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/HomePage' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="item in nowBreadcrumb" :key="item">{{ item }}</el-breadcrumb-item>
+        </el-breadcrumb>
         <div class="news">
           <Socket class="socket" @update:pageHeader="selectMenu" icon-name="el-icon-chat-dot-round" query-type="1"
                   :news-count="socketData.privateCount" :news-list="socketData['privateList']"></Socket>
@@ -63,32 +64,29 @@ export default {
   components: {SvgIcon, Socket},
   data() {
     return {
-      selected: '',
       menuList: [],
       userInfo: {},
       privateCount: 0,
       sysCount: 0,
       socketData: {},
+      nowBreadcrumb: [],
+      breadcrumbList:[]
     }
   },
   async mounted() {
     this.$store.commit('getUserInfo')
     this.$store.commit('fetch')
-    this.selected = this.$store.state.selectedMenu
+    this.nowBreadcrumb = this.$store.state.selectedMenu
     this.axios.get('/menu/selectMenuTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.menuList = res.data.data
+            this.setBreadcrumb()
           } else {this.menuList = []}
         })
         .catch()
     this.userInfo = this.$store.state.userInfo
     this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
-  },
-  computed: {
-    unClickable() {
-      return {unClickable: this.selected === ''}
-    }
   },
   watch: {
     socketData: {
@@ -99,30 +97,31 @@ export default {
       deep: true
     },
     async '$store.state.isGetSocket'(newVal) {
-      if (newVal === true){
+      if (newVal === true) {
         this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
-        this.$store.commit('getSocket',false)
+        this.$store.commit('setSocket', false)
       }
     },
-    async $route() {
-        this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
+    async $route(to) {
+      this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
+      this.breadcrumbList.forEach(item=>{
+        if (item.url === to.path){
+          this.nowBreadcrumb = item.list
+          window.localStorage.setItem('selectedMenu', JSON.stringify(item.list))
+        }
+      })
     },
   },
   methods: {
     selectMenu(list) {
-      if (list) {
-        this.selected = list['parentName'] ? ' / ' + list['parentName'] + ' / ' + list.name : ' / ' + list.name
-      } else {
-        this.selected = ''
-      }
-      window.localStorage.setItem('selectedMenu', this.selected)
-    },
-    toHomePage() {
-      if (this.selected !== '') {
-        this.selected = ''
-        window.localStorage.setItem('selectedMenu', this.selected)
-        this.$router.push('/HomePage')
-      }
+      console.log(list)
+      // this.nowBreadcrumb = []
+      // console.log('list')
+      // console.log(list)
+      // if (list) {
+      //   if (list['parentName']) {this.nowBreadcrumb.push(list['parentName'], list.name)} else {this.nowBreadcrumb.push(list.name)}
+      // }
+      // window.localStorage.setItem('selectedMenu', JSON.stringify(this.nowBreadcrumb))
     },
     logOut() {
       this.axios.get('/logoutUser', {params: {username: this.userInfo.code}})
@@ -133,6 +132,26 @@ export default {
             }
           })
           .catch()
+    },
+    setBreadcrumb() {
+      let list = []
+      let url = ''
+      let breadList = []
+      let getBreadList = (val) => {
+        val.forEach(item => {
+          item['parentName'] && list.push(item['parentName'])
+          if (item.children && item.children.length>=1) {
+            getBreadList(item.children)
+          } else {
+            list.push(item.name)
+            url = item.url
+            breadList.push({list: list, url: url})
+            list = []
+          }
+        })
+      }
+      getBreadList(this.menuList)
+      this.breadcrumbList = breadList
     }
   }
 }

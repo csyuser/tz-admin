@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    selectedMenu:'',
+    selectedMenu:[],
     userInfo:{},
     cellStyle:{
       'font-size':'12px',
@@ -21,17 +21,22 @@ export default new Vuex.Store({
     // selectedRow:[],
     // page:1,
     // pageSize:10,
-    isGetSocket:false
+    isGetSocket:false,
+    breadcrumb:[]
   },
   mutations: {
     fetch(state){
-      state.selectedMenu =  window.localStorage.getItem('selectedMenu')
+      let menu = window.localStorage.getItem('selectedMenu')
+      state.selectedMenu = menu && JSON.parse(menu)
     },
     getUserInfo(state){
       state.userInfo =  JSON.parse(window.localStorage.getItem('userInfo'))
     },
-    getSocket(state,type){
+    setSocket(state, type){
       state.isGetSocket = type
+    },
+    setBreadcrumb(state,list){
+      state.breadcrumb = list
     }
 
     // selectRow(state,val) {

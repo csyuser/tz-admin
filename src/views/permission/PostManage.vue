@@ -81,6 +81,7 @@ export default {
   mounted() {
     this.getPages('/role/page')
     this.getDepartmentTree('/department/selectDepartmentTree')
+    this.$store.commit('setBreadcrumb',[''])
   },
   methods: {
     currentChange(val, row) {
