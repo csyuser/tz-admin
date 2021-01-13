@@ -24,7 +24,6 @@
     <div class="right">
       <header>
         <span class="link" :class="unClickable" @click="toHomePage()">首页
-          <!--          <router-link to="/Homepage" class="homeLink" :class="unClickable">首页</router-link>-->
         </span>
         <span class="pathName">{{ selected }}</span>
         <div class="news">
@@ -69,7 +68,7 @@ export default {
       userInfo: {},
       privateCount: 0,
       sysCount: 0,
-      socketData: {}
+      socketData: {},
     }
   },
   async mounted() {
@@ -91,13 +90,22 @@ export default {
       return {unClickable: this.selected === ''}
     }
   },
-  watch:{
+  watch: {
     socketData: {
       handler(newVal) {
         this.socketData = newVal
       },
-      immediate: true,
+      // immediate: true,
       deep: true
+    },
+    async '$store.state.isGetSocket'(newVal) {
+      if (newVal === true){
+        this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
+        this.$store.commit('getSocket',false)
+      }
+    },
+    async $route() {
+        this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
     },
   },
   methods: {
@@ -164,6 +172,7 @@ $mainBlue: #409eff;
     width: calc(100% - #{$sideWidth});
     display: flex;
     flex-direction: column;
+
     > header {
       width: 100%;
       height: calc(#{$headerHeight} + 10px);

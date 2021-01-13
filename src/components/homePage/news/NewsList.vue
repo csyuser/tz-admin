@@ -68,7 +68,6 @@
 <script>
 import Table from '@/components/permission/Table'
 import Qs from 'qs'
-import {socket} from '@/assets/control/socket'
 
 export default {
   name: 'NewsList',
@@ -123,8 +122,8 @@ export default {
       if (this.selectedRow.length === 1) {
         let id = this.selectedRow[0].id
         let data = {type: '1', list: id}
-        this.$router.push(`/newsContent/${id}`)
         this.saveReceiveTime(data)
+        this.$router.push(`/newsContent/${id}`)
       } else {this.$message.error('请选择一行数据')}
     },
     search() {
@@ -180,7 +179,7 @@ export default {
       this.axios.post('/messages/saveReceiveTime', Qs.stringify({...data}))
           .then(res => {
             if (res.data.code.toString() === '200') {
-              socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
+              this.$store.commit('getSocket',true)
               this.getPages()
             } else {this.$message.error(res.data.msg)}
           })

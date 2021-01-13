@@ -21,6 +21,7 @@ export default new Vuex.Store({
     // selectedRow:[],
     // page:1,
     // pageSize:10,
+    isGetSocket:false
   },
   mutations: {
     fetch(state){
@@ -28,6 +29,9 @@ export default new Vuex.Store({
     },
     getUserInfo(state){
       state.userInfo =  JSON.parse(window.localStorage.getItem('userInfo'))
+    },
+    getSocket(state,type){
+      state.isGetSocket = type
     }
 
     // selectRow(state,val) {
