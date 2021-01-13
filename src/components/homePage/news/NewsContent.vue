@@ -2,7 +2,7 @@
   <div class="content-wrap">
     <div class="title-wrap">
       <div class="buttons">
-        <el-button size="small" type="primary" plain @click="reply">
+        <el-button size="small" type="primary" plain @click="$router.back()">
           <i class="el-icon-back"></i>
           返回
         </el-button>
