@@ -109,8 +109,10 @@ export default {
     }
   },
   methods: {
-    currentChange() {
-      console.log('currentChange')
+    currentChange(val, row) {
+      this.page = val
+      this.selectedRow = row
+      this.getPages()
     },
     selectRow(val) {
       this.selectedRow = []
@@ -161,6 +163,8 @@ export default {
         params: {
           type: this.searchData.type,
           queryType: this.searchData.queryType,
+          page: this.page,
+          pageSize: this.pageSize,
           toUserId,
           privateType,
           title,
