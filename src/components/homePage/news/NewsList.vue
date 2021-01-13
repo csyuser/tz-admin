@@ -144,9 +144,8 @@ export default {
       this.saveReceiveTime(data)
     },
     addNews(){
-      this.$router.push('/newsReply/ ')
+      this.$router.push('/newsReply/')
     },
-    reply() {},
     getPages(title) {
       let toUserId
       let fromUserId
