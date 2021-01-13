@@ -96,7 +96,6 @@ export default {
     this.$store.commit('getUserInfo')
     // this.getPages()
     this.searchData.queryType = this.$route.params.queryType
-    console.log(this.$route.path)
   },
   watch: {
     searchData: {

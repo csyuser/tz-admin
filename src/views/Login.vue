@@ -120,8 +120,6 @@ export default {
             this.userInfo.id = res.data.data['userList'][0].id
             this.$router.push('/HomePage')
           }
-          console.log('this.userInfo')
-          console.log(this.userInfo)
           window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
         } else {this.$message.error(res.data.msg)}
       })

@@ -7,7 +7,6 @@ const socket = {
       } else {
         console.log('支持WebSocket')
         let socketUrl = wsUrl + '/websocket/' + userId
-        console.log(socketUrl)
         if (socket != null) {
           socket.close()
           socket = null

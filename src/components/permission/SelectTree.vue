@@ -87,7 +87,6 @@ export default {
   },
   mounted() {
     this.disabled1 = this.disabled
-    console.log(this.disabled)
   },
   created() {
 // 检测输入框原有值并显示对应 label
