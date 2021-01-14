@@ -40,10 +40,9 @@
               <li @click="$router.push('/UserCenter')">个人中心</li>
               <li @click="logOut">退出登录</li>
             </ul>
-            <!--            <p class="dropDown">退出登录</p>-->
           </section>
           <div class="userInfo" slot="reference">
-            <el-avatar class="portrait" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg">
+            <el-avatar class="portrait" :src="avatarUrl">
               user
             </el-avatar>
             <i class="el-icon-caret-bottom"></i>
@@ -71,7 +70,8 @@ export default {
       sysCount: 0,
       socketData: {},
       nowBreadcrumb: [],
-      breadcrumbList:[]
+      breadcrumbList: [],
+      avatarUrl: ''
     }
   },
   async mounted() {
@@ -87,6 +87,7 @@ export default {
         })
         .catch()
     this.userInfo = this.$store.state.userInfo
+    this.avatarUrl = this.userInfo.photoPath || 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
     this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
   },
   watch: {
@@ -105,10 +106,9 @@ export default {
     },
     async $route(to) {
       this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
-      if (to.path === '/HomePage'){this.nowBreadcrumb = []}
-      else {
-        this.breadcrumbList.forEach(item=>{
-          if (item.url === to.path){
+      if (to.path === '/HomePage') {this.nowBreadcrumb = []} else {
+        this.breadcrumbList.forEach(item => {
+          if (item.url === to.path) {
             this.nowBreadcrumb = item.list
           }
         })
@@ -131,11 +131,14 @@ export default {
       let list = []
       let url = ''
       let breadList = []
-      breadList.push({list:['私信'],url:'/newsList/1'},{list:['通知'],url:'/newsList/0'},{list:['个人中心'],url:'/UserCenter'})
+      breadList.push({list: ['私信'], url: '/newsList/1'}, {list: ['通知'], url: '/newsList/0'}, {
+        list: ['个人中心'],
+        url: '/UserCenter'
+      })
       let getBreadList = (val) => {
         val.forEach(item => {
           item['parentName'] && list.push(item['parentName'])
-          if (item.children && item.children.length>=1) {
+          if (item.children && item.children.length >= 1) {
             getBreadList(item.children)
           } else {
             list.push(item.name)

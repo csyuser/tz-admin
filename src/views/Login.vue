@@ -118,6 +118,7 @@ export default {
             this.userInfo.code = res.data.data['userList'][0].code
             this.userInfo.name = res.data.data['userList'][0].name
             this.userInfo.id = res.data.data['userList'][0].id
+            this.userInfo.photoPath = res.data.data['userList'][0].photoPath
             this.$router.push('/HomePage')
           }
           window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
@@ -146,6 +147,7 @@ export default {
               this.userInfo.code = res.data.data['curUser'].code
               this.userInfo.name = res.data.data['curUser'].name
               this.userInfo.id = res.data.data['curUser'].id
+              this.userInfo.photoPath = res.data.data['curUser'].photoPath
               window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
               this.$router.push('/HomePage')
             } else {this.$message.error(res.data.msg)}

@@ -1,4 +1,4 @@
 {
     "BASE_URL": "/api",
-    "wsUrl": "ws://192.168.99.132:8080/topcheer"
+    "wsUrl": "ws://192.168.30.220:8080/topcheer"
 }

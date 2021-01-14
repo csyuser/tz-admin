@@ -78,6 +78,12 @@ export default {
         if (res.data.code.toString() === '200') {
           this.userInfo = res.data.data
           this.imgId = res.data.data.photoId
+          let info = {}
+          info.code =this.userInfo.code
+          info.name = this.userInfo.name
+          info.id = this.userInfo.id
+          info.photoPath = this.userInfo.photoPath
+          window.localStorage.setItem('userInfo', JSON.stringify(info))
         } else {
           this.$message.error(res.data.msg)
         }
