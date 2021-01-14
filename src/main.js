@@ -53,6 +53,8 @@ axios.interceptors.response.use(function (response) {
   return response
 }, function (error) {
   // 对响应错误做点什么
+  loading.close()
+  ElementUI.Message('请求出错')
   return Promise.reject(error)
 })
 

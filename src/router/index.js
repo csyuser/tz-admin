@@ -14,6 +14,7 @@ import NewsList from '@/components/homePage/news/NewsList'
 import NewsContent from '@/components/homePage/news/NewsContent'
 import NewsReply from '@/components/homePage/news/NewsReply'
 import UserCenter from '@/components/homePage/user/UserCenter'
+import NotFound from '@/views/NotFound.vue';
 
 Vue.use(VueRouter)
 
@@ -78,6 +79,10 @@ const routes = [
         component: UserCenter,
       },],
   },
+  {
+    path: '*',
+    component: NotFound
+  },
 
   // {
   //   path: '/about',
@@ -92,5 +97,8 @@ const routes = [
 const router = new VueRouter({
   routes
 })
-
+const VueRouterPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (to) {
+  return VueRouterPush.call(this, to).catch(err => err)
+}
 export default router
