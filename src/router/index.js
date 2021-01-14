@@ -13,6 +13,7 @@ import Permission from '@/views/permission/Permission'
 import NewsList from '@/components/homePage/news/NewsList'
 import NewsContent from '@/components/homePage/news/NewsContent'
 import NewsReply from '@/components/homePage/news/NewsReply'
+import UserCenter from '@/components/homePage/user/UserCenter'
 
 Vue.use(VueRouter)
 
@@ -71,6 +72,10 @@ const routes = [
         path: '/NewsReply/:contentId?',
         name: 'NewsReply',
         component: NewsReply,
+      },{
+        path: '/UserCenter',
+        name: 'UserCenter',
+        component: UserCenter,
       },],
   },
 

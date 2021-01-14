@@ -65,7 +65,7 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-$avatar-width: 50px;
+$avatar-width: 72px;
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

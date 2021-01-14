@@ -37,6 +37,7 @@
           <section class="message-content-wrap">
             <div class="title">{{ this.userInfo.name }}</div>
             <ul class="contentList">
+              <li @click="$router.push('/UserCenter')">个人中心</li>
               <li @click="logOut">退出登录</li>
             </ul>
             <!--            <p class="dropDown">退出登录</p>-->
@@ -130,7 +131,7 @@ export default {
       let list = []
       let url = ''
       let breadList = []
-      breadList.push({list:['私信'],url:'/newsList/1'},{list:['通知'],url:'/newsList/0'},)
+      breadList.push({list:['私信'],url:'/newsList/1'},{list:['通知'],url:'/newsList/0'},{list:['个人中心'],url:'/UserCenter'})
       let getBreadList = (val) => {
         val.forEach(item => {
           item['parentName'] && list.push(item['parentName'])
