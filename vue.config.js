@@ -6,8 +6,8 @@ module.exports = {
     proxy:{
       '/api': {
         // target: 'http://192.168.11.240:8080/topcheer',
-        // target: 'http://192.168.30.220:8080/topcheer',
-        target: 'http://192.168.99.132:8080/topcheer',
+        target: 'http://192.168.30.220:8080/topcheer',
+        // target: 'http://192.168.99.132:8080/topcheer',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

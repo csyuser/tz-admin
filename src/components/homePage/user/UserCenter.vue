@@ -1,37 +1,42 @@
 <template>
   <div class="user-center-wrap">
     <el-card class="box-card">
-      <div slot="header" class="clearfix">
+      <div slot="header" class="clearfix header">
         <span>个人资料</span>
-        <el-button style="float: right; padding: 3px 0.5em" type="text" @click="isEdit = false">修改</el-button>
-        <el-button style="float: right; padding: 3px 0.5em" type="text" @click="updateUesrInfo">保存</el-button>
+        <el-button type="text" @click="isEdit = true" class="update" v-if="!isEdit">修改资料</el-button>
+        <el-button type="text" @click="updateUesrInfo" class="update" v-if="isEdit">保存更改</el-button>
+        <el-button type="text" @click="cancelUpdate" v-if="isEdit">取消修改</el-button>
       </div>
-      <el-form ref="form" :model="userInfo" label-width="80px" class="form" :disabled="isEdit">
+      <el-form label-width="80px" class="form" :disabled="!isEdit">
         <el-form-item label="头像" class="formItem avatarItem">
           <div class="avatar-wrap">
-            <AvatarUploader class="avatar" @update:img="updateImg" :img-path="xxxxx"></AvatarUploader>
+            <AvatarUploader class="avatar" @update:img="updateImg" :img-path="userInfo['photoPath']"></AvatarUploader>
             <span>支持 jpg、png、jpeg 格式大小 2M 以内的图片</span>
           </div>
         </el-form-item>
+      </el-form>
+      <el-form :model="userInfo" label-width="80px" class="form">
         <el-form-item label="用户名称" class="formItem">
-          <el-input v-model="userInfo.name" size="small" class="infoInput" placeholder="名称"></el-input>
+          <el-input v-model="userInfo.name" size="small" class="infoInput" :class="{readonly:!isEdit}" placeholder="名称" :readonly="!isEdit"></el-input>
         </el-form-item>
         <el-form-item label="密码" class="formItem">
-          <el-input v-model="userInfo.password" size="small" class="infoInput" placeholder="密码"></el-input>
+          <el-input v-model="userInfo.password" size="small" class="infoInput" :class="{readonly:!isEdit}" placeholder="密码" type="password" :readonly="!isEdit"></el-input>
         </el-form-item>
         <el-form-item label="部门" class="formItem">
-          <el-input v-model="userInfo.department" size="small" class="infoInput" placeholder="部门" readonly></el-input>
+          <el-input v-model="userInfo['departmentName']" size="small" class="infoInput readonly" placeholder="暂无数据" readonly></el-input>
         </el-form-item>
         <el-form-item label="用户状态" class="formItem">
-          <el-input v-model="userInfo.status" size="small" class="infoInput" placeholder="用户状态" readonly></el-input>
+          <el-input :value="formatUserStatus(userInfo.status)" size="small" class="infoInput readonly" placeholder="用户状态" readonly></el-input>
         </el-form-item>
       </el-form>
     </el-card>
+
   </div>
 </template>
 
 <script>
 import AvatarUploader from '@/components/permission/AvatarUploader'
+import {helper} from '@/views/method'
 
 export default {
   name: 'UserCenter',
@@ -39,9 +44,15 @@ export default {
   data() {
     return {
       userInfo: {},
+      userId: '',
       imgId:'',
-      isEdit:true,
+      isEdit:false,
     }
+  },
+  mounted() {
+    this.$store.commit('getUserInfo')
+    this.userId = this.$store.state.userInfo.id
+    this.getUserInfo()
   },
   methods:{
 //获取头像组件的数据
@@ -49,7 +60,36 @@ export default {
       this.imgId = value
     },
     updateUesrInfo(){
-      console.log(this.userInfo)
+     this.isEdit = false
+     let editData = {id: this.userId, ...this.userInfo, photoId: this.imgId}
+      this.axios.post('/user/save', {...editData})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.$message.success('保存成功')
+              this.getUserInfo()
+            } else this.$message.error(res.data.msg)
+          })
+          .catch()
+    },
+    getUserInfo(){
+      this.axios.get('/user/selectUserInfo', {
+        params: {userId:this.userId}
+      }).then(res => {
+        if (res.data.code.toString() === '200') {
+          this.userInfo = res.data.data
+          this.imgId = res.data.data.photoId
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
+          .catch()
+    },
+    cancelUpdate(){
+      this.isEdit = false
+      this.getUserInfo()
+    },
+    formatUserStatus(val){
+     return helper.userStatus(val)
     }
   }
 }
@@ -67,13 +107,24 @@ export default {
 }
 
 .box-card {
-  min-width: 480px;
+  min-width:600px;
+  .header{
+    display: flex;
+    align-items: center;
+    span{
+      font-size: 24px;
+      font-weight: bold
+    }
+    > .update{
+      margin-left: auto;
+    }
+  }
 }
 
 .user-center-wrap {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: 20px;
 
   .form {
     > .formItem {
@@ -112,6 +163,11 @@ export default {
           border: none;
           border-radius: 0;
         }
+      }
+    }
+    .readonly ::v-deep{
+      > input {
+        color: #c0c4cc;
       }
     }
   }
