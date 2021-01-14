@@ -7,15 +7,13 @@
         <el-button type="text" @click="updateUesrInfo" class="update" v-if="isEdit">保存更改</el-button>
         <el-button type="text" @click="cancelUpdate" v-if="isEdit">取消修改</el-button>
       </div>
-      <el-form label-width="80px" class="form" :disabled="!isEdit">
+      <el-form :model="userInfo" label-width="80px" class="form">
         <el-form-item label="头像" class="formItem avatarItem">
           <div class="avatar-wrap">
-            <AvatarUploader class="avatar" @update:img="updateImg" :img-path="userInfo['photoPath']"></AvatarUploader>
+            <AvatarUploader class="avatar" @update:img="updateImg" :img-path="userInfo['photoPath']" :disabled="!isEdit"></AvatarUploader>
             <span>支持 jpg、png、jpeg 格式大小 2M 以内的图片</span>
           </div>
         </el-form-item>
-      </el-form>
-      <el-form :model="userInfo" label-width="80px" class="form">
         <el-form-item label="用户名称" class="formItem">
           <el-input v-model="userInfo.name" size="small" class="infoInput" :class="{readonly:!isEdit}" placeholder="名称" :readonly="!isEdit"></el-input>
         </el-form-item>

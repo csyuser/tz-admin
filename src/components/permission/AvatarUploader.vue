@@ -1,11 +1,7 @@
 <template>
   <el-upload
-      class="avatar-uploader"
-      :action="uploadUrl"
-      :headers="headersToken"
-      :show-file-list="false"
-      :on-success="handleAvatarSuccess"
-      :before-upload="beforeAvatarUpload">
+      class="avatar-uploader" :action="uploadUrl" :headers="headersToken" :show-file-list="false"
+     :disabled="disabled" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
     <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
   </el-upload>
@@ -25,6 +21,10 @@ export default {
       type: String,
       default: ''
     },
+    disabled:{
+      type:Boolean,
+      default: false
+    }
   },
   computed: {
     uploadUrl: function () {
