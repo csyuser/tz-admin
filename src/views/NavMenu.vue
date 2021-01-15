@@ -42,7 +42,8 @@
             </ul>
           </section>
           <div class="userInfo" slot="reference">
-            <el-avatar class="portrait" :src="avatarUrl">
+            <el-avatar class="portrait"
+                       :src="this.userInfo.photoPath || 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'">
               user
             </el-avatar>
             <i class="el-icon-caret-bottom"></i>
@@ -65,13 +66,11 @@ export default {
   data() {
     return {
       menuList: [],
-      userInfo: {},
       privateCount: 0,
       sysCount: 0,
       socketData: {},
       nowBreadcrumb: [],
       breadcrumbList: [],
-      avatarUrl: ''
     }
   },
   async mounted() {
@@ -86,9 +85,12 @@ export default {
           } else {this.menuList = []}
         })
         .catch()
-    this.userInfo = this.$store.state.userInfo
-    this.avatarUrl = this.userInfo.photoPath || 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
     this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
+  },
+  computed: {
+    userInfo() {
+      return this.$store.state.userInfo
+    }
   },
   watch: {
     socketData: {

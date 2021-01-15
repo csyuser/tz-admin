@@ -82,6 +82,7 @@ export default {
           info.id = this.userInfo.id
           info.photoPath = this.userInfo.photoPath
           window.localStorage.setItem('userInfo', JSON.stringify(info))
+          this.$store.commit('getUserInfo')
         } else {
           this.$message.error(res.data.msg)
         }
