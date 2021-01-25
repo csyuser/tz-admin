@@ -41,15 +41,24 @@
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'660px':'970px'">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
-        <el-form-item label="用户名称" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="人员头像" class="avatar">
+          <el-avatar :src="staffInfo.photoPath" shape="square"></el-avatar>
         </el-form-item>
-        <el-form-item label="人员编号" prop="code">
+        <el-form-item label="人员名称" prop="name">
           <el-select v-model="editFormInfo.code">
-            <el-option :label="code.code" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>
+          <el-option :label="code.code" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户密码" prop="password">
+        <el-form-item label="人员编号" prop="code">
+<!--          <el-select v-model="editFormInfo.code">-->
+            <el-input v-model="editFormInfo.code" suffix-icon="xxx" disabled></el-input>
+<!--            <el-option :label="code.code" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>-->
+<!--          </el-select>-->
+        </el-form-item>
+        <el-form-item label="角色名称" prop="name">
+          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        </el-form-item>
+        <el-form-item label="角色密码" prop="password">
             <el-input v-model="editFormInfo.password" show-password suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="风险等级">
@@ -58,7 +67,7 @@
             <el-option label="频繁登录" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户状态" prop="status">
+        <el-form-item label="角色状态" prop="status">
           <el-select v-model="editFormInfo.status">
             <el-option label="正常" value="1"></el-option>
             <el-option label="锁定" value="2"></el-option>
@@ -69,14 +78,14 @@
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
       </el-form>
-      <StaffDialog :staffFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData" v-if="dialogType!=='add'"></StaffDialog>
+<!--      <StaffDialog :staffFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData" v-if="dialogType!=='add'"></StaffDialog>-->
      <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除用户" :visible.sync="deleteDialogVisible" width="650px">
+    <el-dialog title="删除角色" :visible.sync="deleteDialogVisible" width="650px">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
   </div>
@@ -87,24 +96,23 @@ import Table from '@/components/permission/Table'
 import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
-import StaffDialog from '@/components/permission/dialog/StaffDialog'
 import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
 import Card from '@/components/permission/Card'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon, DeleteRow,SelectTree,StaffDialog,AuthorityListDialog,Card},
+  components: {Table, SvgIcon, DeleteRow,SelectTree,AuthorityListDialog,Card},
   mixins:[mixins],
   data() {
     return {
-      colsHead: [{prop: 'name', label: '用户名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
-        {prop: 'riskLevel', label: '风险等级'}, {prop: 'status', label: '用户状态'}],
+      colsHead: [{prop: 'name', label: '角色名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
+        {prop: 'riskLevel', label: '风险等级'}, {prop: 'status', label: '角色状态'}],
       userCodes: [],
       staffInfo:{},
       isCard: false,
       cardCheckList:[],
-      cardListHead: [{prop: 'name', label: '用户名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '用户状态'},],
+      cardListHead: [{prop: 'name', label: '角色名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '角色状态'},],
       permissionList:[],
     }
   },
@@ -155,11 +163,11 @@ export default {
       this.searchRow('/user/page')
     },
     add() {
-      this.dialogTitle = '新增用户'
+      this.dialogTitle = '新增角色'
       this.addRow()
     },
     update() {
-      this.dialogTitle = '编辑用户'
+      this.dialogTitle = '编辑角色'
       this.dialogType = 'update'
       this.editDialogDisabled = false
       let id = this.getUserId()
@@ -169,7 +177,7 @@ export default {
       this.confirmEditRow('/user/save', '/user/page')
     },
     view(row) {
-      this.dialogTitle = '查看用户信息'
+      this.dialogTitle = '查看角色信息'
       this.dialogType = 'view'
       this.editDialogVisible = true
       this.editDialogDisabled = true
