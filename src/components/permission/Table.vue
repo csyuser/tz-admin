@@ -126,6 +126,10 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    isCard(){
+      this.selectedRow = []
+      this.$emit('postSelect', this.selectedRow)
     }
   },
   methods: {

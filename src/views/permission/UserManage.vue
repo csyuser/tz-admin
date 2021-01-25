@@ -167,6 +167,7 @@ export default {
       this.addRow()
     },
     update() {
+      console.log(this.selectedRow)
       this.dialogTitle = '编辑角色'
       this.dialogType = 'update'
       this.editDialogDisabled = false
