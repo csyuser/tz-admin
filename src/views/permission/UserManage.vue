@@ -11,14 +11,14 @@
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
            @currentChange="currentChange" class="table" :is-card="isCard"
            @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows" @dblclick="view">
-      <el-button size="small" class="update" @click="relatedPost">
-        <SvgIcon icon-name="post"></SvgIcon>
-        关联岗位
-      </el-button>
-      <el-button size="small" class="update" @click="relatedGroup">
-        <SvgIcon icon-name="group"></SvgIcon>
-        关联小组
-      </el-button>
+<!--      <el-button size="small" class="update" @click="relatedPost">-->
+<!--        <SvgIcon icon-name="post"></SvgIcon>-->
+<!--        关联岗位-->
+<!--      </el-button>-->
+<!--      <el-button size="small" class="update" @click="relatedGroup">-->
+<!--        <SvgIcon icon-name="group"></SvgIcon>-->
+<!--        关联小组-->
+<!--      </el-button>-->
       <span class="showCard">
         <span>卡片显示</span>
         <el-switch v-model="isCard"></el-switch>
@@ -26,19 +26,6 @@
     </Table>
     <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" :is-card="isCard" input-width="small"
           @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
-      <el-transfer
-          filterable
-          :filter-method="filterMethod"
-          filter-placeholder="请输入"
-          v-model="relatedValue"
-          :data="transformData">
-      </el-transfer>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
-      </span>
-    </el-dialog>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
@@ -75,17 +62,13 @@
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
-        <el-form-item label="用户类型" prop="userType">
-          <el-select v-model="editFormInfo['userType']">
-            <el-option label="管理员" value="0"></el-option>
-            <el-option label="普通用户" value="1"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="角色说明">
           <el-input v-model="editFormInfo['remark']" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
-     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'"></AuthorityListDialog>
+     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId"
+                          :role-no-admin-list="editFormInfo.roleNoAdminList"
+                          :role-admin-list="editFormInfo.roleAdminList"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -99,16 +82,15 @@
 
 <script>
 import Table from '@/components/permission/Table'
-import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
-import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
 import Card from '@/components/permission/Card'
+import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, SvgIcon, DeleteRow,SelectTree,AuthorityListDialog,Card},
+  components: {Table, DeleteRow,SelectTree,Card,AuthorityListDialog},
   mixins:[mixins],
   data() {
     return {
@@ -120,6 +102,7 @@ export default {
       cardCheckList:[],
       cardListHead: [{prop: 'name', label: '角色名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '角色状态'},],
       permissionList:[],
+      userId:''
     }
   },
   watch:{
@@ -144,28 +127,6 @@ export default {
     currentChange(val, row) {
       this.currentPageChange(val, row, '/user/page')
     },
-//关联部门，岗位，小组
-    relatedPost() {
-      this.relatedName = 'post'
-      this.related('/user/selectUserAndRole','关联岗位', {userId: this.selectedRow[0] && this.selectedRow[0].id})
-    },
-    relatedGroup() {
-      this.relatedName = 'group'
-      this.related('/user/selectUserAndTeam','关联小组',{userId: this.selectedRow[0] && this.selectedRow[0].id})
-    },
-    confirmTransform() {
-      if (this.relatedName === 'post'){this.confirmRelate('/role/saveUserRole', {
-        type: '0',
-        userIds: [this.selectedRow[0].id],
-        roleIds: this.relatedValue
-      })}
-      else if (this.relatedName === 'group'){this.confirmRelate('/team/saveUserAndTeam',{
-        type:'0',
-        userIds:[this.selectedRow[0].id],
-        teamIds:this.relatedValue
-      })}
-
-    },
 //用户的增删改查
     selectRow(val) {
       this.selectedRows(val)
@@ -181,8 +142,8 @@ export default {
       this.dialogTitle = '编辑角色'
       this.dialogType = 'update'
       this.editDialogDisabled = false
-      let id = this.getUserId()
-      this.getUserInfo(id)
+      this.userId = this.getUserId()
+      this.getUserInfo(this.userId)
     },
     confirmEdit() {
       this.confirmEditRow('/user/save', '/user/page')
@@ -210,6 +171,7 @@ export default {
     },
 //获取用户详情
     getUserInfo(id){
+      this.editFormInfo = {}
       this.staffInfo = {}
       this.permissionList = []
       this.axios.get('/user/selectUserInfo', {
@@ -222,6 +184,7 @@ export default {
         }
       })
           .catch()
+      // this.getDialogInfo(id)
     },
     getUserId(){
       let id

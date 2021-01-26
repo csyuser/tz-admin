@@ -17,6 +17,9 @@
         <el-button size="small" icon="el-icon-s-grid" class="checkbox-button" slot="reference"></el-button>
       </el-popover>
     </div>
+    <div class="simple buttons">
+      <slot name="simple"></slot>
+    </div>
     <div class="table-wrap" v-if="!isCard">
       <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
                 :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"

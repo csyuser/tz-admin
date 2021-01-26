@@ -209,12 +209,27 @@ export const mixins = {
       })
         .catch()
     },
+//获取弹窗的信息
+    getDialogInfo(id){
+      this.staffInfo = {}
+      this.permissionList = []
+      this.axios.get('/user/selectUserInfo', {
+        params: {userId:id}
+      }).then(res => {
+        if (res.data.code.toString() === '200') {
+          this.editFormInfo = res.data.data
+          this.staffInfo = res.data.data['person']
+          this.permissionList = res.data.data['permissionList']
+        }
+      })
+        .catch()
+    },
 //关联功能
     related(treeUrl, title, params) {
-      if (this.selectedRow.length !== 1) {
-        this.$message.error('请选择一行数据')
-        return
-      }
+      // if (this.selectedRow.length !== 1) {
+      //   this.$message.error('请选择一行数据')
+      //   return
+      // }
       this.axios.get(treeUrl, {
         params: {...params}
       }).then(res => {
@@ -238,8 +253,5 @@ export const mixins = {
       })
         .catch()
     },
-    clearVallidate(form){
-      form.clearValidate();
-    }
   },
 }
