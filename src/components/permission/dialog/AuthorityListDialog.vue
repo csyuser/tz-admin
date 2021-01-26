@@ -1,7 +1,13 @@
 <template>
   <div class="dialogWrap">
     <div class="role">
-      <h3>岗位信息</h3>
+      <div class="title">
+        <h3>岗位信息</h3>{{dialogType}}
+        <el-button size="small" class="update" type="primary" plain @click="relatedPost" :disabled="type !=='update'">
+<!--          <SvgIcon icon-name="post"></SvgIcon>-->
+          关联岗位
+        </el-button>
+      </div>
       <ul>
         <li v-for="item in roleAdminList" :key="item.id">
           <SvgIcon icon-name="administrator" color="#ffb980" class="postIcon" size="medium"></SvgIcon>
@@ -14,13 +20,7 @@
       </ul>
     </div>
     <h3>权限信息</h3>
-    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas1" :needButton="false" :needPage="false">
-      <template #simple>
-        <el-button size="small" class="update" type="primary" @click="relatedPost">
-          <SvgIcon icon-name="post"></SvgIcon>
-          关联岗位
-        </el-button>
-      </template>
+    <Table class="roleTable" :colsHead="colsHead" :tableDatas="tableDatas1" :needButton="false" :needPage="false">
     </Table>
     <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px">
       <el-transfer
@@ -57,6 +57,7 @@ export default {
     userId: {type:String},
     roleAdminList:{type:Array},
     roleNoAdminList:{type:Array},
+    type:{type:String}
   },
   methods:{
     relatedPost() {
@@ -85,16 +86,29 @@ export default {
   > .role{
     border-bottom: 1px solid #dcdfe6;
     padding-bottom: 18px;
-    > ul{
+    > .title{
       display: flex;
+      align-items: center;
+      > button{
+        height: 30px;
+        margin-left: 1em;
+      }
+    }
+    > ul{
+      margin-left: 2em;
+      display: flex;
+      flex-wrap: wrap;
       > li{
         margin-right: 2em;
         text-align: center;
         > .postIcon{
-          //margin-right: -1em;
+          margin-bottom: 0.3em;
         }
       }
     }
+  }
+  > .roleTable{
+    margin-left: 2em;
   }
 }
 </style>

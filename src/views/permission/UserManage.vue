@@ -66,7 +66,7 @@
           <el-input v-model="editFormInfo['remark']" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
-     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId"
+     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType"
                           :role-no-admin-list="editFormInfo.roleNoAdminList"
                           :role-admin-list="editFormInfo.roleAdminList"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
