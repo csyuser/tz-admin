@@ -175,66 +175,95 @@ export default {
       })
     },
 //选中父元素，全选子元素
-    selectRow(val, row) {
-      let parent = {}
-      if (val.indexOf(row) >= 0) {
-        this.selectedRow.push(row)
-        if (row.children) {
-          let isExpand = false
-          this.expand.forEach((item,index)=>{
-            if (item.rowId === row.id && this.expand[index].type===true){isExpand = true}
-          })
-          if (this.expand.length>0 && isExpand === true){
-            row.children.forEach(child => {
-              if (this.selectedRow.indexOf(child) < 0) {
-                this.selectedRow.push(child)
-                this.children.push(child)
-              }
-            })
-          }
-        }
-        if (row.previousMenu && row.previousMenu !== '') {
-          this.tableData.forEach(item => {
-            if (item.name === row.previousMenu) {
-              parent = item
-            }
-          })
-          let childSelected = true
-          parent.children && parent.children.forEach(child => {
-            if (this.selectedRow.indexOf(child) < 0) {childSelected = false}
-          })
-          if (childSelected === true) {this.selectedRow.push(parent)}
-        }
-      } else {
-        let index = this.selectedRow.indexOf(row)
-        this.selectedRow.splice(index, 1)
-        if (row.children) {
+    //如果点击行有子集((选中状态))
+    checkedHasChild(row) {
+      if (row.children) {
+        let isExpand = false
+        this.expand.forEach((item, index) => {
+          if (item.rowId === row.id && this.expand[index].type === true) {isExpand = true}
+        })
+        if (this.expand.length > 0 && isExpand === true) {
           row.children.forEach(child => {
-            if (this.selectedRow.indexOf(child) >= 0) {
-              let index = this.selectedRow.indexOf(child)
-              this.selectedRow.splice(index, 1)
+            if (this.selectedRow.indexOf(child) < 0) {
+              this.selectedRow.push(child)
+              this.children.push(child)
             }
           })
-        }
-        if (row.previousMenu && row.previousMenu !== '') {
-          this.tableData.forEach(item => {
-            if (item.name === row.previousMenu) {
-              parent = item
-            }
-          })
-          if (this.selectedRow.indexOf(parent) >= 0) {
-            let index = this.selectedRow.indexOf(parent)
-            this.selectedRow.splice(index, 1)
-          }
         }
       }
-
+    },
+    //如果点击行有父级(选中状态)
+    checkedHasParent(row) {
+      let parent = {}
+      if (row['previousMenu'] && row['previousMenu'] !== '') {
+        this.tableData.forEach(item => {
+          if (item.name === row['previousMenu']) {
+            parent = item
+          }
+        })
+        let childSelected = true
+        parent.children && parent.children.forEach(child => {
+          if (this.selectedRow.indexOf(child) < 0) {childSelected = false}
+        })
+        if (childSelected === true) {this.selectedRow.push(parent)}
+      }
+    },
+    //如果点击行包为选中状态
+    inCheckedRow(row) {
+      this.selectedRow.push(row)
+      this.checkedHasChild(row)
+      this.checkedHasParent(row)
+    },
+    //如果点击行有子级（非选中状态）
+    uncheckedHasChild(row) {
+      if (row.children) {
+        row.children.forEach(child => {
+          if (this.selectedRow.indexOf(child) >= 0) {
+            let index = this.selectedRow.indexOf(child)
+            this.selectedRow.splice(index, 1)
+          }
+        })
+      }
+    },
+    //如果点击行有父级（非选中状态）
+    uncheckedHasParent(row) {
+      let parent = {}
+      if (row['previousMenu'] && row['previousMenu'] !== '') {
+        this.tableData.forEach(item => {
+          if (item.name === row['previousMenu']) {
+            parent = item
+          }
+        })
+        if (this.selectedRow.indexOf(parent) >= 0) {
+          let index = this.selectedRow.indexOf(parent)
+          this.selectedRow.splice(index, 1)
+        }
+      }
+    },
+    //如果点击行为非选中状态
+    inUncheckedRow(row) {
+      let index = this.selectedRow.indexOf(row)
+      this.selectedRow.splice(index, 1)
+      this.uncheckedHasChild(row)
+      this.uncheckedHasParent(row)
+    },
+    //切换表格的选中状态
+    toggleChecked(){
       this.$refs.multipleTable.clearSelection()
       this.selectedRow.forEach(item => {
         this.$refs.multipleTable.toggleRowSelection(item, true)
       })
+    },
+    selectRow(val, row) {
+      if (val.indexOf(row) >= 0) {
+        this.inCheckedRow(row)
+      } else {
+        this.inUncheckedRow(row)
+      }
+      this.toggleChecked()
       this.$emit('postSelect', this.selectedRow)
     },
+    //全选
     selectAllRows(selection) {
       if (this.children.length > 0) {
         this.children.forEach(child => {
