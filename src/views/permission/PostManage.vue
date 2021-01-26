@@ -42,6 +42,7 @@
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
+      <PostDialog :type="dialogType"></PostDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
@@ -71,11 +72,12 @@ import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
 import SelectTree from '@/components/permission/SelectTree'
+import PostDialog from'@/components/permission/dialog/PostDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'PostManage',
-  components: {Table, DeleteRow, SvgIcon,SelectTree},
+  components: {Table, DeleteRow, SvgIcon,SelectTree,PostDialog},
   mixins:[mixins],
   data() {
     return {

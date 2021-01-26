@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="title">欢迎你，登录{{ systemName }}用户管理系统</div>
+    <div class="title">{{ systemName }}</div>
     <div class="login-form-wrap">
       <p class="form-title">用户登录</p>
       <el-form :model="loginInfo" class="login-form">
@@ -45,7 +45,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      systemName: '天正',
+      systemName: '',
       loginInfo: {
         username: '',
         password: ''
@@ -77,13 +77,13 @@ export default {
     },
   },
   mounted() {
-    // this.axios.get('/getCsrf', {})
-    //     .then(res => {
-    //       if (res.data.code === 200) {
-    //         window.localStorage.setItem('token', res.data.data.token)
-    //       }
-    //     })
-    //     .catch()
+    this.axios.get('/system-params/selectParams',{params:{pageId:this.$options.name}})
+    .then((res)=>{
+      if (res.data.code.toString() === '200'){
+        this.systemName = res.data.data[0].value
+      }
+    })
+    .catch()
   },
   methods: {
     isLogin(val) {

@@ -40,7 +40,7 @@ axios.interceptors.request.use(function (config) {
   })
   setTimeout(() => {
     loading.close()
-  }, 20000)
+  }, 10000)
   return config
 }, function (error) {
   return Promise.reject(error)

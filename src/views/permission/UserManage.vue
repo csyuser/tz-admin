@@ -11,14 +11,6 @@
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
            @currentChange="currentChange" class="table" :is-card="isCard"
            @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows" @dblclick="view">
-<!--      <el-button size="small" class="update" @click="relatedPost">-->
-<!--        <SvgIcon icon-name="post"></SvgIcon>-->
-<!--        关联岗位-->
-<!--      </el-button>-->
-<!--      <el-button size="small" class="update" @click="relatedGroup">-->
-<!--        <SvgIcon icon-name="group"></SvgIcon>-->
-<!--        关联小组-->
-<!--      </el-button>-->
       <span class="showCard">
         <span>卡片显示</span>
         <el-switch v-model="isCard"></el-switch>

@@ -2,7 +2,7 @@
   <div class="nav-menu">
     <div class="sidebar-wrap">
       <div class="logo">
-        天正管理系统
+        {{ systemName }}
       </div>
       <el-menu :default-active="$route.path" class="el-menu-vertical-demo sidebar" router unique-opened
                background-color="#304156" text-color="#fff" active-text-color="#409eff">
@@ -71,6 +71,7 @@ export default {
       socketData: {},
       nowBreadcrumb: [],
       breadcrumbList: [],
+      systemName:''
     }
   },
   async mounted() {
@@ -86,6 +87,13 @@ export default {
         })
         .catch()
     this.socketData = await socket.getSocket(this.$store.state.userInfo.id, this.wsUrl)
+    this.axios.get('/system-params/selectParams',{params:{pageId:'sidebar'}})
+        .then((res)=>{
+          if (res.data.code.toString() === '200'){
+            this.systemName = res.data.data[0].value
+          }
+        })
+        .catch()
   },
   computed: {
     userInfo() {
