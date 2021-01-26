@@ -81,7 +81,7 @@ export default {
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.treeData = res.data.data
-            } else {this.$message.error(res.data.msg)}
+            }
           })
           .catch()
     },
@@ -117,7 +117,7 @@ export default {
               this.replyInfo.toUserIds = oldData.fromUserId
               this.defaultChecked = oldData.fromUserId
               this.checked = [{label: oldData['fromUserName'], id: oldData.fromUserId, treeType: 'user'}]
-            } else {this.$message.error(res.data.msg)}
+            }
           })
           .catch()
     },

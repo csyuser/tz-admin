@@ -122,7 +122,7 @@ export default {
             this.$router.push('/HomePage')
           }
           window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
-        } else {this.$message.error(res.data.msg)}
+        }
       })
           .catch(()=>{
             this.$message.error('登陆失败')
@@ -150,7 +150,7 @@ export default {
               this.userInfo.photoPath = res.data.data['curUser'].photoPath
               window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
               this.$router.push('/HomePage')
-            } else {this.$message.error(res.data.msg)}
+            }
           })
           .catch()
     },

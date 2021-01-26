@@ -82,8 +82,6 @@ export const mixins = {
         if (res.data.code.toString() === '200') {
           this.tableDatas = res.data
           this.selectedRow = []
-        } else {
-          this.$message.error(res.data.msg)
         }
       })
         .catch()
@@ -135,7 +133,7 @@ export const mixins = {
                 if (res.data.code.toString() === '200') {
                   this.$message.success('保存成功')
                   this.getPages(pageUrl)
-                } else this.$message.error(res.data.msg)
+                }
               })
               .catch()
           }
@@ -206,8 +204,6 @@ export const mixins = {
       }).then(res => {
         if (res.data.code.toString() === '200') {
           if (key === '1') {this.departmentClassifyDrop = res.data.data} else if (key === '2') {this.departmentLevelDrop = res.data.data} else if (key === '3') {this.rankDrop = res.data.data} else if (key === '4') {this.permissionTypeDrop = res.data.data} else if (key === '5') {this.permissionScopeDrop = res.data.data} else if (key === '6') {this.permissionRelateDrop = res.data.data} else if (key === '7') {this.postDrop = res.data.data}
-        } else {
-          this.$message.error(res.data.msg)
         }
       })
         .catch()
@@ -224,8 +220,6 @@ export const mixins = {
         if (res.data.code.toString() === '200') {
           this.transformData = res.data.data['allList']
           this.relatedValue = res.data.data['checkList']
-        } else {
-          this.$message.error(res.data.msg)
         }
       })
         .catch()
@@ -239,7 +233,7 @@ export const mixins = {
       }).then(res => {
         if (res.data.code.toString() === '200') {
           this.$message.success('保存成功')
-        } else {this.$message.error(res.data.msg)}
+        }
       })
         .catch()
     },

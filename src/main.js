@@ -40,7 +40,7 @@ axios.interceptors.request.use(function (config) {
   })
   setTimeout(() => {
     loading.close()
-  }, 10000)
+  }, 20000)
   return config
 }, function (error) {
   return Promise.reject(error)
@@ -49,6 +49,9 @@ axios.interceptors.response.use(function (response) {
   if (response) {loading.close()}
   if (response.data.code && response.data.code.toString() === '-200') {
     if (router.currentRoute.name !== 'Login') {router.push('/')}
+  }
+  if(response.data.code && response.data.code.toString() !== '200'){
+    ElementUI.Message.error(response.data.msg)
   }
   return response
 }, function (error) {

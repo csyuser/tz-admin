@@ -44,7 +44,7 @@ export default {
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.newsContent = res.data.data
-            } else {this.$message.error(res.data.msg)}
+            }
           })
           .catch()
     },

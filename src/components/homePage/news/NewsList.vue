@@ -176,7 +176,7 @@ export default {
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.tableDatas = res.data
-            } else {this.$message.error(res.data.msg)}
+            }
           })
           .catch()
     },
@@ -186,7 +186,7 @@ export default {
             if (res.data.code.toString() === '200') {
               this.$store.commit('setSocket',true)
               this.getPages()
-            } else {this.$message.error(res.data.msg)}
+            }
           })
           .catch()
     },

@@ -65,7 +65,7 @@ export default {
             if (res.data.code.toString() === '200') {
               this.$message.success('保存成功')
               this.getUserInfo()
-            } else this.$message.error(res.data.msg)
+            }
           })
           .catch()
     },
@@ -83,8 +83,6 @@ export default {
           info.photoPath = this.userInfo.photoPath
           window.localStorage.setItem('userInfo', JSON.stringify(info))
           this.$store.commit('getUserInfo')
-        } else {
-          this.$message.error(res.data.msg)
         }
       })
           .catch()

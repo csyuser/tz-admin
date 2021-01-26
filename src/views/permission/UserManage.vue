@@ -214,8 +214,6 @@ export default {
           this.editFormInfo = res.data.data
           this.staffInfo = res.data.data['person']
           this.permissionList = res.data.data['permissionList']
-        } else {
-          this.$message.error(res.data.msg)
         }
       })
           .catch()
