@@ -24,7 +24,8 @@
         <el-switch v-model="isCard"></el-switch>
       </span>
     </Table>
-    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" input-width="small" @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
+    <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" :is-card="isCard" input-width="small"
+          @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
     <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
       <el-transfer
           filterable
@@ -116,6 +117,11 @@ export default {
       permissionList:[],
     }
   },
+  watch:{
+    isCard(){
+      this.cardCheckList = []
+    }
+  },
   mounted() {
     this.getPages('/user/page')
     this.getDepartmentTree('/department/selectDepartmentTree')
@@ -167,7 +173,6 @@ export default {
       this.addRow()
     },
     update() {
-      console.log(this.selectedRow)
       this.dialogTitle = '编辑角色'
       this.dialogType = 'update'
       this.editDialogDisabled = false

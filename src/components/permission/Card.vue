@@ -32,7 +32,7 @@ export default {
       type: Array,
       required: true
     },
-    inputWidth:{type:String}
+    inputWidth:{type:String},
   },
   methods: {
     checkChanged() {
