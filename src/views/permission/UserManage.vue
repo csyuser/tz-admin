@@ -66,7 +66,7 @@
           <el-input v-model="editFormInfo['remark']" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
-     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType"
+     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType" @update:dialogInfo="updateDialogInfo"
                           :role-no-admin-list="editFormInfo.roleNoAdminList"
                           :role-admin-list="editFormInfo.roleAdminList"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
@@ -171,20 +171,20 @@ export default {
     },
 //获取用户详情
     getUserInfo(id){
-      this.editFormInfo = {}
-      this.staffInfo = {}
-      this.permissionList = []
-      this.axios.get('/user/selectUserInfo', {
-        params: {userId:id}
-      }).then(res => {
-        if (res.data.code.toString() === '200') {
-          this.editFormInfo = res.data.data
-          this.staffInfo = res.data.data['person']
-          this.permissionList = res.data.data['permissionList']
-        }
-      })
-          .catch()
-      // this.getDialogInfo(id)
+      // this.editFormInfo = {}
+      // this.staffInfo = {}
+      // this.permissionList = []
+      // this.axios.get('/user/selectUserInfo', {
+      //   params: {userId:id}
+      // }).then(res => {
+      //   if (res.data.code.toString() === '200') {
+      //     this.editFormInfo = res.data.data
+      //     this.staffInfo = res.data.data['person']
+      //     this.permissionList = res.data.data['permissionList']
+      //   }
+      // })
+      //     .catch()
+      this.getDialogInfo(id,'/user/selectUserInfo')
     },
     getUserId(){
       let id
@@ -206,6 +206,9 @@ export default {
         }
       })
       .catch()
+    },
+    updateDialogInfo(){
+      this.getUserInfo(this.userId)
     },
     //获取子组件的数据
     updateImg(value) {

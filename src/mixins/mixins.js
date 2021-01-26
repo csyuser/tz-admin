@@ -31,9 +31,6 @@ export const mixins = {
       transformData: [],
       relatedValue: [],
       relatedName: '',
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
-      },
       rules: {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
         code: [{required: true, message: '编码不能为空', trigger: 'change'}],
@@ -210,10 +207,11 @@ export const mixins = {
         .catch()
     },
 //获取弹窗的信息
-    getDialogInfo(id){
+    getDialogInfo(id,url){
+      this.editFormInfo = {}
       this.staffInfo = {}
       this.permissionList = []
-      this.axios.get('/user/selectUserInfo', {
+      this.axios.get(url, {
         params: {userId:id}
       }).then(res => {
         if (res.data.code.toString() === '200') {
@@ -225,33 +223,34 @@ export const mixins = {
         .catch()
     },
 //关联功能
-    related(treeUrl, title, params) {
-      // if (this.selectedRow.length !== 1) {
-      //   this.$message.error('请选择一行数据')
-      //   return
-      // }
-      this.axios.get(treeUrl, {
-        params: {...params}
-      }).then(res => {
-        if (res.data.code.toString() === '200') {
-          this.transformData = res.data.data['allList']
-          this.relatedValue = res.data.data['checkList']
-        }
-      })
-        .catch()
-      this.relatedTitle = title
-      this.relatedDialogVisible = true
-    },
-    confirmRelate(saveUrl, params) {
-      this.relatedDialogVisible = false
-      this.axios.post(saveUrl, {
-        ...params
-      }).then(res => {
-        if (res.data.code.toString() === '200') {
-          this.$message.success('保存成功')
-        }
-      })
-        .catch()
-    },
+//     related(treeUrl, title, params) {
+//       // if (this.selectedRow.length !== 1) {
+//       //   this.$message.error('请选择一行数据')
+//       //   return
+//       // }
+//       this.axios.get(treeUrl, {
+//         params: {...params}
+//       }).then(res => {
+//         if (res.data.code.toString() === '200') {
+//           this.transformData = res.data.data['allList']
+//           this.relatedValue = res.data.data['checkList']
+//         }
+//       })
+//         .catch()
+//       this.relatedTitle = title
+//       this.relatedDialogVisible = true
+//     },
+//     confirmRelate(saveUrl, params) {
+//       this.relatedDialogVisible = false
+//       this.axios.post(saveUrl, {
+//         ...params
+//       }).then(res => {
+//         if (res.data.code.toString() === '200') {
+//           this.$message.success('保存成功')
+//           this.getDialogInfo(this.userId,'/user/selectUserInfo')
+//         }
+//       })
+//         .catch()
+//     },
   },
 }

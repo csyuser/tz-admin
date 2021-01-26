@@ -2,8 +2,8 @@
   <div class="dialogWrap">
     <div class="role">
       <div class="title">
-        <h3>岗位信息</h3>{{dialogType}}
-        <el-button size="small" class="update" type="primary" plain @click="relatedPost" :disabled="type !=='update'">
+        <h3>岗位信息</h3>
+        <el-button size="small" class="update" type="primary" @click="relatedPost" :disabled="type !=='update'">
 <!--          <SvgIcon icon-name="post"></SvgIcon>-->
           关联岗位
         </el-button>
@@ -41,12 +41,13 @@
 <script>
 import Table from '@/components/permission/Table'
 import SvgIcon from '@/components/SvgIcon'
-import {mixins} from '@/mixins/mixins'
+// import {mixins} from '@/mixins/mixins'
+import {relateMixins} from '@/mixins/relateMixins'
 
 export default {
   name: 'AuthorityListDialog',
   components: {Table,SvgIcon},
-  mixins:[mixins],
+  mixins:[relateMixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'describe', label: '权限描述'}],
@@ -89,6 +90,7 @@ export default {
     > .title{
       display: flex;
       align-items: center;
+      justify-content: space-between;
       > button{
         height: 30px;
         margin-left: 1em;
