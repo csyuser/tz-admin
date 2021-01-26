@@ -17,6 +17,9 @@ const helper = {
   },
   newsType(val){
     if (val === '1') {return '未读'} else if (val === '0') {return '已读'}
+  },
+  roleType(val){
+    if (val === '1') {return '普通岗位'} else if (val === '0') {return '管理岗位'}
   }
 }
 

@@ -77,8 +77,8 @@
         </el-form-item>
         <el-form-item label="用户类型" prop="userType">
           <el-select v-model="editFormInfo['userType']">
-            <el-option label="管理员" value="1"></el-option>
-            <el-option label="普通用户" value="0"></el-option>
+            <el-option label="管理员" value="0"></el-option>
+            <el-option label="普通用户" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="角色说明">
@@ -112,7 +112,7 @@ export default {
   mixins:[mixins],
   data() {
     return {
-      colsHead: [{prop: 'name', label: '角色名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
+      colsHead: [{prop: 'roleName', label: '角色名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
         {prop: 'riskLevel', label: '风险等级'}, {prop: 'status', label: '角色状态'}],
       userCodes: [],
       staffInfo:{},

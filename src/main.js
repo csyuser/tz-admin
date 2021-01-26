@@ -51,7 +51,7 @@ axios.interceptors.response.use(function (response) {
     if (router.currentRoute.name !== 'Login') {router.push('/')}
   }
   if(response.data.code && response.data.code.toString() !== '200'){
-    ElementUI.Message.error(response.data.msg)
+    ElementUI.Message.error('请求出错')
   }
   return response
 }, function (error) {

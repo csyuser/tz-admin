@@ -32,7 +32,13 @@
         <el-form-item label="部门名称" prop="departmentId" style="height: 32px">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
-        <el-form-item label="角色描述">
+        <el-form-item label="岗位类型" prop="roleType">
+          <el-select v-model="editFormInfo['roleType']">
+            <el-option label="管理岗位" value="0"></el-option>
+            <el-option label="普通岗位" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="岗位描述">
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
@@ -75,7 +81,7 @@ export default {
     return {
       selectedRow: [],
       colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {
-        prop: 'departmentName', label: '部门名称'}, {prop: 'describe', label: '角色描述'}],
+        prop: 'departmentName', label: '部门名称'}, {prop: 'roleType', label: '岗位类型'}, {prop: 'describe', label: '角色描述'}],
     }
   },
   mounted() {
@@ -163,11 +169,11 @@ export default {
     > .el-form-item {
       margin-bottom: 18px;
 
-      &:nth-child(3) {
+      &:nth-child(5) {
         margin-bottom: 0;
       }
 
-      &:nth-child(4) {
+      &:nth-child(6) {
         margin-bottom: 0;
       }
     }

@@ -26,16 +26,18 @@
         <el-table-column type="selection" width="55" v-if="needPage"></el-table-column>
         <el-table-column :label="col.label" show-overflow-tooltip v-for="col in cols" :key="col.prop">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"
-                       v-if="col.prop === 'type1'"
-                       @click.native="changeType(scope.row)">
-            </el-switch>
-            <span v-else-if="col.prop === 'riskLevel'">{{ riskLevel(scope.row[col.prop]) }} </span>
+<!--            <el-switch v-model="scope.row.type" active-color="#409eff" inactive-color="#ff4949"-->
+<!--                       v-if="col.prop === 'type1'"-->
+<!--                       @click.native="changeType(scope.row)">-->
+<!--            </el-switch>-->
+            <SvgIcon icon-name="administrator" v-if="col.prop === 'roleName'" :color="scope.row['roleType'] === '0' ? '#ffb980':'#2ec7c9' "></SvgIcon>
+            <span v-if="col.prop === 'riskLevel'">{{ riskLevel(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'status'">{{ userStatus(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'selection'">{{ selection(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'sex'">{{ gender(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'createTime'">{{ formatTime(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'type'">{{ newsType(scope.row[col.prop]) }} </span>
+            <span v-else-if="col.prop === 'roleType'">{{ roleType(scope.row[col.prop]) }} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
@@ -53,10 +55,12 @@
 </template>
 
 <script>
+import SvgIcon from '@/components/SvgIcon'
 import {helper} from '@/views/method'
 
 export default {
   name: 'Table',
+  components:{SvgIcon},
   props: {
     colsHead: {type: Array},
     tableDatas: {type: [Object,Array]},
@@ -157,23 +161,7 @@ export default {
       this.checkAll = checkedCount === this.checkedOptions.length
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedOptions.length
     },
-//切换type时对话框确认
-    changeType(row) {
-      this.$confirm(`此操作将${!row ? '开启' : '关闭'}验证, 是否继续？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        this.tableData.forEach(data => {
-          if (data.id === row.id) {data.type = row.type}
-        })
-      }).catch(() => {
-        this.tableData.forEach(data => {
-          if (data.id === row.id) {data.type = !row.type}
-        })
-        this.$message('取消操作')
-      })
-    },
+
 //选中父元素，全选子元素
     //如果点击行有子集((选中状态))
     checkedHasChild(row) {
@@ -319,7 +307,27 @@ export default {
     },
     newsType(val){
       return helper.newsType(val)
-    }
+    },
+    roleType(val){
+      return helper.roleType(val)
+    },
+    //切换type时对话框确认
+//     changeType(row) {
+//       this.$confirm(`此操作将${!row ? '开启' : '关闭'}验证, 是否继续？`, '提示', {
+//         confirmButtonText: '确定',
+//         cancelButtonText: '取消',
+//         type: 'warning'
+//       }).then(async () => {
+//         this.tableData.forEach(data => {
+//           if (data.id === row.id) {data.type = row.type}
+//         })
+//       }).catch(() => {
+//         this.tableData.forEach(data => {
+//           if (data.id === row.id) {data.type = !row.type}
+//         })
+//         this.$message('取消操作')
+//       })
+//     },
   }
 }
 </script>

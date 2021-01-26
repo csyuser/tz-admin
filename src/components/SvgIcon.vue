@@ -1,5 +1,5 @@
 <template>
-    <svg class="icon">
+    <svg class="icon" :style="{color: color}">
       <use :xlink:href="`#${iconName}`"/>
     </svg>
 </template>
@@ -15,7 +15,8 @@ export default {
   props:{
     iconName:{
       type:String
-    }
+    },
+    color:{type:String}
   },
   computed: {
   }
@@ -26,7 +27,7 @@ export default {
 .icon {
   height: 1em;
   width: 1em;
-  vertical-align: -2px;
+  //vertical-align: -2px;
   vertical-align: center;
   fill: currentColor;
   overflow: hidden;
