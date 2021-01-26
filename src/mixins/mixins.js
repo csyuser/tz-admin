@@ -58,6 +58,7 @@ export const mixins = {
         type: [{required: true, message: '类型不能为空', trigger: 'change'}],
         menuId: [{required: true, message: '依赖菜单不能为空', trigger: 'change'}],
         isNeededScope: [{required: true, message: '是否需要范围必须', trigger: 'change'}],
+        userType: [{required: true, message: '角色类型不能为空', trigger: 'change'}],
       }
     }
   },

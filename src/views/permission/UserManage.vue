@@ -39,7 +39,7 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'660px':'970px'">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="人员头像" class="avatar">
@@ -51,10 +51,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="人员编号" prop="code">
-<!--          <el-select v-model="editFormInfo.code">-->
             <el-input v-model="editFormInfo.code" suffix-icon="xxx" disabled></el-input>
-<!--            <el-option :label="code.code" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>-->
-<!--          </el-select>-->
         </el-form-item>
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
@@ -78,8 +75,16 @@
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
+        <el-form-item label="用户类型" prop="userType">
+          <el-select v-model="editFormInfo['userType']">
+            <el-option label="管理员" value="1"></el-option>
+            <el-option label="普通用户" value="0"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色说明">
+          <el-input v-model="editFormInfo['remark']" suffix-icon="xxx"></el-input>
+        </el-form-item>
       </el-form>
-<!--      <StaffDialog :staffFormInfo ="staffInfo" :postDrop="postDrop" :rankDrop="rankDrop" :treeData="treeData" v-if="dialogType!=='add'"></StaffDialog>-->
      <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
