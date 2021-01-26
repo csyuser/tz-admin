@@ -45,9 +45,9 @@
         <el-form-item label="人员头像" class="avatar">
           <el-avatar :src="staffInfo.photoPath" shape="square"></el-avatar>
         </el-form-item>
-        <el-form-item label="人员名称" prop="name">
-          <el-select v-model="editFormInfo.code">
-          <el-option :label="code.code" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>
+        <el-form-item label="人员名称" prop="code">
+          <el-select v-model="editFormInfo.code" @change="staffNameChange" :disabled="dialogType !== 'add'">
+          <el-option :label="code.name" :value="code.code" v-for="code in userCodes" :key="code.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="人员编号" prop="code">
@@ -230,6 +230,16 @@ export default {
         id = this.selectedRow[0].id
       }else {this.$message.error('请选择一行数据')}
       return id
+    },
+    staffNameChange(val){
+      this.axios.get('person/selectPersonOne',{
+        params:{code:val}
+      }).then((res)=>{
+        if (res.data.code.toString() === '200'){
+          this.staffInfo = res.data.data
+        }
+      })
+      .catch()
     },
     //获取子组件的数据
     updateImg(value) {

@@ -107,6 +107,7 @@ export const mixins = {
     addRow() {
       this.dialogType = 'add'
       this.editFormInfo = {isNeededScope: '0'}
+      this.staffInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
     },
@@ -241,6 +242,9 @@ export const mixins = {
         } else {this.$message.error(res.data.msg)}
       })
         .catch()
+    },
+    clearVallidate(form){
+      form.clearValidate();
     }
   },
 }
