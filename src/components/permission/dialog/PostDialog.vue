@@ -2,10 +2,10 @@
   <div class="post-dialog-wrap">
     <div class="role">
       <div class="title">
-        <h3>岗位信息</h3>
-        <el-button size="small" class="update" type="primary" @click="relatedPost" :disabled="type !=='update'">
+        <h3>{{ titleType }}信息</h3>
+        <el-button size="small" class="update" type="primary" @click="$emit('update:relate',$event)" :disabled="type !=='update'">
           <!--          <SvgIcon icon-name="post"></SvgIcon>-->
-          关联岗位
+          关联{{ titleType }}
         </el-button>
       </div>
       <ul>
@@ -19,45 +19,18 @@
         </li>
       </ul>
     </div>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px">
-      <el-transfer
-          filterable
-          :filter-method="filterMethod"
-          filter-placeholder="请输入"
-          v-model="relatedValue"
-          :data="transformData">
-      </el-transfer>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {relateMixins} from '@/mixins/relateMixins'
-
 export default {
   name: 'PostDialog',
-  mixins:[relateMixins],
   props: {
     roleAdminList: {type: Array},
     roleNoAdminList: {type: Array},
     type:{type:String},
+    titleType:{type:String}
   },
-  methods:{
-    relatedPost() {
-      this.relatedName = 'post'
-      this.related('/user/selectUserAndRole','关联岗位', {userId: this.userId})
-    },
-    confirmTransform() {this.confirmRelate('/role/saveUserRole', {
-      type: '0',
-      userIds: [this.userId],
-      roleIds: this.relatedValue
-    },)
-    },
-  }
 }
 </script>
 

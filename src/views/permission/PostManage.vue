@@ -42,7 +42,8 @@
           <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
         </el-form-item>
       </el-form>
-      <PostDialog :type="dialogType"></PostDialog>
+      <PostDialog :type="dialogType" title-type="岗位" @update:relate="relatedPermission"></PostDialog>
+      <PostDialog :type="dialogType" title-type="用户" @update:relate="relatedPermission"></PostDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
@@ -51,7 +52,7 @@
     <el-dialog title="删除岗位" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body>
       <el-transfer
           filterable
           :filter-method="filterMethod"
@@ -74,11 +75,12 @@ import SvgIcon from '@/components/SvgIcon'
 import SelectTree from '@/components/permission/SelectTree'
 import PostDialog from'@/components/permission/dialog/PostDialog'
 import {mixins} from '@/mixins/mixins'
+import {relateMixins} from '@/mixins/relateMixins'
 
 export default {
   name: 'PostManage',
   components: {Table, DeleteRow, SvgIcon,SelectTree,PostDialog},
-  mixins:[mixins],
+  mixins:[mixins,relateMixins],
   data() {
     return {
       selectedRow: [],
@@ -168,16 +170,11 @@ export default {
   }
 
   .addForm {
+    border-bottom: 1px solid #dcdfe6;
+
     > .el-form-item {
       margin-bottom: 18px;
 
-      &:nth-child(5) {
-        margin-bottom: 0;
-      }
-
-      &:nth-child(6) {
-        margin-bottom: 0;
-      }
     }
   }
 }
