@@ -109,6 +109,7 @@ export const mixins = {
       this.staffInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
+      console.log(this.editFormInfo)
     },
     updateRow() {
       this.dialogType = 'update'
@@ -276,5 +277,8 @@ export const mixins = {
         })
         .catch(() => {})
     },
+    closedDialog(){
+      this.$refs['editDialog'].resetFields();
+    }
   },
 }

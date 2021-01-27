@@ -12,7 +12,7 @@
            @update="update"
            @postSelect="selectRow" @delete="deleteRows" @dblclick="view" @currentChange="currentChange">
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="部门分类" prop="classId">

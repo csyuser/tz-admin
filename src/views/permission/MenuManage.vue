@@ -17,7 +17,7 @@
     <Table :colsHead="colsHead" :tableDatas="tableDatas" tableName="menu" @add="add" @update="update"
            @postSelect="selectRow"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="viewPost"></Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="80px" ref="editDialog" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules">
         <el-form-item label="菜单名称" prop="name">

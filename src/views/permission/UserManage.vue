@@ -18,7 +18,7 @@
     </Table>
     <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" :is-card="isCard" input-width="small"
           @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="人员头像" class="avatar">
@@ -68,7 +68,7 @@
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px">
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px" :before-close="handleClose">
       <el-transfer
           filterable
           :filter-method="filterMethod"

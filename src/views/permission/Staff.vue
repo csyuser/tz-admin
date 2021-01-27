@@ -17,7 +17,7 @@
       </span>
     </Table>
     <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" input-width="middle" @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1000px" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="95px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">

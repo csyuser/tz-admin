@@ -20,7 +20,7 @@
         关联用户
       </el-button>
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="80px" :inline="true" :model="editFormInfo" size="small" class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="岗位名称" prop="name">
