@@ -34,9 +34,6 @@
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in permissionTypeDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="权限描述">
-          <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
-        </el-form-item>
         <el-form-item label="依赖菜单" prop="menuId" style="height: 32px">
           <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
@@ -44,6 +41,9 @@
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"
                      active-value="1" inactive-value="0">
           </el-switch>
+        </el-form-item>
+        <el-form-item label="权限描述" class="texArea">
+          <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -174,6 +174,15 @@ export default {
   .addForm {
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .texArea{
+      display: block;
+      &::v-deep{
+        margin-bottom: 0;
+        .el-form-item__content{
+          width: calc(100% - 110px);
+        }
+      }
     }
   }
 }

@@ -77,6 +77,7 @@ export default {
 <style scoped lang='scss'>
 .dialogWrap{
   border-top: 1px solid #dcdfe6;
+  margin-top: 18px;
   h3{
     line-height: 20px;
     font-size: 18px;

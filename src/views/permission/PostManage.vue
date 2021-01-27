@@ -38,12 +38,12 @@
             <el-option label="普通岗位" value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="岗位描述">
-          <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
+        <el-form-item label="岗位描述" class="texArea">
+          <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 3, maxRows: 3}"></el-input>
         </el-form-item>
       </el-form>
-      <PostDialog :type="dialogType" title-type="岗位" @update:relate="relatedPermission"></PostDialog>
-      <PostDialog :type="dialogType" title-type="角色" @update:relate="relatedPermission"></PostDialog>
+      <PostDialog :type="dialogType" title-type="岗位" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></PostDialog>
+      <PostDialog :type="dialogType" title-type="角色" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></PostDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
@@ -170,11 +170,18 @@ export default {
   }
 
   .addForm {
-    border-bottom: 1px solid #dcdfe6;
-
+    //border-bottom: 1px solid #dcdfe6;
     > .el-form-item {
       margin-bottom: 18px;
-
+    }
+    > .texArea{
+      display: block;
+      &::v-deep{
+        margin-bottom: 0;
+        .el-form-item__content{
+          width: calc(100% - 80px);
+        }
+      }
     }
   }
 }

@@ -54,8 +54,8 @@
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
-        <el-form-item label="角色说明">
-          <el-input v-model="editFormInfo['remark']" suffix-icon="xxx"></el-input>
+        <el-form-item label="角色说明" class="texArea">
+          <el-input v-model="editFormInfo['remark']" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
      <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType" @update:dialogInfo="updateDialogInfo"
@@ -240,6 +240,15 @@ export default {
     margin-top: -15px;
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .texArea{
+      display: block;
+      &::v-deep{
+        margin-bottom: 0;
+        .el-form-item__content{
+          width: calc(100% - 85px);
+        }
+      }
     }
     > .avatar {
       width: 100%;

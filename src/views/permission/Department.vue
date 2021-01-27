@@ -43,8 +43,8 @@
             <el-option label="禁用" value="0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="editFormInfo.describe" suffix-icon="xxx"></el-input>
+        <el-form-item label="描述" class="texArea">
+          <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -138,6 +138,15 @@ export default {
   .addForm {
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .texArea{
+      display: block;
+      &::v-deep{
+        margin-bottom: 0;
+        .el-form-item__content{
+          width: calc(100% - 85px);
+        }
+      }
     }
   }
 }

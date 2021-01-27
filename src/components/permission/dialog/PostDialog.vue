@@ -36,6 +36,7 @@ export default {
 
 <style scoped lang='scss'>
 .post-dialog-wrap{
+  margin-top: 18px;
   h3{
     line-height: 20px;
     font-size: 18px;
@@ -43,7 +44,7 @@ export default {
     margin: 18px 0;
   }
   > .role{
-    border-bottom: 1px solid #dcdfe6;
+    border-top: 1px solid #dcdfe6;
     padding-bottom: 18px;
     > .title{
       display: flex;
