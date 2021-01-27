@@ -149,13 +149,6 @@ export default {
     confirmDelete() {
       this.confirmDeleteRow('/person/delete', '/person/page')
     },
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-          .then(() => {
-            done()
-          })
-          .catch(() => {})
-    },
 //获取子组件的数据
     updateImg(value) {
       this.imgId = value

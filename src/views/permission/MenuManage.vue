@@ -17,7 +17,7 @@
     <Table :colsHead="colsHead" :tableDatas="tableDatas" tableName="menu" @add="add" @update="update"
            @postSelect="selectRow"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="viewPost"></Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose">
       <el-form label-position="right" label-width="80px" ref="editDialog" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules">
         <el-form-item label="菜单名称" prop="name">
@@ -44,7 +44,7 @@
         <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除菜单" :visible.sync="deleteDialogVisible" width="650px">
+    <el-dialog title="删除菜单" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
   </div>

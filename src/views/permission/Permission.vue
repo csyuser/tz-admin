@@ -10,20 +10,16 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
-<!--      <el-button size="small" class="update" @click="relatedPermission">-->
-<!--        <SvgIcon icon-name="permission"></SvgIcon>-->
-<!--        关联权限范围-->
-<!--      </el-button>-->
       <el-button size="small" class="update" @click="relatedPost">
         <SvgIcon icon-name="post"></SvgIcon>
         关联岗位
       </el-button>
-      <el-button size="small" class="update" @click="relatedGroup">
-        <SvgIcon icon-name="group"></SvgIcon>
-        关联小组
-      </el-button>
+<!--      <el-button size="small" class="update" @click="relatedGroup">-->
+<!--        <SvgIcon icon-name="group"></SvgIcon>-->
+<!--        关联小组-->
+<!--      </el-button>-->
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="710px">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="710px" :before-close="handleClose">
       <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="权限名称" prop="name">
@@ -51,10 +47,10 @@
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除权限" :visible.sync="deleteDialogVisible" width="650px">
+    <el-dialog title="删除权限" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px">
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" :before-close="handleClose">
       <el-transfer
           filterable
           :filter-method="filterMethod"
@@ -131,37 +127,38 @@ export default {
       this.confirmDeleteRow('/permission/delete', '/permission/page')
     },
 //关联权限范围，岗位，小组
-    relatedPermission() {
-      this.relatedName = 'permission'
-      this.related('','关联权限范围',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
-    },
+//     relatedPermission() {
+//       this.relatedName = 'permission'
+//       this.related('','关联权限范围',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
+//     },
     relatedPost() {
       this.relatedName = 'post'
       this.related('/permission-relation/selectPermissionAndRole','关联岗位',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
     },
-    relatedGroup() {
-      this.relatedName = 'group'
-      this.related('/permission-relation/selectPermissionAndTeam','关联小组',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
-    },
+    // relatedGroup() {
+    //   this.relatedName = 'group'
+    //   this.related('/permission-relation/selectPermissionAndTeam','关联小组',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
+    // },
     confirmTransform() {
-      if (this.relatedName === 'permission'){this.confirmRelate('', {
+      this.confirmRelate('/permission-relation/saveTeamAndPermission',{
         type: '1',
         permissionIds: [this.selectedRow[0].id],
         relationIds: this.relatedValue,
         relationType:'1'
-      })}
-      else if (this.relatedName === 'post'){this.confirmRelate('/permission-relation/saveTeamAndPermission',{
-        type: '1',
-        permissionIds: [this.selectedRow[0].id],
-        relationIds: this.relatedValue,
-        relationType:'1'
-      })}
-      else if (this.relatedName === 'group'){this.confirmRelate('/permission-relation/saveTeamAndPermission',{
-        type: '1',
-        permissionIds: [this.selectedRow[0].id],
-        relationIds: this.relatedValue,
-        relationType:'2'
-      })}
+      })
+      // if (this.relatedName === 'permission'){this.confirmRelate('', {
+      //   type: '1',
+      //   permissionIds: [this.selectedRow[0].id],
+      //   relationIds: this.relatedValue,
+      //   relationType:'1'
+      // })}
+      // else if (this.relatedName === 'post'){}
+      // else if (this.relatedName === 'group'){this.confirmRelate('/permission-relation/saveTeamAndPermission',{
+      //   type: '1',
+      //   permissionIds: [this.selectedRow[0].id],
+      //   relationIds: this.relatedValue,
+      //   relationType:'2'
+      // })}
     },
   }
 }

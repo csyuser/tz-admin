@@ -114,13 +114,6 @@ export default {
     confirmDelete() {
       this.confirmDeleteRow('/department/delete', '/department/page')
     },
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-          .then(() => {
-            done()
-          })
-          .catch(() => {})
-    },
   }
 }
 </script>

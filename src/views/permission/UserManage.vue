@@ -18,7 +18,7 @@
     </Table>
     <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" :is-card="isCard" input-width="small"
           @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="人员头像" class="avatar">
@@ -66,7 +66,7 @@
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除角色" :visible.sync="deleteDialogVisible" width="650px">
+    <el-dialog title="删除角色" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
   </div>

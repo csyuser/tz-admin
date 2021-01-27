@@ -52,7 +52,7 @@
     <el-dialog title="删除岗位" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body>
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body :before-close="handleClose">
       <el-transfer
           filterable
           :filter-method="filterMethod"
@@ -147,13 +147,6 @@ export default {
         roleIds:[this.selectedRow[0].id],
         userIds:this.relatedValue
       })}
-    },
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-          .then(() => {
-            done()
-          })
-          .catch(() => {})
     },
   }
 }
