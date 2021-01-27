@@ -18,7 +18,7 @@
           <p>{{ item.name }}</p>
         </li>
         <li v-for="item in iconDataList" :key="item.id">
-          <SvgIcon icon-name="administrator" color="#2ec7c9" class="postIcon" size="medium"></SvgIcon>
+          <SvgIcon icon-name="administrator" color="#409EFF" class="postIcon" size="medium"></SvgIcon>
           <p>{{ item.name }}</p>
         </li>
       </ul>
@@ -69,6 +69,8 @@ export default {
       > li{
         margin-right: 2em;
         text-align: center;
+        margin-bottom: 1em;
+        width: 75px;
         > .postIcon{
           margin-bottom: 0.3em;
         }

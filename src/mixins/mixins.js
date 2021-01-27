@@ -224,12 +224,12 @@ export const mixins = {
         .catch()
     },
 //获取弹窗的信息
-    getDialogInfo(id,url){
+    getDialogInfo(params,url){
       this.editFormInfo = {}
       this.staffInfo = {}
       this.permissionList = []
       this.axios.get(url, {
-        params: {userId:id}
+        params: {...params}
       }).then(res => {
         if (res.data.code.toString() === '200') {
           this.editFormInfo = res.data.data
@@ -239,6 +239,18 @@ export const mixins = {
         }
       })
         .catch()
+    },
+//获取选择行id
+    getRowId(){
+      let id
+      if (this.isCard && this.cardCheckList.length === 1){
+        id = this.cardCheckList[0]
+        this.editDialogVisible = true
+      }else if (!this.isCard && this.selectedRow.length === 1){
+        this.editDialogVisible = true
+        id = this.selectedRow[0].id
+      }else {this.$message.error('请选择一行数据')}
+      return id
     },
 //关联功能
     related(treeUrl, title, params) {
@@ -258,14 +270,14 @@ export const mixins = {
       this.relatedTitle = title
       this.relatedDialogVisible = true
     },
-    confirmRelate(saveUrl, params) {
+    confirmRelate(saveUrl, params,dialogInfoParams,dialogInfoUrl) {
       this.relatedDialogVisible = false
       this.axios.post(saveUrl, {
         ...params
       }).then(res => {
         if (res.data.code.toString() === '200') {
           this.$message.success('保存成功')
-          this.getDialogInfo(this.userId,'/user/selectUserInfo')
+          this.getDialogInfo(dialogInfoParams,dialogInfoUrl)
         }
       })
         .catch()

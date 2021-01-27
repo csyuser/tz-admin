@@ -123,10 +123,10 @@ export default {
 //监听表格数据传递
     tableDatas: {
       handler(newVal) {
-        if (newVal.data){
+        if (newVal && newVal.data){
           this.tableData = newVal.data
           this.total = newVal.count
-        }else if (newVal.length && newVal.length>=1) {
+        }else if (newVal && newVal.length && newVal.length>=1) {
           this.tableData = newVal
         }else {this.tableData = []}
         this.selectedRow = []

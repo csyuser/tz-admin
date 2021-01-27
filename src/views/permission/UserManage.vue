@@ -151,7 +151,7 @@ export default {
       this.dialogTitle = '编辑角色'
       this.dialogType = 'update'
       this.editDialogDisabled = false
-      this.userId = this.getUserId()
+      this.userId = this.getRowId()
       this.getUserInfo(this.userId)
     },
     confirmEdit() {
@@ -187,35 +187,11 @@ export default {
       type: '0',
       userIds: [this.userId],
       roleIds: this.relatedValue
-    },)
+    },{userId:this.userId},'/user/selectUserInfo')
     },
 //获取用户详情
     getUserInfo(id){
-      // this.editFormInfo = {}
-      // this.staffInfo = {}
-      // this.permissionList = []
-      // this.axios.get('/user/selectUserInfo', {
-      //   params: {userId:id}
-      // }).then(res => {
-      //   if (res.data.code.toString() === '200') {
-      //     this.editFormInfo = res.data.data
-      //     this.staffInfo = res.data.data['person']
-      //     this.permissionList = res.data.data['permissionList']
-      //   }
-      // })
-      //     .catch()
-      this.getDialogInfo(id,'/user/selectUserInfo')
-    },
-    getUserId(){
-      let id
-      if (this.isCard && this.cardCheckList.length === 1){
-        id = this.cardCheckList[0]
-        this.editDialogVisible = true
-      }else if (!this.isCard && this.selectedRow.length === 1){
-        this.editDialogVisible = true
-        id = this.selectedRow[0].id
-      }else {this.$message.error('请选择一行数据')}
-      return id
+      this.getDialogInfo({userId: id},'/user/selectUserInfo',)
     },
     staffNameChange(val){
       this.axios.get('person/selectPersonOne',{

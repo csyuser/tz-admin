@@ -11,16 +11,16 @@
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
            @add="add" @update="update" @postSelect="selectPostRow"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
-      <el-button size="small" class="update" @click="relatedPermission">
-        <SvgIcon icon-name="permission"></SvgIcon>
-        关联权限
-      </el-button>
-      <el-button size="small" class="update" @click="relatedUser">
-        <SvgIcon icon-name="user"></SvgIcon>
-        关联用户
-      </el-button>
+<!--      <el-button size="small" class="update" @click="relatedPermission">-->
+<!--        <SvgIcon icon-name="permission"></SvgIcon>-->
+<!--        关联权限-->
+<!--      </el-button>-->
+<!--      <el-button size="small" class="update" @click="relatedUser">-->
+<!--        <SvgIcon icon-name="user"></SvgIcon>-->
+<!--        关联用户-->
+<!--      </el-button>-->
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose" @closed="closedDialog">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'650px':'970px'" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="80px" :inline="true" :model="editFormInfo" size="small" class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="岗位名称" prop="name">
@@ -42,8 +42,10 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 3, maxRows: 3}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></IconListDialog>
-      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></IconListDialog>
+      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedUser" v-if="dialogType !== 'add'"
+                      :iconDataList="editFormInfo['userList']"></IconListDialog>
+      <AuthorityListDialog :table-datas1="editFormInfo.permissionList" v-if="dialogType!=='add'" :user-id="checkedId"
+                           :type="dialogType" @update:relatePermission="relatedPermission"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
@@ -71,20 +73,21 @@
 <script>
 import Table from '@/components/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
-import SvgIcon from '@/components/SvgIcon'
 import SelectTree from '@/components/permission/SelectTree'
 import IconListDialog from '@/components/permission/dialog/IconListDialog'
+import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'PostManage',
-  components: {Table, DeleteRow, SvgIcon,SelectTree,IconListDialog},
+  components: {Table, DeleteRow,SelectTree,IconListDialog,AuthorityListDialog},
   mixins:[mixins],
   data() {
     return {
       selectedRow: [],
       colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {
         prop: 'departmentName', label: '部门名称'}, {prop: 'roleType', label: '岗位类型'}, {prop: 'describe', label: '角色描述'}],
+      checkedId:''
     }
   },
   mounted() {
@@ -109,8 +112,13 @@ export default {
       this.addRow()
     },
     update() {
+      // this.dialogTitle = '编辑岗位'
+      // this.updateRow()
       this.dialogTitle = '编辑岗位'
-      this.updateRow()
+      this.dialogType = 'update'
+      this.editDialogDisabled = false
+      this.checkedId = this.getRowId()
+      this.getDialogInfo({roleId: this.checkedId},'/role/selectRoleInfo')
     },
     confirmEdit() {
       this.confirmEditRow('/role/save', '/role/page')
@@ -140,12 +148,12 @@ export default {
         relationIds: [this.selectedRow[0].id],
         permissionIds: this.relatedValue,
         relationType:'1'
-      })}
+      },{roleId:this.checkedId},'/role/selectRoleInfo')}
       else if (this.relatedName === 'user'){this.confirmRelate('/role/saveUserRole',{
         type:'1',
         roleIds:[this.selectedRow[0].id],
         userIds:this.relatedValue
-      })}
+      },{roleId:this.checkedId},'/role/selectRoleInfo')}
     },
   }
 }
