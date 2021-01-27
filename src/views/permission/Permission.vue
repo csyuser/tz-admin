@@ -10,13 +10,9 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
-      <el-button size="small" class="update" @click="relatedPost">
-        <SvgIcon icon-name="post"></SvgIcon>
-        关联岗位
-      </el-button>
-<!--      <el-button size="small" class="update" @click="relatedGroup">-->
-<!--        <SvgIcon icon-name="group"></SvgIcon>-->
-<!--        关联小组-->
+<!--      <el-button size="small" class="update" @click="relatedPost">-->
+<!--        <SvgIcon icon-name="post"></SvgIcon>-->
+<!--        关联岗位-->
 <!--      </el-button>-->
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="710px" :before-close="handleClose">
@@ -42,6 +38,9 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
+                  :role-no-admin-list="editFormInfo.roleNoAdminList"
+                  :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -50,7 +49,7 @@
     <el-dialog title="删除权限" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" :before-close="handleClose">
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body :before-close="handleClose">
       <el-transfer
           filterable
           :filter-method="filterMethod"
@@ -68,14 +67,14 @@
 
 <script>
 import Table from '@/components/permission/Table'
-import SvgIcon from '@/components/SvgIcon'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
+import IconListDialog from '@/components/permission/dialog/IconListDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Permission',
-  components: {Table, SvgIcon, DeleteRow,SelectTree},
+  components: {Table, DeleteRow,SelectTree,IconListDialog},
   mixins: [mixins],
   data() {
     return {

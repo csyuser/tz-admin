@@ -58,9 +58,9 @@
           <el-input v-model="editFormInfo['remark']" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <PostDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
                   :role-no-admin-list="editFormInfo.roleNoAdminList"
-                  :role-admin-list="editFormInfo.roleAdminList"></PostDialog>
+                  :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
      <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType"
                           @update:dialogInfo="updateDialogInfo"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
@@ -93,12 +93,12 @@ import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import Card from '@/components/permission/Card'
 import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
-import PostDialog from'@/components/permission/dialog/PostDialog'
+import IconListDialog from '@/components/permission/dialog/IconListDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, DeleteRow,SelectTree,Card,AuthorityListDialog,PostDialog},
+  components: {Table, DeleteRow,SelectTree,Card,AuthorityListDialog,IconListDialog},
   mixins:[mixins],
   data() {
     return {

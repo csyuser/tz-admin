@@ -25,7 +25,7 @@
 <script>
 import SvgIcon from '@/components/SvgIcon'
 export default {
-  name: 'PostDialog',
+  name: 'IconListDialog',
   components: {SvgIcon},
   props: {
     roleAdminList: {type: Array},

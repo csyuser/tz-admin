@@ -42,8 +42,8 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 3, maxRows: 3}"></el-input>
         </el-form-item>
       </el-form>
-      <PostDialog :type="dialogType" title-type="岗位" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></PostDialog>
-      <PostDialog :type="dialogType" title-type="角色" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></PostDialog>
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></IconListDialog>
+      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedPermission" v-if="dialogType !== 'add'"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
@@ -73,13 +73,13 @@ import Table from '@/components/permission/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
 import SelectTree from '@/components/permission/SelectTree'
-import PostDialog from'@/components/permission/dialog/PostDialog'
+import IconListDialog from '@/components/permission/dialog/IconListDialog'
 import {mixins} from '@/mixins/mixins'
 import {relateMixins} from '@/mixins/relateMixins'
 
 export default {
   name: 'PostManage',
-  components: {Table, DeleteRow, SvgIcon,SelectTree,PostDialog},
+  components: {Table, DeleteRow, SvgIcon,SelectTree,IconListDialog},
   mixins:[mixins,relateMixins],
   data() {
     return {
