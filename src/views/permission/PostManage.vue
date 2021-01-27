@@ -75,12 +75,11 @@ import SvgIcon from '@/components/SvgIcon'
 import SelectTree from '@/components/permission/SelectTree'
 import IconListDialog from '@/components/permission/dialog/IconListDialog'
 import {mixins} from '@/mixins/mixins'
-import {relateMixins} from '@/mixins/relateMixins'
 
 export default {
   name: 'PostManage',
   components: {Table, DeleteRow, SvgIcon,SelectTree,IconListDialog},
-  mixins:[mixins,relateMixins],
+  mixins:[mixins],
   data() {
     return {
       selectedRow: [],
