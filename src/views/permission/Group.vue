@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import Table from '@/components/permission/Table'
+import Table from '@/components/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SvgIcon from '@/components/SvgIcon'
 import SelectTree from '@/components/permission/SelectTree'

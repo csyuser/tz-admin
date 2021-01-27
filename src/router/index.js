@@ -14,7 +14,8 @@ import NewsList from '@/components/homePage/news/NewsList'
 import NewsContent from '@/components/homePage/news/NewsContent'
 import NewsReply from '@/components/homePage/news/NewsReply'
 import UserCenter from '@/components/homePage/user/UserCenter'
-import NotFound from '@/views/NotFound.vue';
+import Region from '@/views/system/Region'
+import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -28,7 +29,7 @@ const routes = [
     path: '/navMenu',
     name: 'NavMenu',
     component: NavMenu,
-    children:[
+    children: [
       {
         path: '/HomePage',
         name: 'HomePage',
@@ -37,7 +38,7 @@ const routes = [
         path: '/UserManage',
         name: 'UserManage',
         component: UserManage,
-      },{
+      }, {
         path: '/PostManage',
         name: 'PostManage',
         component: PostManage,
@@ -45,11 +46,11 @@ const routes = [
         path: '/MenuManage',
         name: 'MenuManage',
         component: MenuManage,
-      },{
+      }, {
         path: '/Staff',
         name: 'Staff',
         component: Staff,
-      },{
+      }, {
         path: '/Department',
         name: 'Department',
         component: Department,
@@ -57,26 +58,30 @@ const routes = [
         path: '/Group',
         name: 'Group',
         component: Group,
-      },{
+      }, {
         path: '/Permission',
         name: 'Permission',
         component: Permission,
-      },{
+      }, {
         path: '/NewsList/:queryType',
         name: 'NewsList',
         component: NewsList,
-      },{
+      }, {
         path: '/NewsContent/:newsId',
         name: 'NewsContent',
         component: NewsContent,
-      },{
+      }, {
         path: '/NewsReply/:contentId?',
         name: 'NewsReply',
         component: NewsReply,
-      },{
+      }, {
         path: '/UserCenter',
         name: 'UserCenter',
         component: UserCenter,
+      }, {
+        path: '/Region',
+        name: 'Region',
+        component: Region,
       },],
   },
   {
@@ -98,7 +103,7 @@ const router = new VueRouter({
   routes
 })
 const VueRouterPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push (to) {
+VueRouter.prototype.push = function push(to) {
   return VueRouterPush.call(this, to).catch(err => err)
 }
 export default router

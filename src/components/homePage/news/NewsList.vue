@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import Table from '@/components/permission/Table'
+import Table from '@/components/Table'
 import Qs from 'qs'
 
 export default {

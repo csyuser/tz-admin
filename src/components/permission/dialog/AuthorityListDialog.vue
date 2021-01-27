@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Table from '@/components/permission/Table'
+import Table from '@/components/Table'
 
 export default {
   name: 'AuthorityListDialog',

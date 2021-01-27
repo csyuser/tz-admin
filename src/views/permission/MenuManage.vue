@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import Table from '@/components/permission/Table'
+import Table from '@/components/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import {mixins} from '@/mixins/mixins'
 

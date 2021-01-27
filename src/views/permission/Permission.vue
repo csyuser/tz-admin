@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import Table from '@/components/permission/Table'
+import Table from '@/components/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import IconListDialog from '@/components/permission/dialog/IconListDialog'

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {helper} from '@/views/method'
+import {helper} from '@/method'
 
 export default {
   name: 'NewsReply',
