@@ -34,31 +34,6 @@ export default {
     color: #303133;
     margin: 18px 0;
   }
-  //> .role{
-  //  border-bottom: 1px solid #dcdfe6;
-  //  padding-bottom: 18px;
-  //  > .title{
-  //    display: flex;
-  //    align-items: center;
-  //    justify-content: space-between;
-  //    > button{
-  //      height: 30px;
-  //      margin-left: 1em;
-  //    }
-  //  }
-  //  > ul{
-  //    margin-left: 2em;
-  //    display: flex;
-  //    flex-wrap: wrap;
-  //    > li{
-  //      margin-right: 2em;
-  //      text-align: center;
-  //      > .postIcon{
-  //        margin-bottom: 0.3em;
-  //      }
-  //    }
-  //  }
-  //}
   > .roleTable{
     margin-left: 2em;
   }
