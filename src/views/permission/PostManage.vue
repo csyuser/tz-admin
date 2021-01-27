@@ -87,7 +87,6 @@ export default {
       selectedRow: [],
       colsHead: [{prop: 'name', label: '岗位名称'}, {prop: 'code', label: '岗位编码'}, {
         prop: 'departmentName', label: '部门名称'}, {prop: 'roleType', label: '岗位类型'}, {prop: 'describe', label: '角色描述'}],
-      checkedId:''
     }
   },
   mounted() {
@@ -112,27 +111,19 @@ export default {
       this.addRow()
     },
     update() {
-      // this.dialogTitle = '编辑岗位'
-      // this.updateRow()
       this.dialogTitle = '编辑岗位'
-      this.dialogType = 'update'
-      this.editDialogDisabled = false
-      this.checkedId = this.getRowId()
-      this.getDialogInfo({roleId: this.checkedId},'/role/selectRoleInfo')
+      this.updateRow2("roleId",'/role/selectRoleInfo')
     },
     confirmEdit() {
       this.confirmEditRow('/role/save', '/role/page')
     },
     view(row) {
-      // this.dialogTitle = '查看岗位信息'
-      // this.viewRow(row)
       this.dialogTitle = '查看岗位信息'
       this.dialogType = 'view'
       this.editDialogVisible = true
       this.editDialogDisabled = true
       let id = this.isCard?this.cardCheckList[0]:row.id
       this.getDialogInfo({roleId: id},'/role/selectRoleInfo')
-      // this.getUserInfo(id)
     },
     deleteRows() {
       this.deleteRow()

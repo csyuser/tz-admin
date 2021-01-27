@@ -6,6 +6,7 @@ export const mixins = {
       tableDatas: {},
       dialogTitle: '',
       dialogType: '',
+      checkedId:'',
       deleteIds: [],
       editDialogVisible: false,
       editDialogDisabled: false,
@@ -118,6 +119,14 @@ export const mixins = {
       this.editFormInfo = info
       this.editFormInfo.sort = info.sort && parseInt(info.sort)
       this.imgId = info['photoId']
+    },
+    updateRow2(paramName,url) {
+      this.dialogType = 'update'
+      this.editDialogDisabled = false
+      this.checkedId = this.getRowId()
+      let obj = {}
+      obj[paramName] = this.checkedId
+      this.getDialogInfo({...obj},url)
     },
     confirmEditRow(saveUrl, pageUrl) {
       this.$refs.editDialog.validate((valid) => {

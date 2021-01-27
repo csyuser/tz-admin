@@ -61,7 +61,7 @@
       <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
                   :role-no-admin-list="editFormInfo.roleNoAdminList"
                   :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
-     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType"
+     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="checkedId" :type="dialogType"
                           @update:dialogInfo="updateDialogInfo"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
@@ -110,7 +110,6 @@ export default {
       cardCheckList:[],
       cardListHead: [{prop: 'name', label: '角色名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '角色状态'},],
       permissionList:[],
-      userId:'',
       prePwd:''
     }
   },
@@ -149,10 +148,7 @@ export default {
     },
     update() {
       this.dialogTitle = '编辑角色'
-      this.dialogType = 'update'
-      this.editDialogDisabled = false
-      this.userId = this.getRowId()
-      this.getUserInfo(this.userId)
+      this.updateRow2("userId",'/user/selectUserInfo')
     },
     confirmEdit() {
       this.confirmEditRow('/user/save', '/user/page')
@@ -181,13 +177,13 @@ export default {
 //关联岗位
     relatedPost() {
       this.relatedName = 'post'
-      this.related('/user/selectUserAndRole','关联岗位', {userId: this.userId})
+      this.related('/user/selectUserAndRole','关联岗位', {userId: this.checkedId})
     },
     confirmTransform() {this.confirmRelate('/role/saveUserRole', {
       type: '0',
-      userIds: [this.userId],
+      userIds: [this.checkedId],
       roleIds: this.relatedValue
-    },{userId:this.userId},'/user/selectUserInfo')
+    },{userId:this.checkedId},'/user/selectUserInfo')
     },
 //获取用户详情
     getUserInfo(id){
@@ -206,7 +202,7 @@ export default {
       .catch()
     },
     updateDialogInfo(){
-      this.getUserInfo(this.userId)
+      this.getUserInfo(this.checkedId)
     },
     //获取子组件的数据
     updateImg(value) {
