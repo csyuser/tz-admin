@@ -32,11 +32,11 @@
         <el-form-item label="人员编号" prop="code">
             <el-input v-model="editFormInfo.code" suffix-icon="xxx" disabled></el-input>
         </el-form-item>
+        <el-form-item label="角色密码" prop="password">
+          <el-input v-model="editFormInfo.password" show-password suffix-icon="xxx" auto-complete="new-password"></el-input>
+        </el-form-item>
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
-        </el-form-item>
-        <el-form-item label="角色密码" prop="password">
-            <el-input v-model="editFormInfo.password" show-password suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="风险等级">
           <el-select v-model="editFormInfo.riskLevel">
@@ -94,7 +94,8 @@ export default {
       cardCheckList:[],
       cardListHead: [{prop: 'name', label: '角色名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '角色状态'},],
       permissionList:[],
-      userId:''
+      userId:'',
+      prePwd:''
     }
   },
   watch:{
@@ -195,6 +196,8 @@ export default {
       }).then((res)=>{
         if (res.data.code.toString() === '200'){
           this.staffInfo = res.data.data
+          this.$set(this.editFormInfo, 'password',  res.data.data['userPwd'])
+          this.prePwd = res.data.data['userPwd']
         }
       })
       .catch()

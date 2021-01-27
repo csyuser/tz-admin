@@ -125,20 +125,43 @@ export const mixins = {
           } else if (this.dialogType === 'update') {
             editData = {id: this.selectedRow.id, ...this.editFormInfo, photoId: this.imgId}
           }
-          if (this.dialogType !== 'view') {
-            this.axios.post(saveUrl, {...editData})
-              .then(res => {
-                if (res.data.code.toString() === '200') {
-                  this.$message.success('保存成功')
-                  this.getPages(pageUrl)
-                }
-              })
-              .catch()
+          if (this.prePwd !== editData.password){
+            this.$confirm('确定要覆盖之前的密码?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              // if (this.dialogType !== 'view') {
+              //   this.axios.post(saveUrl, {...editData})
+              //     .then(res => {
+              //       if (res.data.code.toString() === '200') {
+              //         this.$message.success('保存成功')
+              //         this.getPages(pageUrl)
+              //       }
+              //     })
+              //     .catch()
+              // }
+              this.saveUser(saveUrl,pageUrl,editData)
+            }).catch();
+          }else{
+            this.saveUser(saveUrl,pageUrl,editData)
           }
         } else {
           return false
         }
       })
+    },
+    saveUser(saveUrl,pageUrl,editData){
+      if (this.dialogType !== 'view') {
+        this.axios.post(saveUrl, {...editData})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.$message.success('保存成功')
+              this.getPages(pageUrl)
+            }
+          })
+          .catch()
+      }
     },
     viewRow(row, cardId) {
       let info
@@ -218,6 +241,7 @@ export const mixins = {
           this.editFormInfo = res.data.data
           this.staffInfo = res.data.data['person']
           this.permissionList = res.data.data['permissionList']
+          this.prePwd = res.data.data.password
         }
       })
         .catch()

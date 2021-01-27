@@ -43,7 +43,7 @@
         </el-form-item>
       </el-form>
       <PostDialog :type="dialogType" title-type="岗位" @update:relate="relatedPermission"></PostDialog>
-      <PostDialog :type="dialogType" title-type="用户" @update:relate="relatedPermission"></PostDialog>
+      <PostDialog :type="dialogType" title-type="角色" @update:relate="relatedPermission"></PostDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
