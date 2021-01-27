@@ -2,10 +2,15 @@
   <div class="user-center-wrap">
     <el-card class="box-card">
       <div slot="header" class="clearfix header">
+        <div class="icon-wrap"  @click="back">
+          <SvgIcon icon-name="back" class="icon-back"></SvgIcon>
+        </div>
         <span>个人资料</span>
-        <el-button type="text" @click="isEdit = true" class="update" v-if="!isEdit">修改资料</el-button>
-        <el-button type="text" @click="updateUesrInfo" class="update" v-if="isEdit">保存更改</el-button>
-        <el-button type="text" @click="cancelUpdate" v-if="isEdit">取消修改</el-button>
+        <div class="buttons">
+          <el-button type="text" @click="isEdit = true" class="update" v-if="!isEdit">修改资料</el-button>
+          <el-button type="text" @click="updateUesrInfo" class="update" v-if="isEdit">保存更改</el-button>
+          <el-button type="text" @click="cancelUpdate" v-if="isEdit">取消修改</el-button>
+        </div>
       </div>
       <el-form :model="userInfo" label-width="80px" class="form">
         <el-form-item label="头像" class="formItem avatarItem">
@@ -34,11 +39,12 @@
 
 <script>
 import AvatarUploader from '@/components/permission/AvatarUploader'
+import SvgIcon from '@/components/SvgIcon'
 import {helper} from '@/views/method'
 
 export default {
   name: 'UserCenter',
-  components:{AvatarUploader},
+  components:{AvatarUploader,SvgIcon},
   data() {
     return {
       userInfo: {},
@@ -93,6 +99,10 @@ export default {
     },
     formatUserStatus(val){
      return helper.userStatus(val)
+    },
+    back(){
+      console.log('执行了')
+      this.$router.back()
     }
   }
 }
@@ -114,11 +124,24 @@ export default {
   .header{
     display: flex;
     align-items: center;
+    position: relative;
+    > .icon-wrap{
+      cursor: pointer;
+      &:hover > .icon-back{color: #409EFF}
+      > .icon-back{
+        font-size: 18px;
+        font-weight: bold;
+        color: #606266;
+      }
+    }
     span{
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 24px;
       font-weight: bold
     }
-    > .update{
+    > .buttons{
       margin-left: auto;
     }
   }
