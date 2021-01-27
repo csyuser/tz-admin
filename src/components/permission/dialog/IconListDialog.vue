@@ -70,7 +70,7 @@ export default {
         margin-right: 2em;
         text-align: center;
         margin-bottom: 1em;
-        width: 75px;
+        min-width: 75px;
         > .postIcon{
           margin-bottom: 0.3em;
         }

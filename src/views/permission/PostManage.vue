@@ -44,7 +44,7 @@
       </el-form>
       <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedUser" v-if="dialogType !== 'add'"
                       :iconDataList="editFormInfo['userList']"></IconListDialog>
-      <AuthorityListDialog :table-datas1="editFormInfo.permissionList" v-if="dialogType!=='add'" :user-id="checkedId"
+      <AuthorityListDialog :table-datas1="editFormInfo.permissionList" v-if="dialogType!=='add'" :user-id="checkedId" need-btn
                            :type="dialogType" @update:relatePermission="relatedPermission"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
@@ -124,8 +124,15 @@ export default {
       this.confirmEditRow('/role/save', '/role/page')
     },
     view(row) {
+      // this.dialogTitle = '查看岗位信息'
+      // this.viewRow(row)
       this.dialogTitle = '查看岗位信息'
-      this.viewRow(row)
+      this.dialogType = 'view'
+      this.editDialogVisible = true
+      this.editDialogDisabled = true
+      let id = this.isCard?this.cardCheckList[0]:row.id
+      this.getDialogInfo({roleId: id},'/role/selectRoleInfo')
+      // this.getUserInfo(id)
     },
     deleteRows() {
       this.deleteRow()
