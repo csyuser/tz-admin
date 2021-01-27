@@ -23,8 +23,10 @@
 </template>
 
 <script>
+import SvgIcon from '@/components/SvgIcon'
 export default {
   name: 'PostDialog',
+  components: {SvgIcon},
   props: {
     roleAdminList: {type: Array},
     roleNoAdminList: {type: Array},

@@ -58,12 +58,27 @@
           <el-input v-model="editFormInfo['remark']" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType" @update:dialogInfo="updateDialogInfo"
-                          :role-no-admin-list="editFormInfo.roleNoAdminList"
-                          :role-admin-list="editFormInfo.roleAdminList"></AuthorityListDialog>
+      <PostDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
+                  :role-no-admin-list="editFormInfo.roleNoAdminList"
+                  :role-admin-list="editFormInfo.roleAdminList"></PostDialog>
+     <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="userId" :type="dialogType"
+                          @update:dialogInfo="updateDialogInfo"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px">
+      <el-transfer
+          filterable
+          :filter-method="filterMethod"
+          filter-placeholder="请输入"
+          v-model="relatedValue"
+          :data="transformData">
+      </el-transfer>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除角色" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
@@ -78,11 +93,12 @@ import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import Card from '@/components/permission/Card'
 import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
+import PostDialog from'@/components/permission/dialog/PostDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, DeleteRow,SelectTree,Card,AuthorityListDialog},
+  components: {Table, DeleteRow,SelectTree,Card,AuthorityListDialog,PostDialog},
   mixins:[mixins],
   data() {
     return {
@@ -161,6 +177,17 @@ export default {
     },
     confirmDelete() {
       this.confirmDeleteRow('/user/delete', '/user/page')
+    },
+//关联岗位
+    relatedPost() {
+      this.relatedName = 'post'
+      this.related('/user/selectUserAndRole','关联岗位', {userId: this.userId})
+    },
+    confirmTransform() {this.confirmRelate('/role/saveUserRole', {
+      type: '0',
+      userIds: [this.userId],
+      roleIds: this.relatedValue
+    },)
     },
 //获取用户详情
     getUserInfo(id){
