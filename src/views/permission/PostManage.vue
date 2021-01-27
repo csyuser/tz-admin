@@ -29,7 +29,7 @@
         <el-form-item label="岗位编码" prop="code">
           <el-input v-model="editFormInfo.code" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="部门名称" prop="departmentId" style="height: 32px">
+        <el-form-item label="部门名称" prop="departmentId" style="height: 32px" class="SelectTree-item">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="岗位类型" prop="roleType">
@@ -166,6 +166,11 @@ export default {
     //border-bottom: 1px solid #dcdfe6;
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .SelectTree-item::v-deep{
+      .el-form-item__content{
+        height: 32px;
+      }
     }
     > .texArea{
       display: block;

@@ -51,7 +51,7 @@
             <el-option label="注销" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
+        <el-form-item label="所属部门" prop="departmentId" style="height: 32px" class="SelectTree-item">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
         <el-form-item label="角色说明" class="texArea">
@@ -275,6 +275,11 @@ export default {
         .el-form-item__content{
           width: calc(100% - 85px);
         }
+      }
+    }
+    > .SelectTree-item::v-deep{
+      .el-form-item__content{
+        height: 32px;
       }
     }
     > .avatar {

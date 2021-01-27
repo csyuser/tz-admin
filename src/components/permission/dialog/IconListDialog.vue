@@ -17,6 +17,10 @@
           <SvgIcon icon-name="administrator" color="#2ec7c9" class="postIcon" size="medium"></SvgIcon>
           <p>{{ item.name }}</p>
         </li>
+        <li v-for="item in iconDataList" :key="item.id">
+          <SvgIcon icon-name="administrator" color="#2ec7c9" class="postIcon" size="medium"></SvgIcon>
+          <p>{{ item.name }}</p>
+        </li>
       </ul>
     </div>
   </div>
@@ -30,8 +34,9 @@ export default {
   props: {
     roleAdminList: {type: Array},
     roleNoAdminList: {type: Array},
+    iconDataList:{type: Array},
     type:{type:String},
-    titleType:{type:String}
+    titleType:{type:String},
   },
 }
 </script>

@@ -48,7 +48,7 @@
             <el-option label="男" value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属部门" prop="departmentId" style="height: 32px">
+        <el-form-item label="所属部门" prop="departmentId" style="height: 32px" class="SelectTree-item">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
@@ -189,6 +189,11 @@ export default {
 
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .SelectTree-item::v-deep{
+      .el-form-item__content{
+        height: 32px;
+      }
     }
 
     > .avatar {

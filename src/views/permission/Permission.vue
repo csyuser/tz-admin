@@ -26,7 +26,7 @@
             <el-option :label="item['dropName']" :value="item['id']" v-for="item in permissionTypeDrop" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="依赖菜单" prop="menuId" style="height: 32px">
+        <el-form-item label="依赖菜单" prop="menuId" style="height: 32px" class="SelectTree-item">
           <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="是否需要范围" prop="isNeededScope">
@@ -170,6 +170,11 @@ export default {
   .addForm {
     > .el-form-item {
       margin-bottom: 18px;
+    }
+    > .SelectTree-item::v-deep{
+      .el-form-item__content{
+        height: 32px;
+      }
     }
     > .texArea{
       display: block;
