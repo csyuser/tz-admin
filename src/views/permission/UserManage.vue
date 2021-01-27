@@ -155,11 +155,12 @@ export default {
     },
     view(row) {
       this.dialogTitle = '查看角色信息'
-      this.dialogType = 'view'
-      this.editDialogVisible = true
-      this.editDialogDisabled = true
-      let id = this.isCard?this.cardCheckList[0]:row.id
-      this.getUserInfo(id)
+      // this.dialogType = 'view'
+      // this.editDialogVisible = true
+      // this.editDialogDisabled = true
+      // let id = this.isCard?this.cardCheckList[0]:row.id
+      // this.getUserInfo(id)
+      this.viewRow2(row,'userId','/user/selectUserInfo')
     },
     cardView(id){
       this.dialogTitle = '查看人员信息'

@@ -6,7 +6,7 @@ export const mixins = {
       tableDatas: {},
       dialogTitle: '',
       dialogType: '',
-      checkedId:'',
+      checkedId: '',
       deleteIds: [],
       editDialogVisible: false,
       editDialogDisabled: false,
@@ -120,13 +120,13 @@ export const mixins = {
       this.editFormInfo.sort = info.sort && parseInt(info.sort)
       this.imgId = info['photoId']
     },
-    updateRow2(paramName,url) {
+    updateRow2(paramName, url) {
       this.dialogType = 'update'
       this.editDialogDisabled = false
       this.checkedId = this.getRowId()
       let obj = {}
       obj[paramName] = this.checkedId
-      this.getDialogInfo({...obj},url)
+      this.getDialogInfo({...obj}, url)
     },
     confirmEditRow(saveUrl, pageUrl) {
       this.$refs.editDialog.validate((valid) => {
@@ -138,24 +138,25 @@ export const mixins = {
           } else if (this.dialogType === 'update') {
             editData = {id: this.selectedRow.id, ...this.editFormInfo, photoId: this.imgId}
           }
-          if (this.prePwd !== editData.password){
-            this.$confirm('确定要覆盖之前的密码?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              this.saveUser(saveUrl,pageUrl,editData)
-            }).catch();
-          }else{
-            this.saveUser(saveUrl,pageUrl,editData)
+          if (this.dialogType !== 'view') {
+            if (this.prePwd !== editData.password) {
+              this.$confirm('确定要覆盖之前的密码?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.saveUser(saveUrl, pageUrl, editData)
+              }).catch()
+            } else {
+              this.saveUser(saveUrl, pageUrl, editData)
+            }
           }
         } else {
           return false
         }
       })
     },
-    saveUser(saveUrl,pageUrl,editData){
-      if (this.dialogType !== 'view') {
+    saveUser(saveUrl, pageUrl, editData) {
         this.axios.post(saveUrl, {...editData})
           .then(res => {
             if (res.data.code.toString() === '200') {
@@ -164,7 +165,6 @@ export const mixins = {
             }
           })
           .catch()
-      }
     },
     viewRow(row, cardId) {
       let info
@@ -178,6 +178,15 @@ export const mixins = {
       this.editFormInfo.sort = info.sort && parseInt(row.sort)
       this.editDialogVisible = true
       this.editDialogDisabled = true
+    },
+    viewRow2(row,paramName,url) {
+      this.dialogType = 'view'
+      this.editDialogVisible = true
+      this.editDialogDisabled = true
+      let id = this.isCard?this.cardCheckList[0]:row.id
+      let obj = {}
+      obj[paramName] = id
+      this.getDialogInfo({...obj},url)
     },
     deleteRow() {
       this.deleteIds = this.getDeleteIds()
@@ -233,7 +242,7 @@ export const mixins = {
         .catch()
     },
 //获取弹窗的信息
-    getDialogInfo(params,url){
+    getDialogInfo(params, url) {
       this.editFormInfo = {}
       this.staffInfo = {}
       this.permissionList = []
@@ -250,15 +259,15 @@ export const mixins = {
         .catch()
     },
 //获取选择行id
-    getRowId(){
+    getRowId() {
       let id
-      if (this.isCard && this.cardCheckList.length === 1){
+      if (this.isCard && this.cardCheckList.length === 1) {
         id = this.cardCheckList[0]
         this.editDialogVisible = true
-      }else if (!this.isCard && this.selectedRow.length === 1){
+      } else if (!this.isCard && this.selectedRow.length === 1) {
         this.editDialogVisible = true
         id = this.selectedRow[0].id
-      }else {this.$message.error('请选择一行数据')}
+      } else {this.$message.error('请选择一行数据')}
       return id
     },
 //关联功能
@@ -279,14 +288,14 @@ export const mixins = {
       this.relatedTitle = title
       this.relatedDialogVisible = true
     },
-    confirmRelate(saveUrl, params,dialogInfoParams,dialogInfoUrl) {
+    confirmRelate(saveUrl, params, dialogInfoParams, dialogInfoUrl) {
       this.relatedDialogVisible = false
       this.axios.post(saveUrl, {
         ...params
       }).then(res => {
         if (res.data.code.toString() === '200') {
           this.$message.success('保存成功')
-          this.getDialogInfo(dialogInfoParams,dialogInfoUrl)
+          this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
         }
       })
         .catch()
@@ -298,8 +307,8 @@ export const mixins = {
         })
         .catch(() => {})
     },
-    closedDialog(){
-      this.$refs['editDialog'].resetFields();
+    closedDialog() {
+      this.$refs['editDialog'].resetFields()
     }
   },
 }

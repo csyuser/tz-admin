@@ -119,11 +119,12 @@ export default {
     },
     view(row) {
       this.dialogTitle = '查看岗位信息'
-      this.dialogType = 'view'
-      this.editDialogVisible = true
-      this.editDialogDisabled = true
-      let id = this.isCard?this.cardCheckList[0]:row.id
-      this.getDialogInfo({roleId: id},'/role/selectRoleInfo')
+      // this.dialogType = 'view'
+      // this.editDialogVisible = true
+      // this.editDialogDisabled = true
+      // let id = this.isCard?this.cardCheckList[0]:row.id
+      // this.getDialogInfo({roleId: id},'/role/selectRoleInfo')
+      this.viewRow2(row,'roleId','/role/selectRoleInfo')
     },
     deleteRows() {
       this.deleteRow()
