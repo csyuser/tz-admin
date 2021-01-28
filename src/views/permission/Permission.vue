@@ -59,7 +59,7 @@
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="权限选择">
-          <el-input v-model="editFormInfo.permissionNames" suffix-icon="xxx" readonly @focus="focusSelect"></el-input>
+          <el-input v-model="editFormInfo.permissionNames" suffix-icon="xxx" readonly @focus="openTree"></el-input>
         </el-form-item>
         <el-form-item label="权限描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
@@ -90,14 +90,14 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择权限" width="700px" append-to-body :before-close="handleClose" :visible="selectPermission">
+    <el-dialog title="选择权限" width="700px" append-to-body :before-close="handleClose" :visible="selectPermission" @opened="dialogOpened">
       <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
-      <el-tree show-checkbox class="filter-tree" :data="permissionData" :props="defaultProps" default-expand-all
+      <el-tree show-checkbox class="filter-tree" :data="permissionData" :props="defaultProps" node-key="id"
                :filter-node-method="filterNode" ref="tree" @check="checkChange">
       </el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="selectPermission = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmSelectPermission">确 定</el-button>
+        <el-button type="primary" size="small" @click="treeConfirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -150,33 +150,6 @@ export default {
     currentChange(val, row) {
       this.currentPageChange(val, row, '/permission/page')
     },
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label && data.label.indexOf(value) !== -1
-    },
-    focusSelect() {
-      this.selectPermission = true
-      this.axios.get('/permission/selectAll')
-      .then(res=>{
-        if (res.data.code.toString() === '200'){
-          this.permissionData = res.data.data
-        }
-      }).catch()
-    },
-    checkChange() {
-      this.checkedPermission = this.$refs.tree.getCheckedNodes()
-      console.log(this.$refs.tree.getCheckedNodes())
-    },
-    confirmSelectPermission() {
-      this.selectPermission = false
-      this.permissionIds = []
-      let labels = []
-      this.checkedPermission.forEach(item=>{
-        this.permissionIds.push(item.id)
-        labels.push(item.label)
-      })
-      this.$set(this.editFormInfo, 'permissionNames',  labels.join(' , '))
-    },
 //tab切换
     handleClick() {
       switch (this.activeName) {
@@ -193,6 +166,36 @@ export default {
         default:
           break
       }
+    },
+//权限组选择权限树结构
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label && data.label.indexOf(value) !== -1
+    },
+    openTree() {
+      this.selectPermission = true
+      this.axios.get('/permission/selectAll')
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.permissionData = res.data.data
+            }
+          }).catch()
+    },
+    dialogOpened(){
+      this.permissionIds.length>=1 && this.$refs.tree.setCheckedKeys(this.permissionIds);
+    },
+    checkChange() {
+      this.checkedPermission = this.$refs.tree.getCheckedNodes()
+    },
+    treeConfirm() {
+      this.selectPermission = false
+      this.permissionIds = []
+      let labels = []
+      this.checkedPermission.forEach(item=>{
+        this.permissionIds.push(item.id)
+        labels.push(item.label)
+      })
+      this.$set(this.editFormInfo, 'permissionNames',  labels.join(' , '))
     },
 //表格增删改查
     selectRow(val) {
