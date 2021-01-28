@@ -10,12 +10,15 @@
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
-<!--      <el-button size="small" class="update" @click="relatedPost">-->
-<!--        <SvgIcon icon-name="post"></SvgIcon>-->
-<!--        关联岗位-->
-<!--      </el-button>-->
+      <template #simple>
+        <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
+          <el-tab-pane label="权限管理" name="first"></el-tab-pane>
+          <el-tab-pane label="权限组管理" name="second"></el-tab-pane>
+        </el-tabs>
+      </template>
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="710px" :before-close="handleClose" @closed="closedDialog">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="710px" :before-close="handleClose"
+               @closed="closedDialog">
       <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="权限名称" prop="name">
@@ -23,11 +26,13 @@
         </el-form-item>
         <el-form-item label="权限类型" prop="type">
           <el-select v-model="editFormInfo.type">
-            <el-option :label="item['dropName']" :value="item['id']" v-for="item in permissionTypeDrop" :key="item.id"></el-option>
+            <el-option :label="item['dropName']" :value="item['id']" v-for="item in permissionTypeDrop"
+                       :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="依赖菜单" prop="menuId" style="height: 32px" class="SelectTree-item">
-          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
+          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps"
+                      :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="是否需要范围" prop="isNeededScope">
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"
@@ -39,8 +44,8 @@
         </el-form-item>
       </el-form>
       <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
-                  :role-no-admin-list="editFormInfo.roleNoAdminList"
-                  :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
+                      :role-no-admin-list="editFormInfo.roleNoAdminList"
+                      :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -49,7 +54,8 @@
     <el-dialog title="删除权限" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body :before-close="handleClose">
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body
+               :before-close="handleClose">
       <el-transfer
           filterable
           :filter-method="filterMethod"
@@ -74,12 +80,13 @@ import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Permission',
-  components: {Table, DeleteRow,SelectTree,IconListDialog},
+  components: {Table, DeleteRow, SelectTree, IconListDialog},
   mixins: [mixins],
   data() {
     return {
       colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}],
       value: [],
+      activeName: 'first'
     }
   },
   mounted() {
@@ -97,12 +104,37 @@ export default {
     currentChange(val, row) {
       this.currentPageChange(val, row, '/permission/page')
     },
+//tab切换
+    handleClick() {
+      console.log(this.activeName)
+      switch (this.activeName) {
+        case 'first':
+          this.colsHead = [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}];
+          this.getPages('/permission/page');
+          break
+        case 'second':
+          this.colsHead = [{prop: 'name', label: '权限组'},{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}];
+          this.getPages('/team/page');
+          break
+        default:
+          break
+      }
+    },
 //表格增删改查
     selectRow(val) {
       this.selectedRows(val)
     },
     search() {
-      this.searchRow('/permission/page')
+      switch (this.activeName) {
+        case 'first':
+          this.searchRow('/permission/page')
+          break
+        case 'second':
+          this.searchRow('/team/page')
+          break
+        default:
+          break
+      }
     },
     add() {
       this.dialogTitle = '新增权限'
@@ -132,18 +164,18 @@ export default {
 //     },
     relatedPost() {
       this.relatedName = 'post'
-      this.related('/permission-relation/selectPermissionAndRole','关联岗位',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
+      this.related('/permission-relation/selectPermissionAndRole', '关联岗位', {permissionId: this.selectedRow[0] && this.selectedRow[0].id})
     },
     // relatedGroup() {
     //   this.relatedName = 'group'
     //   this.related('/permission-relation/selectPermissionAndTeam','关联小组',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
     // },
     confirmTransform() {
-      this.confirmRelate('/permission-relation/saveTeamAndPermission',{
+      this.confirmRelate('/permission-relation/saveTeamAndPermission', {
         type: '1',
         permissionIds: [this.selectedRow[0].id],
         relationIds: this.relatedValue,
-        relationType:'1'
+        relationType: '1'
       })
       // if (this.relatedName === 'permission'){this.confirmRelate('', {
       //   type: '1',
@@ -159,7 +191,8 @@ export default {
       //   relationType:'2'
       // })}
     },
-  }
+  },
+
 }
 </script>
 
@@ -167,22 +200,37 @@ export default {
 <style scoped lang='scss'>
 .permission-wrap {
   padding: 20px;
+
   .addForm {
     > .el-form-item {
       margin-bottom: 18px;
     }
-    > .SelectTree-item::v-deep{
-      .el-form-item__content{
+
+    > .SelectTree-item::v-deep {
+      .el-form-item__content {
         height: 32px;
       }
     }
-    > .texArea{
+
+    > .texArea {
       display: block;
-      &::v-deep{
+
+      &::v-deep {
         margin-bottom: 0;
-        .el-form-item__content{
+
+        .el-form-item__content {
           width: calc(100% - 110px);
         }
+      }
+    }
+  }
+
+  .tab {
+    margin-bottom: -10px;
+
+    &::v-deep {
+      .el-tabs__header {
+        margin-bottom: 0
       }
     }
   }

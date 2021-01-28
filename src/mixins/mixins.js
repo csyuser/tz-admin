@@ -74,6 +74,7 @@ export const mixins = {
         .catch()
     },
     getPages(url, formInline) {
+      this.tableDatas = {}
       this.axios.get(url, {
         params: {
           page: this.page,

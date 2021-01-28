@@ -99,7 +99,6 @@ export default {
     }
   },
   mounted() {
-    this.cols = this.colsHead
     this.cols.forEach(col => {
       this.checkedProps.push(col.prop)
       this.checkedOptions.push(col.label)
@@ -133,6 +132,13 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    colsHead:{
+      handler(newVal){
+        this.cols = newVal
+      },
+      immediate:true,
+      deep:true
     },
     isCard(){
       this.selectedRow = []
