@@ -69,7 +69,7 @@
                           style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedUser" v-if="dialogType !== 'add'"
+      <IconListDialog :type="dialogType" title-type="角色" v-if="dialogType !== 'add'"
                       :iconDataList="editFormInfo['userList']" :need-btn="false"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>

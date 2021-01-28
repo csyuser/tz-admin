@@ -12,7 +12,7 @@ export const mixins = {
       editDialogDisabled: false,
       deleteDialogVisible: false,
       selectedRow: [],
-      editFormInfo: {},
+      editFormInfo: {type: [],},
       searchData: {},
       defaultProps: {
         children: 'children',
@@ -107,11 +107,10 @@ export const mixins = {
     },
     addRow() {
       this.dialogType = 'add'
-      this.editFormInfo = {isNeededScope: '0'}
+      this.editFormInfo = {isNeededScope: '0',type: []}
       this.staffInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
-      console.log(this.editFormInfo)
     },
     updateRow() {
       this.dialogType = 'update'
@@ -133,6 +132,7 @@ export const mixins = {
       this.$refs.editDialog.validate((valid) => {
         if (valid) {
           this.editDialogVisible = false
+          this.editFormInfo.permissionIds = this.permissionIds
           let editData = {}
           if (this.dialogType === 'add') {
             editData = {...this.editFormInfo, photoId: this.imgId}

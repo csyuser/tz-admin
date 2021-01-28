@@ -18,7 +18,7 @@
       </template>
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="710px" :before-close="handleClose"
-               @closed="closedDialog">
+               v-if="activeName === 'first'" @closed="closedDialog">
       <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="权限名称" prop="name">
@@ -51,6 +51,28 @@
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="550px" :before-close="handleClose"
+               v-if="activeName === 'second'" @closed="closedDialog">
+      <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
+               class="addForm permissionTeam" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="权限组名称" prop="name">
+          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        </el-form-item>
+        <el-form-item label="权限选择">
+          <el-input v-model="editFormInfo.permissionNames" suffix-icon="xxx" readonly @focus="focusSelect"></el-input>
+        </el-form-item>
+        <el-form-item label="权限描述" class="texArea">
+          <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
+        </el-form-item>
+      </el-form>
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
+                      :role-no-admin-list="editFormInfo.roleNoAdminList"
+                      :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
+      </span>
+    </el-dialog>
     <el-dialog title="删除权限" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
@@ -66,6 +88,16 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="选择权限" width="700px" append-to-body :before-close="handleClose" :visible="selectPermission">
+      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
+      <el-tree show-checkbox class="filter-tree" :data="permissionData" :props="defaultProps" default-expand-all
+               :filter-node-method="filterNode" ref="tree" @check="checkChange">
+      </el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="selectPermission = false" size="small">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmSelectPermission">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -86,12 +118,26 @@ export default {
     return {
       colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}],
       value: [],
-      activeName: 'first'
+      activeName: 'first',
+      permissionData:[],
+      selectPermission: false,
+      filterText: '',
+      checkedPermission: [],
+      permissionIds:[],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      }
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
     }
   },
   mounted() {
     this.getPages('/permission/page')
-    this.axios.get('/menu/selectMenuTree')
+    this.axios.get('/menu/selectAllMenuTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.treeData = res.data.data
@@ -104,17 +150,45 @@ export default {
     currentChange(val, row) {
       this.currentPageChange(val, row, '/permission/page')
     },
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label && data.label.indexOf(value) !== -1
+    },
+    focusSelect() {
+      this.selectPermission = true
+      this.axios.get('/permission/selectAll')
+      .then(res=>{
+        if (res.data.code.toString() === '200'){
+          this.permissionData = res.data.data
+        }
+      }).catch()
+    },
+    checkChange() {
+      this.checkedPermission = this.$refs.tree.getCheckedNodes()
+      console.log(this.$refs.tree.getCheckedNodes())
+    },
+    confirmSelectPermission() {
+      this.selectPermission = false
+      this.permissionIds = []
+      let labels = []
+      this.checkedPermission.forEach(item=>{
+        this.permissionIds.push(item.id)
+        labels.push(item.label)
+      })
+      this.$set(this.editFormInfo, 'permissionNames',  labels.join(' , '))
+    },
 //tab切换
     handleClick() {
-      console.log(this.activeName)
       switch (this.activeName) {
         case 'first':
-          this.colsHead = [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}];
-          this.getPages('/permission/page');
+          this.colsHead = [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'},
+            {prop: 'describe', label: '权限描述'}]
+          this.getPages('/permission/page')
           break
         case 'second':
-          this.colsHead = [{prop: 'name', label: '权限组'},{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}];
-          this.getPages('/team/page');
+          this.colsHead = [{prop: 'name1', label: '权限组'}, {prop: 'name', label: '权限名称'},
+            {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}]
+          this.getPages('/team/page')
           break
         default:
           break
@@ -145,7 +219,16 @@ export default {
       this.updateRow()
     },
     confirmEdit() {
-      this.confirmEditRow('/permission/save', '/permission/page')
+      switch (this.activeName) {
+        case 'first':
+          this.confirmEditRow('/permission/save', '/permission/page')
+          break
+        case 'second':
+          this.confirmEditRow('/team/save', '/team/page')
+          break
+        default:
+          break
+      }
     },
     view(row) {
       this.dialogTitle = '查看权限信息'
@@ -216,12 +299,28 @@ export default {
       display: block;
 
       &::v-deep {
-        margin-bottom: 0;
-
         .el-form-item__content {
           width: calc(100% - 110px);
         }
       }
+    }
+
+  }
+
+  .permissionTeam {
+    > .el-form-item::v-deep {
+      input, textarea {
+        width: 370px
+      }
+    }
+  }
+
+  .selectPermission {
+    > h4 {
+      font-size: 16px;
+      color: #606266;
+      font-weight: normal;
+      margin-bottom: 15px;
     }
   }
 
