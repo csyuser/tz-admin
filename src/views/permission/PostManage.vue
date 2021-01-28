@@ -11,14 +11,6 @@
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
            @add="add" @update="update" @postSelect="selectPostRow"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
-<!--      <el-button size="small" class="update" @click="relatedPermission">-->
-<!--        <SvgIcon icon-name="permission"></SvgIcon>-->
-<!--        关联权限-->
-<!--      </el-button>-->
-<!--      <el-button size="small" class="update" @click="relatedUser">-->
-<!--        <SvgIcon icon-name="user"></SvgIcon>-->
-<!--        关联用户-->
-<!--      </el-button>-->
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'650px':'970px'" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="80px" :inline="true" :model="editFormInfo" size="small" class="addForm"

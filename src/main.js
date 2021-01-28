@@ -38,9 +38,9 @@ axios.interceptors.request.use(function (config) {
     lock: true,
     background: 'rgba(255, 255, 255, 0.5)'
   })
-  setTimeout(() => {
-    loading.close()
-  }, 10000)
+  // setTimeout(() => {
+  //   loading.close()
+  // }, 10000)
   return config
 }, function (error) {
   return Promise.reject(error)

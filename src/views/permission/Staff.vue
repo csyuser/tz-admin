@@ -69,6 +69,8 @@
                           style="width: 215px"></el-date-picker>
         </el-form-item>
       </el-form>
+      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedUser" v-if="dialogType !== 'add'"
+                      :iconDataList="editFormInfo['userList']" :need-btn="false"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -86,11 +88,12 @@ import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import AvatarUploader from '@/components/permission/AvatarUploader'
 import Card from '@/components/permission/Card'
+import IconListDialog from '@/components/permission/dialog/IconListDialog'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Staff',
-  components: {Table, DeleteRow, SelectTree, AvatarUploader, Card},
+  components: {Table, DeleteRow, SelectTree, AvatarUploader, Card,IconListDialog},
   mixins: [mixins],
   data() {
     return {
@@ -115,7 +118,6 @@ export default {
     currentChange(val, row) {
       this.currentPageChange(val, row, '/person/page')
     },
-    getUserPages() {console.log('请求用户列表')},
 //表格增删改查
     selectRow(val) {
       this.selectedRows(val)
@@ -129,15 +131,14 @@ export default {
     },
     update() {
       this.dialogTitle = '编辑人员'
-      this.updateRow()
-      if (this.editDialogVisible) {this.getUserPages()}
+      this.updateRow2("personId",'/person/selectPersonById')
     },
     confirmEdit() {
       this.confirmEditRow('/person/save', '/person/page')
     },
     view(row) {
       this.dialogTitle = '查看人员信息'
-      this.viewRow(row)
+      this.viewRow2(row,'personId','/person/selectPersonById')
     },
     cardView(id){
       this.dialogTitle = '查看人员信息'
