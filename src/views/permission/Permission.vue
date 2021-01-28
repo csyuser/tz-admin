@@ -44,8 +44,7 @@
         </el-form-item>
       </el-form>
       <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
-                      :role-no-admin-list="editFormInfo.roleNoAdminList"
-                      :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
+                      :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -92,7 +91,7 @@
     </el-dialog>
     <el-dialog title="选择权限" width="700px" append-to-body :before-close="handleClose" :visible="selectPermission" @opened="dialogOpened">
       <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
-      <el-tree show-checkbox class="filter-tree" :data="permissionData" :props="defaultProps" node-key="id"
+      <el-tree show-checkbox class="filter-tree" :data="permissionData" :props="defaultProps2" node-key="id"
                :filter-node-method="filterNode" ref="tree" @check="checkChange">
       </el-tree>
       <span slot="footer" class="dialog-footer">
@@ -124,7 +123,7 @@ export default {
       filterText: '',
       checkedPermission: [],
       permissionIds:[],
-      defaultProps: {
+      defaultProps2: {
         children: 'children',
         label: 'label'
       }
@@ -218,8 +217,18 @@ export default {
       this.addRow()
     },
     update() {
-      this.dialogTitle = '编辑权限'
-      this.updateRow()
+      switch (this.activeName) {
+        case 'first':
+          this.dialogTitle = '编辑权限'
+          this.updateRow2("permissionId",'/permission/selectPermissionInfo')
+          break
+        case 'second':
+          this.dialogTitle = '编辑权限组'
+          this.updateRow2("permissionId",'/permission/selectPermissionInfo')
+          break
+        default:
+          break
+      }
     },
     confirmEdit() {
       switch (this.activeName) {

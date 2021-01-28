@@ -3,7 +3,8 @@
     <div class="role">
       <div class="title">
         <h3>{{ titleType }}信息</h3>
-        <el-button size="small" class="update" type="primary" @click="$emit('update:relate',$event)" :disabled="type !=='update'" v-if="needBtn">
+        <el-button size="small" class="update" type="primary" @click="$emit('update:relate',$event)"
+                   :disabled="type !=='update'" v-if="needBtn">
           <!--          <SvgIcon icon-name="post"></SvgIcon>-->
           关联{{ titleType }}
         </el-button>
@@ -28,51 +29,59 @@
 
 <script>
 import SvgIcon from '@/components/SvgIcon'
+
 export default {
   name: 'IconListDialog',
   components: {SvgIcon},
   props: {
     roleAdminList: {type: Array},
     roleNoAdminList: {type: Array},
-    iconDataList:{type: Array},
-    type:{type:String},
-    titleType:{type:String},
-    needBtn:{type:Boolean}
+    iconDataList: {type: Array},
+    type: {type: String},
+    titleType: {type: String},
+    needBtn: {type: Boolean, default: true}
   },
 }
 </script>
 
 <style scoped lang='scss'>
-.post-dialog-wrap{
+.post-dialog-wrap {
   margin-top: 18px;
-  h3{
+
+  h3 {
     line-height: 20px;
     font-size: 18px;
     color: #303133;
     margin: 18px 0;
   }
-  > .role{
+
+  > .role {
     border-top: 1px solid #dcdfe6;
     padding-bottom: 18px;
-    > .title{
+
+    > .title {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      > button{
+
+      > button {
         height: 30px;
         margin-left: 1em;
       }
     }
-    > ul{
+
+    > ul {
       margin-left: 2em;
       display: flex;
       flex-wrap: wrap;
-      > li{
+
+      > li {
         margin-right: 2em;
         text-align: center;
         margin-bottom: 1em;
         min-width: 75px;
-        > .postIcon{
+
+        > .postIcon {
           margin-bottom: 0.3em;
         }
       }
