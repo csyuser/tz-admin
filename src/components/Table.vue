@@ -3,7 +3,7 @@
     <div class="buttons" v-if="needButton">
       <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增
       </el-button>
-      <el-button size="small" class="update" @click="$emit('update',$event)" v-if="needUpdate"><i class="el-icon-edit icon"></i>编辑
+      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑
       </el-button>
       <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除
       </el-button>
@@ -81,10 +81,6 @@ export default {
       default: true
     },
     needPage: {
-      type: Boolean,
-      default: true
-    },
-    needUpdate:{
       type: Boolean,
       default: true
     },
