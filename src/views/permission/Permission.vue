@@ -8,7 +8,7 @@
         <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :allow-select="allowSelect" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
+    <Table :colsHead="colsHead" :allow-select="allowSelect" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow" class="table"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <template #simple>
         <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
@@ -197,7 +197,7 @@ export default {
         labels.push(item.label)
       })
       this.permissionIds = ids
-      this.$set(this.editFormInfo, 'permissionNameList',  labels.join(' , '))
+      this.$set(this.editFormInfo, 'permissionNameList',  labels)
     },
 //表格增删改查
     selectRow(val) {

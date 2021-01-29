@@ -21,7 +21,7 @@
       <slot name="simple"></slot>
     </div>
     <div class="table-wrap" v-if="!isCard">
-      <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false"
+      <el-table :data="tableData" style="width: 100%" ref="multipleTable" row-key="id" :select-on-indeterminate="false" max-height="650px"
                 :header-cell-style="{background:'#fafafa',...$store.state.cellStyle}"
                 :cell-style="$store.state.cellStyle" @select="selectRow" @row-dblclick="dblclick"
                 @select-all="selectAllRows" @expand-change=expandChange
@@ -348,7 +348,6 @@ export default {
 
 <style scoped lang='scss'>
 .table-wrap {
-  height: 100%;
   > .buttons {
     margin-bottom: 10px;
     position: relative;
@@ -363,10 +362,5 @@ export default {
     }
   }
 
-  > .table-wrap {
-    > .pagination {
-      margin-top: 8px;
-    }
-  }
 }
 </style>
