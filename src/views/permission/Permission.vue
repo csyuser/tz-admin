@@ -8,7 +8,7 @@
         <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
+    <Table :colsHead="colsHead" :allow-select="allowSelect" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <template #simple>
         <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
@@ -54,8 +54,8 @@
                v-if="activeName === 'second'" @closed="closedDialog">
       <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
                class="addForm permissionTeam" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
-        <el-form-item label="权限组名称" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="权限组名称" prop="teamName">
+          <el-input v-model="editFormInfo['teamName']" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="权限选择">
           <el-input v-model="editFormInfo.permissionNames" suffix-icon="xxx" readonly @focus="openTree"></el-input>
@@ -81,7 +81,7 @@
           filterable
           :filter-method="filterMethod"
           filter-placeholder="请输入"
-          v-model="value"
+          v-model="relatedValue"
           :data="transformData">
       </el-transfer>
       <span slot="footer" class="dialog-footer">
@@ -116,7 +116,6 @@ export default {
   data() {
     return {
       colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}],
-      value: [],
       activeName: 'first',
       permissionData:[],
       selectPermission: false,
@@ -126,7 +125,8 @@ export default {
       defaultProps2: {
         children: 'children',
         label: 'label'
-      }
+      },
+      allowSelect:true,
     }
   },
   watch: {
@@ -153,13 +153,15 @@ export default {
     handleClick() {
       switch (this.activeName) {
         case 'first':
+          this.allowSelect = true
           this.colsHead = [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'},
             {prop: 'describe', label: '权限描述'}]
           this.getPages('/permission/page')
           break
         case 'second':
-          this.colsHead = [{prop: 'name1', label: '权限组'}, {prop: 'name', label: '权限名称'},
-            {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}]
+          this.allowSelect = false
+          this.colsHead = [{prop: 'teamName', label: '权限组名称'}, {prop: 'name', label: '权限名称'},
+            {prop: 'describe', label: '权限描述'}]
           this.getPages('/team/page')
           break
         default:
@@ -271,7 +273,7 @@ export default {
         permissionIds: [this.selectedRow[0].id],
         relationIds: this.relatedValue,
         relationType: '1'
-      })
+      },{permissionId:this.selectedRow[0] && this.selectedRow[0].id},'/permission/selectPermissionInfo')
       // if (this.relatedName === 'permission'){this.confirmRelate('', {
       //   type: '1',
       //   permissionIds: [this.selectedRow[0].id],
