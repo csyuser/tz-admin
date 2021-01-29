@@ -245,8 +245,18 @@ export default {
       }
     },
     view(row) {
-      this.dialogTitle = '查看权限信息'
-      this.viewRow(row)
+      switch (this.activeName) {
+        case 'first':
+          this.dialogTitle = '查看权限信息'
+          this.viewRow2(row,"permissionId",'/permission/selectPermissionInfo')
+          break
+        case 'second':
+          this.dialogTitle = '查看权限组信息'
+          this.viewRow2(row,"permissionId",'/permission/selectPermissionInfo')
+          break
+        default:
+          break
+      }
     },
     deleteRows() {
       this.deleteRow()
