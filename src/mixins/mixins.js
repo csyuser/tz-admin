@@ -285,7 +285,6 @@ export const mixins = {
         if (res.data.code.toString() === '200') {
           this.transformData = res.data.data['allList']
           this.relatedValue = res.data.data['checkList']
-          console.log(this.relatedValue)
         }
       })
         .catch()

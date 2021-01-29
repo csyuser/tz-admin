@@ -1,7 +1,7 @@
 <template>
   <div class="dialogWrap">
     <h3>权限信息</h3>
-    <Table class="roleTable" :colsHead="colsHead" :tableDatas="tableDatas1" :needButton="false" :needPage="false">
+    <Table class="roleTable" :colsHead="colsHead" :tableDatas="tableDatas1" :needButton="false" :needPage="false" :need-select="false">
       <template #simple>
         <el-button size="small" class="update" type="primary" @click="$emit('update:relatePermission',$event)"
                    :disabled="type !=='update'" v-if="needBtn">

@@ -101,7 +101,6 @@ export default {
      return helper.userStatus(val)
     },
     back(){
-      console.log('执行了')
       this.$router.back()
     }
   }
