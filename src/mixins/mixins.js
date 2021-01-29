@@ -256,6 +256,7 @@ export const mixins = {
           this.staffInfo = res.data.data['person']
           this.permissionList = res.data.data['permissionList']
           this.prePwd = res.data.data.password
+          this.permissionIds = res.data.data.permissionIds
         }
       })
         .catch()

@@ -172,7 +172,6 @@ export default {
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedOptions.length
     },
     selectTable(row){
-      console.log(row)
       if (this.allowSelect === false && (!row.children || row.children.length<=0)){return false}
       else {return true}
     },
@@ -349,6 +348,7 @@ export default {
 
 <style scoped lang='scss'>
 .table-wrap {
+  height: 100%;
   > .buttons {
     margin-bottom: 10px;
     position: relative;

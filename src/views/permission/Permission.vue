@@ -57,8 +57,8 @@
         <el-form-item label="权限组名称" prop="teamName">
           <el-input v-model="editFormInfo['teamName']" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="权限选择">
-          <el-input v-model="editFormInfo.permissionNames" suffix-icon="xxx" readonly @focus="openTree"></el-input>
+        <el-form-item label="相关权限">
+          <el-input v-model="editFormInfo['permissionNameList']" suffix-icon="xxx" readonly @focus="openTree"></el-input>
         </el-form-item>
         <el-form-item label="权限描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
@@ -190,13 +190,14 @@ export default {
     },
     treeConfirm() {
       this.selectPermission = false
-      this.permissionIds = []
       let labels = []
+      let ids = []
       this.checkedPermission.forEach(item=>{
-        this.permissionIds.push(item.id)
+        ids.push(item.id)
         labels.push(item.label)
       })
-      this.$set(this.editFormInfo, 'permissionNames',  labels.join(' , '))
+      this.permissionIds = ids
+      this.$set(this.editFormInfo, 'permissionNameList',  labels.join(' , '))
     },
 //表格增删改查
     selectRow(val) {
@@ -226,7 +227,7 @@ export default {
           break
         case 'second':
           this.dialogTitle = '编辑权限组'
-          this.updateRow2("permissionId",'/permission/selectPermissionInfo')
+          this.updateRow2("teamId",'/team/selectTeamInfo')
           break
         default:
           break
@@ -252,7 +253,7 @@ export default {
           break
         case 'second':
           this.dialogTitle = '查看权限组信息'
-          this.viewRow2(row,"permissionId",'/permission/selectPermissionInfo')
+          this.viewRow2(row,"teamId",'/team/selectTeamInfo')
           break
         default:
           break
@@ -262,7 +263,16 @@ export default {
       this.deleteRow()
     },
     confirmDelete() {
-      this.confirmDeleteRow('/permission/delete', '/permission/page')
+      switch (this.activeName) {
+        case 'first':
+          this.confirmDeleteRow('/permission/delete', '/permission/page')
+          break
+        case 'second':
+          this.confirmDeleteRow('/team/delete', '/team/page')
+          break
+        default:
+          break
+      }
     },
 //关联权限范围，岗位，小组
 //     relatedPermission() {
