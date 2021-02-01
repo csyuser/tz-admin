@@ -17,39 +17,49 @@
         <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" :need-page="false" @add="add">
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" :need-page="false" @add="add" @update="update"
+           @delete="deleteRows"
+           @dblclick="view" @postSelect="selectRow">
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="790px" :before-close="handleClose"
                @closed="closedDialog">
       <el-form label-position="right" label-width="148px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
-        <el-form-item label="行政区划名称" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="行政区划名称" prop="xzqhmc">
+          <el-input v-model="editFormInfo.xzqhmc" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="行政区划数字代码" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="行政区划数字代码" prop="xzqhszDm">
+          <el-input v-model="editFormInfo.xzqhszDm" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="行政区划级次" prop="name">
-          <el-select v-model="editFormInfo['province']" placeholder="选择区划级次" clearable size="small">
+        <el-form-item label="行政区划级次" prop="xzqhjc">
+          <el-select v-model="editFormInfo['xzqhjc']" placeholder="选择区划级次" clearable size="small">
             <el-option label="省级" value="1"></el-option>
             <el-option label="市级" value="2"></el-option>
             <el-option label="区县" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="行政区划字母代码" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="行政区划字母代码">
+          <el-input v-model="editFormInfo.xzqhzmDm" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="行政区划罗马代码" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="行政区划罗马代码">
+          <el-input v-model="editFormInfo.xzqhlmzmDm" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="行政区类型代码" prop="name">
-          <el-cascader v-model="editFormInfo.name" :props="cascaderProps"></el-cascader>
+        <el-form-item label="行政区类型代码" prop="xzqhlxDm">
+          <el-select v-model="editFormInfo['xzqhlxDm']" placeholder="选择区划级次" clearable size="small">
+            <el-option label="行政区划" value="1"></el-option>
+            <el-option label="经济区划" value="2"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="上级行政区划名称" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="上级行政区划名称">
+          <el-input v-model="editFormInfo.ssxzqmc" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="上级行政区数字代码" prop="name">
-          <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
+        <el-form-item label="上级行政区数字代码" prop="sjxzqhszDm" v-if="editFormInfo.xzqhjc !== '1'">
+          <el-cascader v-model="editFormInfo.sjxzqhszDm" :props="cascaderProps"></el-cascader>
+        </el-form-item>
+        <el-form-item label="选用标志" prop="xybz">
+          <el-switch v-model="editFormInfo['xybz']" active-color="#13ce66" inactive-color="#ff4949"
+                     active-value="1" inactive-value="0">
+          </el-switch>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -66,12 +76,13 @@
 <script>
 import {mixins} from '@/mixins/mixins'
 import Table from '@/components/Table'
+import DeleteRow from '@/components/permission/DeleteRow'
 import Vue from 'vue'
 
 export default {
   name: 'Region',
   mixins: [mixins],
-  components: {Table},
+  components: {Table,DeleteRow},
   data() {
     return {
       colsHead: [{prop: 'xzqhmc', label: '行政区划名称'}, {prop: 'ssxzqmc', label: '所属行政区名称'}, {
@@ -85,19 +96,15 @@ export default {
         checkStrictly: true,
         lazyLoad(node, resolve) {
           const {level} = node
-          setTimeout(()=> {
+          setTimeout(() => {
             let nodes = []
             if (level === 0) {
-              console.log('执行了')
-              // nodes = this.provinceList
-              // resolve(nodes)
               Vue.axios.get('/xzqh/selectAllProvince')
                   .then(res => {
                     if (res.data.code.toString() === '200') {
-                      res.data.data.forEach((item)=>{
-                        nodes.push({label:item.xzqhmc,value:item.xzqhszDm,leaf: level >= 1})
+                      res.data.data.forEach((item) => {
+                        nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
                       })
-                      console.log(nodes)
                       resolve(nodes)
                     }
                   })
@@ -106,17 +113,17 @@ export default {
               Vue.axios.get('/xzqh/selectXzqhBySzdm', {params: {szDm: node.value}})
                   .then(res => {
                     if (res.data.code.toString() === '200') {
-                      res.data.data.forEach((item)=>{
-                        nodes.push({label:item.xzqhmc,value:item.xzqhszDm,leaf: level >= 1})
+                      res.data.data.forEach((item) => {
+                        nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
                       })
-                      resolve(nodes);
+                      resolve(nodes)
                     }
                   })
                   .catch()
-            }
-          },10)
+            } else {resolve([])}
+          }, 10)
 
-            // 通过调用resolve将子节点数据返回，通知组件数据加载完成
+          // 通过调用resolve将子节点数据返回，通知组件数据加载完成
         }
       }
     }
@@ -156,20 +163,41 @@ export default {
       this.provinceSelected = true
       this.$set(this.searchData, 'city', '')
     },
-    xxx(){
+    cascaderChange() {
 
     },
 //行政区划增删改
+    selectRow(val) {
+      this.selectedRows(val)
+    },
     add() {
       this.dialogTitle = '新增行政区划'
       this.addRow()
     },
+    update() {
+      this.dialogTitle = '编辑行政区划'
+      this.updateRow2('szDm', '/xzqh/selectXzqhBySzdm')
+    },
+    view(row) {
+      this.dialogTitle = '查看行政区划信息'
+      this.viewRow2(row, 'szDm', '/xzqh/selectXzqhBySzdm')
+    },
     confirmEdit() {
+      let val = this.editFormInfo.sjxzqhszDm
+      const last = val && val[val.length - 1]
+      this.editFormInfo.sjxzqhszDm = last
+      let pageUrl = this.searchData.xzqhszDm && this.searchData.xzqhszDm !== '' ? '/xzqh/selectXzqhBySzdm' : ''
+      console.log('pageUrl')
+      console.log(pageUrl)
+      this.confirmEditRow('/xzqh/save', pageUrl)
 
     },
+    deleteRows() {
+      this.deleteRow()
+    },
     confirmDelete() {
-
-    }
+      this.confirmDeleteRow('/role/delete', '/xzqh/selectXzqhBySzdm')
+    },
   }
 }
 </script>
@@ -183,10 +211,12 @@ export default {
       width: 100px;
     }
   }
+
   .addForm {
     > .el-form-item {
       margin-bottom: 18px;
-      &:nth-last-child(2),&:last-child{
+
+      &:nth-last-child(2), &:last-child {
         margin-bottom: 0;
       }
     }

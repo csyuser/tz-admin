@@ -61,6 +61,12 @@ export const mixins = {
         isNeededScope: [{required: true, message: '是否需要范围必须', trigger: 'change'}],
         userType: [{required: true, message: '角色类型不能为空', trigger: 'change'}],
         teamName:[{required: true, message: '名称不能为空', trigger: 'blur'}],
+        xzqhszDm:[{pattern: /^\d*$/, required: true, message: '数字必须为数字值'}],
+        xzqhjc:[{required: true, message: '不能为空', trigger: 'blur'}],
+        xzqhlxDm:[{required: true, message: '不能为空', trigger: 'blur'}],
+        xzqhmc:[{required: true, message: '不能为空', trigger: 'blur'}],
+        xybz:[{required: true, message: '选用标志必须', trigger: 'change'}],
+        sjxzqhszDm:[{required: true, message: '上级行政区划数字代码不能为空', trigger: 'change'}],
       }
     }
   },
@@ -74,13 +80,13 @@ export const mixins = {
         })
         .catch()
     },
-    getPages(url, formInline) {
+    getPages(url,) {
       this.tableDatas = {}
       this.axios.get(url, {
         params: {
           page: this.page,
           pageSize: this.pageSize,
-          ...formInline
+          ...this.searchData,
         },
       }).then(res => {
         if (res.data.code.toString() === '200') {
@@ -104,11 +110,12 @@ export const mixins = {
       })
     },
     searchRow(pageUrl) {
-      this.getPages(pageUrl, this.searchData)
+      this.getPages(pageUrl)
     },
     addRow() {
       this.dialogType = 'add'
-      this.editFormInfo = {isNeededScope: '0',type: []}
+      // this.editFormInfo = {type: []}
+      this.editFormInfo = {}
       this.staffInfo = {}
       this.editDialogDisabled = false
       this.editDialogVisible = true
@@ -163,7 +170,9 @@ export const mixins = {
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.$message.success('保存成功')
-              this.getPages(pageUrl)
+              if (pageUrl){
+                this.getPages(pageUrl)
+              }
             }
           })
           .catch()
