@@ -58,7 +58,7 @@
         </el-form-item>
         <el-form-item label="选用标志" prop="xybz">
           <el-switch v-model="editFormInfo['xybz']" active-color="#13ce66" inactive-color="#ff4949"
-                     active-value="1" inactive-value="0">
+                     active-value="Y" inactive-value="N">
           </el-switch>
         </el-form-item>
       </el-form>
@@ -93,34 +93,37 @@ export default {
       provinceSelected: false,
       cascaderProps: {
         lazy: true,
+        expandTrigger:'hover',
         checkStrictly: true,
         lazyLoad(node, resolve) {
           const {level} = node
           setTimeout(() => {
             let nodes = []
-            if (level === 0) {
-              Vue.axios.get('/xzqh/selectAllProvince')
-                  .then(res => {
-                    if (res.data.code.toString() === '200') {
-                      res.data.data.forEach((item) => {
-                        nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
-                      })
-                      resolve(nodes)
-                    }
-                  })
-                  .catch()
-            } else if (level === 1) {
-              Vue.axios.get('/xzqh/selectXzqhBySzdm', {params: {szDm: node.value}})
-                  .then(res => {
-                    if (res.data.code.toString() === '200') {
-                      res.data.data.forEach((item) => {
-                        nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
-                      })
-                      resolve(nodes)
-                    }
-                  })
-                  .catch()
-            } else {resolve([])}
+              if (level === 0) {
+                Vue.axios.get('/xzqh/selectAllProvince')
+                    .then(res => {
+                      if (res.data.code.toString() === '200') {
+                        res.data.data.forEach((item) => {
+                          nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
+                        })
+                        resolve(nodes)
+                      }
+                    })
+                    .catch()
+              } else if (level === 1) {
+                Vue.axios.get('/xzqh/selectXzqhBySzdm', {params: {szDm: node.value}})
+                    .then(res => {
+                      if (res.data.code.toString() === '200') {
+                        res.data.data.forEach((item) => {
+                          nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
+                        })
+                        resolve(nodes)
+                      }
+                    })
+                    .catch()
+              } else {
+                resolve([])
+              }
           }, 10)
 
           // 通过调用resolve将子节点数据返回，通知组件数据加载完成
@@ -173,11 +176,11 @@ export default {
     },
     update() {
       this.dialogTitle = '编辑行政区划'
-      this.updateRow2('szDm', '/xzqh/selectXzqhBySzdm')
+      this.updateRow2('xzqhId', '/xzqh/selectXzqhInfo')
     },
     view(row) {
       this.dialogTitle = '查看行政区划信息'
-      this.viewRow2(row, 'szDm', '/xzqh/selectXzqhBySzdm')
+      this.viewRow2(row, 'xzqhId', '/xzqh/selectXzqhInfo')
     },
     confirmEdit() {
       let val = this.editFormInfo.sjxzqhszDm
@@ -190,7 +193,7 @@ export default {
       this.deleteRow()
     },
     confirmDelete() {
-      this.confirmDeleteRow('/role/delete', '/xzqh/selectXzqhBySzdm')
+      this.confirmDeleteRow('/xzqh/delete', '/xzqh/selectXzqhBySzdm')
     },
   }
 }
