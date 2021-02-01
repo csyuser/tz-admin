@@ -54,7 +54,7 @@
           <el-input v-model="editFormInfo.ssxzqmc" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="上级行政区数字代码" prop="sjxzqhszDm" v-if="editFormInfo.xzqhjc !== '1'">
-          <el-cascader v-model="editFormInfo.sjxzqhszDm" :props="cascaderProps"></el-cascader>
+          <el-cascader v-model="editFormInfo.sjxzqhszDm" :props="cascaderProps"  :options="test_options" @focus="focusCascader" v-if="isShowCascader"></el-cascader>
         </el-form-item>
         <el-form-item label="选用标志" prop="xybz">
           <el-switch v-model="editFormInfo['xybz']" active-color="#13ce66" inactive-color="#ff4949"
@@ -84,6 +84,7 @@ export default {
   mixins: [mixins],
   components: {Table,DeleteRow},
   data() {
+    let that = this
     return {
       colsHead: [{prop: 'xzqhmc', label: '行政区划名称'}, {prop: 'ssxzqmc', label: '所属行政区名称'}, {
         prop: 'xzqhjc', label: '级次'
@@ -91,50 +92,84 @@ export default {
       provinceList: [],
       cityList: [],
       provinceSelected: false,
+      isShowCascader:false,
       cascaderProps: {
         lazy: true,
         expandTrigger:'hover',
         checkStrictly: true,
         lazyLoad(node, resolve) {
-          const {level} = node
+          console.log(node)
           setTimeout(() => {
-            let nodes = []
-              if (level === 0) {
-                Vue.axios.get('/xzqh/selectAllProvince')
-                    .then(res => {
-                      if (res.data.code.toString() === '200') {
-                        res.data.data.forEach((item) => {
-                          nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
-                        })
-                        resolve(nodes)
-                      }
-                    })
-                    .catch()
-              } else if (level === 1) {
-                Vue.axios.get('/xzqh/selectXzqhBySzdm', {params: {szDm: node.value}})
-                    .then(res => {
-                      if (res.data.code.toString() === '200') {
-                        res.data.data.forEach((item) => {
-                          nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
-                        })
-                        resolve(nodes)
-                      }
-                    })
-                    .catch()
-              } else {
-                resolve([])
-              }
+            // let nodes = []
+            //   if (level === 0) {
+            //     Vue.axios.get('/xzqh/selectAllProvince')
+            //         .then(res => {
+            //           if (res.data.code.toString() === '200') {
+            //             res.data.data.forEach((item) => {
+            //               nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
+            //             })
+            //             resolve(nodes)
+            //           }
+            //         })
+            //         .catch()
+            //   } else if (level === 1) {
+            //     Vue.axios.get('/xzqh/selectXzqhBySzdm', {params: {szDm: node.value}})
+            //         .then(res => {
+            //           if (res.data.code.toString() === '200') {
+            //             res.data.data.forEach((item) => {
+            //               nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
+            //             })
+            //             resolve(nodes)
+            //           }
+            //         })
+            //         .catch()
+            //   } else {
+            //     resolve([])
+            //   }
+            that.zzz(node,resolve)
+            that.isShowAddressInfo = true
           }, 10)
 
           // 通过调用resolve将子节点数据返回，通知组件数据加载完成
         }
-      }
+      },
+      test_options:[]
     }
   },
   mounted() {
     this.getProvince()
   },
   methods: {
+    zzz(node,resolve){
+      let nodes = []
+      const {level} = node
+      if (level === 0) {
+        Vue.axios.get('/xzqh/selectAllProvince')
+            .then(res => {
+              if (res.data.code.toString() === '200') {
+                res.data.data.forEach((item) => {
+                  nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
+                })
+                resolve(nodes)
+              }
+            })
+            .catch()
+      } else if (level === 1) {
+        let szDm = node.value || this.nodeId
+        Vue.axios.get('/xzqh/selectXzqhBySzdm', {params: {szDm: szDm}})
+            .then(res => {
+              if (res.data.code.toString() === '200') {
+                res.data.data.forEach((item) => {
+                  nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
+                })
+                resolve(nodes)
+              }
+            })
+            .catch()
+      } else {
+        resolve([])
+      }
+    },
     search() {
       if (this.searchData.city && this.searchData.city != '') {
         this.searchData.szDm = this.searchData.city
@@ -173,6 +208,9 @@ export default {
     add() {
       this.dialogTitle = '新增行政区划'
       this.addRow()
+    },
+    focusCascader(){
+
     },
     update() {
       this.dialogTitle = '编辑行政区划'

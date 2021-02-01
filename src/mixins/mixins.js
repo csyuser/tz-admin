@@ -115,6 +115,7 @@ export const mixins = {
     addRow() {
       this.dialogType = 'add'
       // this.editFormInfo = {type: []}
+      this.isShowCascader = true
       this.editFormInfo = {}
       this.staffInfo = {}
       this.editDialogDisabled = false
@@ -129,8 +130,10 @@ export const mixins = {
       this.imgId = info['photoId']
     },
     updateRow2(paramName, url) {
+      this.editFormInfo = {}
       this.dialogType = 'update'
       this.editDialogDisabled = false
+      this.isShowCascader = true
       this.checkedId = this.getRowId()
       let obj = {}
       obj[paramName] = this.checkedId
@@ -266,6 +269,10 @@ export const mixins = {
           this.permissionList = res.data.data['permissionList']
           this.prePwd = res.data.data.password
           this.permissionIds = res.data.data.permissionIds
+          this.editFormInfo.sjxzqhszDm = '0002'
+          this.test_options = [{value: '0001', label: '选项1',
+            children: [{ value: '0002', label: '选项3', leaf: true }],}
+          ]
         }
       })
         .catch()
@@ -321,6 +328,8 @@ export const mixins = {
     },
     closedDialog() {
       this.$refs['editDialog'].resetFields()
+      this.isShowCascader = false
+      this.test_options = []
     }
   },
 }
