@@ -163,9 +163,6 @@ export default {
       this.provinceSelected = true
       this.$set(this.searchData, 'city', '')
     },
-    cascaderChange() {
-
-    },
 //行政区划增删改
     selectRow(val) {
       this.selectedRows(val)
@@ -185,12 +182,9 @@ export default {
     confirmEdit() {
       let val = this.editFormInfo.sjxzqhszDm
       const last = val && val[val.length - 1]
-      this.editFormInfo.sjxzqhszDm = last
+      this.editFormInfo.sjxzqhszDm = this.editFormInfo.xzqhjc === '1'? '':last
       let pageUrl = this.searchData.xzqhszDm && this.searchData.xzqhszDm !== '' ? '/xzqh/selectXzqhBySzdm' : ''
-      console.log('pageUrl')
-      console.log(pageUrl)
       this.confirmEditRow('/xzqh/save', pageUrl)
-
     },
     deleteRows() {
       this.deleteRow()
