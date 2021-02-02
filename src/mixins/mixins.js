@@ -198,7 +198,14 @@ export const mixins = {
       this.editDialogVisible = true
       this.editDialogDisabled = true
       this.isShowCascader = true
-      let id = this.isCard?this.cardCheckList[0]:row.id
+      let id
+      if (this.isCard){
+        id = this.cardCheckList[0]
+      }else if (row.parentId){
+        id = row.parentId
+      }else {
+        id = row.id
+      }
       let obj = {}
       obj[paramName] = id
       this.getDialogInfo({...obj},url)
@@ -314,7 +321,7 @@ export const mixins = {
       }).then(res => {
         if (res.data.code.toString() === '200') {
           this.$message.success('保存成功')
-          this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
+          // this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
         }
       })
         .catch()

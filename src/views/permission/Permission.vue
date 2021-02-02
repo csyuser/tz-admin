@@ -65,8 +65,7 @@
         </el-form-item>
       </el-form>
       <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
-                      :role-no-admin-list="editFormInfo.roleNoAdminList"
-                      :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
+                      :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
@@ -159,6 +158,7 @@ export default {
     },
 //tab切换
     handleClick() {
+      this.page = 1
       switch (this.activeName) {
         case 'first':
           this.allowSelect = true
@@ -179,6 +179,8 @@ export default {
 //权限组选择权限树结构
     filterNode(value, data) {
       if (!value) return true
+      console.log('执行了')
+      console.log(data)
       return data.label && data.label.indexOf(value) !== -1
     },
     openTree() {
@@ -224,6 +226,7 @@ export default {
       }
     },
     add() {
+      this.permissionIds = []
       this.dialogTitle = '新增权限'
       this.addRow()
     },
@@ -247,6 +250,7 @@ export default {
           this.confirmEditRow('/permission/save', '/permission/page')
           break
         case 'second':
+          this.editFormInfo.permissionNameList = this.editFormInfo.permissionNameList.split(',')
           this.confirmEditRow('/team/save', '/team/page')
           break
         default:
@@ -285,19 +289,46 @@ export default {
 //关联权限范围，岗位，小组
     relatedPost() {
       this.relatedName = 'post'
-      this.related('/permission-relation/selectPermissionAndRole', '关联岗位', {permissionId: this.selectedRow[0] && this.selectedRow[0].id})
+      let type
+      switch (this.activeName) {
+        case 'first':
+          type = '1'
+          break
+        case 'second':
+          type = '2'
+          break
+        default:
+          break
+      }
+      this.related('/permission-relation/selectPermissionAndRole', '关联岗位', {
+        permissionId: this.selectedRow[0] && this.selectedRow[0].id,
+        type:type
+      })
     },
-
     confirmTransform() {
       let dialogUrl = ''
-      if (this.activeName === 'first'){dialogUrl = '/permission/selectPermissionInfo'}else if (this.activeName === 'second'){dialogUrl = '/team/selectTeamInfo'}
-      console.log(dialogUrl)
+      let dialogParams = ''
+      let relationType
+      switch (this.activeName) {
+        case 'first':
+          dialogUrl = '/permission/selectPermissionInfo'
+          dialogParams = {permissionId: this.selectedRow[0] && this.selectedRow[0].id}
+          relationType = '1'
+          break
+        case 'second':
+          relationType = '2'
+          dialogUrl = '/team/selectTeamInfo'
+          dialogParams = {teamId: this.selectedRow[0] && this.selectedRow[0].id}
+          break
+        default:
+          break
+      }
       this.confirmRelate('/permission-relation/saveTeamAndPermission', {
         type: '1',
         permissionIds: [this.selectedRow[0].id],
         relationIds: this.relatedValue,
-        relationType: '1'
-      },{permissionId:this.selectedRow[0] && this.selectedRow[0].id},dialogUrl)
+        relationType: relationType
+      },dialogParams,dialogUrl)
     },
   },
 
