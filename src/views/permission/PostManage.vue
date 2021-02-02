@@ -47,13 +47,9 @@
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
     <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body :before-close="handleClose" class="relatedDialog">
-      <el-transfer
-          filterable
-          :filter-method="filterMethod"
-          filter-placeholder="请输入"
-          v-model="relatedValue"
-          :data="transformData">
+      <el-transfer filterable :filter-method="filterMethod" filter-placeholder="请输入" v-model="relatedValue" :data="transformData" v-if="relatedName === 'user'">
       </el-transfer>
+      <TreeTransfer v-if="relatedName === 'permission'"></TreeTransfer>
       <span slot="footer" class="dialog-footer">
         <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
@@ -68,12 +64,13 @@ import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
 import IconListDialog from '@/components/permission/dialog/IconListDialog'
 import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
+import TreeTransfer from '@/components/TreeTransfer'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'PostManage',
-  components: {Table, DeleteRow,SelectTree,IconListDialog,AuthorityListDialog},
-  mixins:[mixins],
+  components: {Table, DeleteRow,SelectTree,IconListDialog,AuthorityListDialog,TreeTransfer},
+  mixins:[mixins,TreeTransfer],
   data() {
     return {
       selectedRow: [],
@@ -192,6 +189,9 @@ export default {
   }
   .el-transfer-panel__list.is-filterable {
     height: 298px;
+  }
+  .el-transfer-panel{
+    width: 239px;
   }
 }
 

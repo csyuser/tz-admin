@@ -269,5 +269,8 @@ export default {
   .el-transfer-panel__list.is-filterable {
     height: 298px;
   }
+  .el-transfer-panel{
+    width: 239px;
+  }
 }
 </style>
