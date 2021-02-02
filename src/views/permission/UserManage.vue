@@ -68,7 +68,7 @@
         <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px" :before-close="handleClose">
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px" relatedDialog :before-close="handleClose">
       <el-transfer
           filterable
           :filter-method="filterMethod"
@@ -257,5 +257,17 @@ export default {
     }
   }
 }
-
+.relatedDialog::v-deep{
+  .el-transfer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .el-transfer-panel__body {
+    height: 350px;
+  }
+  .el-transfer-panel__list.is-filterable {
+    height: 298px;
+  }
+}
 </style>

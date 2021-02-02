@@ -46,7 +46,7 @@
     <el-dialog title="删除岗位" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body :before-close="handleClose">
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body :before-close="handleClose" class="relatedDialog">
       <el-transfer
           filterable
           :filter-method="filterMethod"
@@ -179,6 +179,19 @@ export default {
         }
       }
     }
+  }
+}
+.relatedDialog::v-deep{
+  .el-transfer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .el-transfer-panel__body {
+    height: 350px;
+  }
+  .el-transfer-panel__list.is-filterable {
+    height: 298px;
   }
 }
 
