@@ -54,7 +54,7 @@
           <el-input v-model="editFormInfo.ssxzqmc" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="上级行政区数字代码" prop="sjxzqhszDm" v-if="editFormInfo.xzqhjc !== '1'">
-          <el-cascader v-model="editFormInfo.sjxzqhszDm" :props="cascaderProps"  :options="test_options" @focus="focusCascader" v-if="isShowCascader"></el-cascader>
+          <el-cascader v-model="editFormInfo.sjxzqhszDm" :props="cascaderProps"  :options="test_options" v-if="isShowCascader"></el-cascader>
         </el-form-item>
         <el-form-item label="选用标志" prop="xybz">
           <el-switch v-model="editFormInfo['xybz']" active-color="#13ce66" inactive-color="#ff4949"
@@ -98,39 +98,10 @@ export default {
         expandTrigger:'hover',
         checkStrictly: true,
         lazyLoad(node, resolve) {
-          console.log(node)
           setTimeout(() => {
-            // let nodes = []
-            //   if (level === 0) {
-            //     Vue.axios.get('/xzqh/selectAllProvince')
-            //         .then(res => {
-            //           if (res.data.code.toString() === '200') {
-            //             res.data.data.forEach((item) => {
-            //               nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
-            //             })
-            //             resolve(nodes)
-            //           }
-            //         })
-            //         .catch()
-            //   } else if (level === 1) {
-            //     Vue.axios.get('/xzqh/selectXzqhBySzdm', {params: {szDm: node.value}})
-            //         .then(res => {
-            //           if (res.data.code.toString() === '200') {
-            //             res.data.data.forEach((item) => {
-            //               nodes.push({label: item.xzqhmc, value: item.xzqhszDm, leaf: level >= 1})
-            //             })
-            //             resolve(nodes)
-            //           }
-            //         })
-            //         .catch()
-            //   } else {
-            //     resolve([])
-            //   }
-            that.zzz(node,resolve)
+            that.cascaderLazy(node,resolve)
             that.isShowAddressInfo = true
           }, 10)
-
-          // 通过调用resolve将子节点数据返回，通知组件数据加载完成
         }
       },
       test_options:[]
@@ -140,7 +111,7 @@ export default {
     this.getProvince()
   },
   methods: {
-    zzz(node,resolve){
+    cascaderLazy(node,resolve){
       let nodes = []
       const {level} = node
       if (level === 0) {
@@ -209,9 +180,6 @@ export default {
       this.dialogTitle = '新增行政区划'
       this.addRow()
     },
-    focusCascader(){
-
-    },
     update() {
       this.dialogTitle = '编辑行政区划'
       this.updateRow2('xzqhId', '/xzqh/selectXzqhInfo')
@@ -221,8 +189,9 @@ export default {
       this.viewRow2(row, 'xzqhId', '/xzqh/selectXzqhInfo')
     },
     confirmEdit() {
+      console.log('确定编辑')
       let val = this.editFormInfo.sjxzqhszDm
-      const last = val && val[val.length - 1]
+      let last = val instanceof Array?val && val[val.length - 1]:val
       this.editFormInfo.sjxzqhszDm = this.editFormInfo.xzqhjc === '1'? '':last
       let pageUrl = this.searchData.xzqhszDm && this.searchData.xzqhszDm !== '' ? '/xzqh/selectXzqhBySzdm' : ''
       this.confirmEditRow('/xzqh/save', pageUrl)

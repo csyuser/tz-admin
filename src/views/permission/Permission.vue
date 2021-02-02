@@ -132,6 +132,14 @@ export default {
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val)
+    },
+    editFormInfo:{
+      handler(newVal){
+        if (newVal['permissionNameList'] instanceof Array){
+          newVal['permissionNameList'] = newVal['permissionNameList'] && newVal['permissionNameList'].join(',')
+        }
+      },
+      deep:true
     }
   },
   mounted() {
@@ -275,38 +283,21 @@ export default {
       }
     },
 //关联权限范围，岗位，小组
-//     relatedPermission() {
-//       this.relatedName = 'permission'
-//       this.related('','关联权限范围',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
-//     },
     relatedPost() {
       this.relatedName = 'post'
       this.related('/permission-relation/selectPermissionAndRole', '关联岗位', {permissionId: this.selectedRow[0] && this.selectedRow[0].id})
     },
-    // relatedGroup() {
-    //   this.relatedName = 'group'
-    //   this.related('/permission-relation/selectPermissionAndTeam','关联小组',{permissionId:this.selectedRow[0] && this.selectedRow[0].id})
-    // },
+
     confirmTransform() {
+      let dialogUrl = ''
+      if (this.activeName === 'first'){dialogUrl = '/permission/selectPermissionInfo'}else if (this.activeName === 'second'){dialogUrl = '/team/selectTeamInfo'}
+      console.log(dialogUrl)
       this.confirmRelate('/permission-relation/saveTeamAndPermission', {
         type: '1',
         permissionIds: [this.selectedRow[0].id],
         relationIds: this.relatedValue,
         relationType: '1'
-      },{permissionId:this.selectedRow[0] && this.selectedRow[0].id},'/permission/selectPermissionInfo')
-      // if (this.relatedName === 'permission'){this.confirmRelate('', {
-      //   type: '1',
-      //   permissionIds: [this.selectedRow[0].id],
-      //   relationIds: this.relatedValue,
-      //   relationType:'1'
-      // })}
-      // else if (this.relatedName === 'post'){}
-      // else if (this.relatedName === 'group'){this.confirmRelate('/permission-relation/saveTeamAndPermission',{
-      //   type: '1',
-      //   permissionIds: [this.selectedRow[0].id],
-      //   relationIds: this.relatedValue,
-      //   relationType:'2'
-      // })}
+      },{permissionId:this.selectedRow[0] && this.selectedRow[0].id},dialogUrl)
     },
   },
 

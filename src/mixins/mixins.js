@@ -269,14 +269,39 @@ export const mixins = {
           this.permissionList = res.data.data['permissionList']
           this.prePwd = res.data.data.password
           this.permissionIds = res.data.data.permissionIds
-          this.editFormInfo.sjxzqhszDm = '0002'
-          this.test_options = [{value: '0001', label: '选项1',
-            children: [{ value: '0002', label: '选项3', leaf: true }],}
-          ]
+          // this.editFormInfo.sjxzqhszDm = '0002'
+          // this.test_options = [{value: '0001', label: '选项1',
+          //   children: [{ value: '0002', label: '选项3', leaf: true }],}
+          // ]
+          if (this.editFormInfo.sjxzqhszDm){
+            this.test_options = [{value: this.editFormInfo.sjxzqhszDm, label: this.editFormInfo.ssxzqmc,leaf: true}]
+            // this.getCascader(this.editFormInfo.sjxzqhszDm)
+          }
         }
       })
         .catch()
     },
+    // getCascader(szDm){
+    //   this.axios.get('/xzqh/selectXzqhHierarchy',{params:{xzqhszDm:szDm}})
+    //     .then(res=>{
+    //       if (res.data.code === 200){
+    //         this.test_options = this.ccc(res.data.data)
+    //         this.isShowCascader = true
+    //         console.log(this.test_options)
+    //       }
+    //     })
+    //     .catch()
+    // },
+    // ccc(array){
+    //   array.forEach(item=>{
+    //     if (item.children && item.children.length>=1){
+    //       this.ccc(item.children)
+    //     }else {
+    //       item['leaf'] = true
+    //     }
+    //   })
+    //   return array
+    // },
 //获取选择行id
     getRowId() {
       let id
