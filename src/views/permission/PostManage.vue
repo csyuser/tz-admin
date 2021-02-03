@@ -50,12 +50,12 @@
     <el-dialog title="删除岗位" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body @closed="closedTransfer"
                :before-close="handleClose" class="relatedDialog">
       <el-transfer filterable :filter-method="filterMethod" filter-placeholder="请输入" v-model="relatedValue"
                    :data="transformData" v-if="relatedName === 'user'">
       </el-transfer>
-      <TreeTransfer v-if="relatedName === 'permission'" :url="relateUrl" :params="params" @update:relate="updateRelate" transform-data="transformData" related-value="relatedValue"></TreeTransfer>
+      <TreeTransfer ref="transfer" v-if="relatedName === 'permission'" :url="relateUrl" :params="params" @update:relate="updateRelate"></TreeTransfer>
       <span slot="footer" class="dialog-footer">
         <el-button @click="relatedDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
@@ -63,7 +63,7 @@
     </el-dialog>
   </div>
 </template>
-
+D
 <script>
 import Table from '@/components/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
@@ -85,6 +85,8 @@ export default {
       }, {prop: 'roleType', label: '岗位类型'}, {prop: 'describe', label: '角色描述'}],
       relateUrl: '',
       params: {},
+      teamIds:[],
+      permissionIds:[]
     }
   },
   mounted() {
@@ -129,14 +131,17 @@ export default {
 //关联权限，范围
     updateRelate(val){
       let arr = []
+      let teamIds = []
       val.forEach(item=>{
-        arr.push(item.id)
+        item.children && item.children.length>=1?teamIds.push(item.id): arr.push(item.id)
       })
-      this.relatedValue = arr
+      this.permissionIds = arr
+      this.teamIds = teamIds
     },
     relatedPermission() {
       this.relatedName = 'permission'
       this.relatedDialogVisible = true
+      this.relatedTitle = '关联权限'
       // this.related('/role/selectRoleAndPermission','关联权限',{roleId:this.selectedRow[0] && this.selectedRow[0].id})
       this.relateUrl = '/role/selectRoleAndPermission'
       this.params = {roleId: this.selectedRow[0] && this.selectedRow[0].id}
@@ -147,10 +152,13 @@ export default {
     },
     confirmTransform() {
       if (this.relatedName === 'permission') {
+        console.log(this.teamIds)
+        console.log(this.permissionIds)
         this.confirmRelate('/permission-relation/saveTeamAndPermission', {
           type: '0',
           relationIds: [this.selectedRow[0].id],
-          permissionIds: this.relatedValue,
+          permissionIds: this.permissionIds,
+          teamIds:this.teamIds,
           relationType: '1'
         }, {roleId: this.checkedId}, '/role/selectRoleInfo')
       } else if (this.relatedName === 'user') {
@@ -161,6 +169,9 @@ export default {
         }, {roleId: this.checkedId}, '/role/selectRoleInfo')
       }
     },
+    closedTransfer(){
+      this.relatedName = ''
+    }
   }
 }
 </script>

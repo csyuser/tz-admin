@@ -13,8 +13,6 @@ export default {
   props: {
     url:  {type: String},
     params: {type: Object},
-    transformData:{type:Array},
-    relatedValue:{type:Array},
   },
   data() {
     return {
@@ -27,88 +25,21 @@ export default {
     }
   },
   mounted() {
-    this.toData = [
-      {
-        id: 'b0767802f6a5e18e77c4d58e34d07e4a',
-        pid: 0,
-        label: '一级 1',
-        disabled: false,
-        children: [
-          {
-            id: '1-1',
-            pid: '1',
-            label: '二级 1-1',
-            disabled: true
-          },
-          {
-            id: '1-2',
-            pid: '1',
-            label: '二级 1-2',
-            disabled: true
-          }
-        ]
-      }
-      ]
-    this.fromData = [{
-      id: 'b0767802f6a5e18e77c4d58e34d07e411111',
-      pid: 0,
-      label: '一级 2',
-      disabled: false,
-      value: null,
-      children: [
-        {
-          id: '2-1',
-          pid: '1',
-          label: '二级 2-1',
-          disabled: true,
-          value: null,
-        },
-        {
-          id: '2-2',
-          pid: '1',
-          label: '二级 2-2',
-          disabled: true,
-          value: null,
-        }
-      ]
-    }, {
-      id: '4',
-      pid: 0,
-      label: '二级 1-0',
-      disabled: false,
-      value: null,
-    }, {
-      id: '3',
-      pid: 0,
-      label: '一级3',
-      disabled: false,
-      children: [],
-      value: null,
-    },]
-    this.axios.get(this.url,{params:{...this.params}})
-      .then(res=>{
-        if (res.data.code.toString() === '200'){
-          // this.formatData(res.data.data.allList)
-          // this.formatData(res.data.data.checkList)
-          this.fromData = res.data.data.allList
-          this.toData = res.data.data.checkList
-          this.$emit('update:relate',this.toData)
-        }
-      })
-      .catch()
+    this.getTransData()
   },
   methods: {
     //规范fromData和toData
-    formatData(data){
-      data.forEach(item=>{
-        item.pid*=1
-        if (item.children && item.children.length>=1){
-          item.children.forEach(child=>{
-            child.pid*=1
-            delete (child.id)
-          })
-        }
-      })
+    getTransData(){
+      console.log('执行了')
+      this.axios.get(this.url,{params:{...this.params}})
+        .then(res=>{
+          if (res.data.code.toString() === '200'){
+            this.fromData = res.data.data.allList
+            this.toData = res.data.data.checkList
+            this.$emit('update:relate',this.toData)
+          }
+        })
+        .catch()
     },
     // 切换模式 现有树形穿梭框模式transfer 和通讯录模式addressList
     changeMode() {
