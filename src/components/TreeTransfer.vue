@@ -8,100 +8,149 @@
 import treeTransfer from 'el-tree-transfer' // 引入
 
 export default {
-name: "Tree-transfer",
-  components:{treeTransfer},
+  name: 'Tree-transfer',
+  components: {treeTransfer},
+  props: {
+    url:  {type: String},
+    params: {type: Object},
+    transformData:{type:Array},
+    relatedValue:{type:Array},
+  },
   data() {
     return {
       filterMethod(query, item) {
-        return item.label.indexOf(query) > -1;
+        return item.label.indexOf(query) > -1
       },
-      mode: "transfer", // transfer addressList
-      fromData: [
-        {
-          id: "1",
-          pid: 0,
-          label: "一级 1",
-          children: [
-            {
-              id: "1-1",
-              pid: "1",
-              label: "二级 1-1",
-              disabled: true
-            },
-            {
-              id: "1-2",
-              pid: "1",
-              label: "二级 1-2",
-              disabled: true
-            }
-          ]
-        }, {
-          id: "2",
-          pid: 0,
-          label: "一级 2",
-          children: [
-            {
-              id: "2-1",
-              pid: "1",
-              label: "二级 2-1",
-              disabled: true
-            },
-            {
-              id: "2-2",
-              pid: "1",
-              label: "二级 2-2",
-              disabled: true
-            }
-          ]
-        }, {
-          id: "3",
-          pid: 0,
-          label: "一级 3",
-        },
-      ],
+      mode: 'transfer', // transfer addressList
+      fromData: [],
       toData: [],
-      oldTodata: []
     }
   },
-  methods:{
+  mounted() {
+    this.toData = [
+      {
+        id: 'b0767802f6a5e18e77c4d58e34d07e4a',
+        pid: 0,
+        label: '一级 1',
+        disabled: false,
+        children: [
+          {
+            id: '1-1',
+            pid: '1',
+            label: '二级 1-1',
+            disabled: true
+          },
+          {
+            id: '1-2',
+            pid: '1',
+            label: '二级 1-2',
+            disabled: true
+          }
+        ]
+      }
+      ]
+    this.fromData = [{
+      id: 'b0767802f6a5e18e77c4d58e34d07e411111',
+      pid: 0,
+      label: '一级 2',
+      disabled: false,
+      value: null,
+      children: [
+        {
+          id: '2-1',
+          pid: '1',
+          label: '二级 2-1',
+          disabled: true,
+          value: null,
+        },
+        {
+          id: '2-2',
+          pid: '1',
+          label: '二级 2-2',
+          disabled: true,
+          value: null,
+        }
+      ]
+    }, {
+      id: '4',
+      pid: 0,
+      label: '二级 1-0',
+      disabled: false,
+      value: null,
+    }, {
+      id: '3',
+      pid: 0,
+      label: '一级3',
+      disabled: false,
+      children: [],
+      value: null,
+    },]
+    this.axios.get(this.url,{params:{...this.params}})
+      .then(res=>{
+        if (res.data.code.toString() === '200'){
+          // this.formatData(res.data.data.allList)
+          // this.formatData(res.data.data.checkList)
+          this.fromData = res.data.data.allList
+          this.toData = res.data.data.checkList
+          this.$emit('update:relate',this.toData)
+        }
+      })
+      .catch()
+  },
+  methods: {
+    //规范fromData和toData
+    formatData(data){
+      data.forEach(item=>{
+        item.pid*=1
+        if (item.children && item.children.length>=1){
+          item.children.forEach(child=>{
+            child.pid*=1
+            delete (child.id)
+          })
+        }
+      })
+    },
     // 切换模式 现有树形穿梭框模式transfer 和通讯录模式addressList
     changeMode() {
-      if (this.mode == "transfer") {
-        this.mode = "addressList";
+      if (this.mode == 'transfer') {
+        this.mode = 'addressList'
       } else {
-        this.mode = "transfer";
+        this.mode = 'transfer'
       }
     },
     // 监听穿梭框组件添加
-    add(fromData,toData,obj){
+    add(fromData, toData, obj) {
       // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的 {keys,nodes,halfKeys,halfNodes}对象
       // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
       let {nodes} = obj
-      nodes.forEach(item=>{
-        if (item.children && item.children.length>=1){
-          this.toData =  this.toData.filter(data=> data.id !== item.id)
+      nodes.forEach(item => {
+        if (item.children && item.children.length >= 1) {
+          this.toData = this.toData.filter(data => data.id !== item.id)
           this.toData.push(item)
         }
       })
-      obj.nodes.forEach((item)=>{
-        this.fromData =  this.fromData.filter(data=> data.id !== item.id)
+      obj.nodes.forEach((item) => {
+        this.fromData = this.fromData.filter(data => data.id !== item.id)
       })
+      this.$emit('update:relate',this.toData)
       console.log(this.toData)
     },
     // 监听穿梭框组件移除
-    remove(fromData,toData,obj){
+    remove(fromData, toData, obj) {
       // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
       // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
       let {nodes} = obj
-      nodes.forEach(item=>{
-        if (item.children && item.children.length>=1){
-          this.fromData =  this.fromData.filter(data=> data.id !== item.id)
+      nodes.forEach(item => {
+        if (item.children && item.children.length >= 1) {
+          this.fromData = this.fromData.filter(data => data.id !== item.id)
           this.fromData.push(item)
         }
       })
-      obj.nodes.forEach((item)=>{
-        this.toData =  this.toData.filter(data=> data.id !== item.id)
+      obj.nodes.forEach((item) => {
+        this.toData = this.toData.filter(data => data.id !== item.id)
       })
+      this.$emit('update:relate',this.toData)
+      console.log(this.toData)
     }
   },
 
