@@ -46,8 +46,8 @@
       <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
+        <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmEdit">{{dialogType!=='view'?'确 定':'关 闭'}}</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="550px" :before-close="handleClose"
@@ -67,8 +67,8 @@
       <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
+        <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmEdit">{{dialogType!=='view'?'确 定':'关 闭'}}</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除权限" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">

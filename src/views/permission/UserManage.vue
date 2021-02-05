@@ -80,8 +80,8 @@
      <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="checkedId" :type="dialogType"
                           @update:dialogInfo="updateDialogInfo"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmEdit">确 定</el-button>
+        <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
+        <el-button type="primary" size="small" @click="confirmEdit">{{dialogType!=='view'?'确 定':'关 闭'}}</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" append-to-body width="700px" relatedDialog :before-close="handleClose">

@@ -40,8 +40,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirmEdit" size="small">确 定</el-button>
+        <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
+        <el-button type="primary" @click="confirmEdit" size="small">{{dialogType!=='view'?'确 定':'关 闭'}}</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除菜单" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
