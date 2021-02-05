@@ -123,10 +123,11 @@ export const mixins = {
       this.editDialogVisible = true
     },
     updateRow() {
+      this.editFormInfo = {}
       this.dialogType = 'update'
       this.editDialogDisabled = false
       let info = this.getUpdateMessage()
-      this.editFormInfo = info
+      this.editFormInfo = JSON.parse(JSON.stringify(info))
       this.editFormInfo.sort = info.sort && parseInt(info.sort)
       this.imgId = info['photoId']
     },

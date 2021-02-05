@@ -1,5 +1,5 @@
 <template>
-  <div class="post-manage-wrap">{{ this.relatedValue }}  {{this.relatedUserIds}}
+  <div class="post-manage-wrap">
     <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item>
         <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
@@ -180,11 +180,6 @@ export default {
               }
             })
       } else if (this.relatedName === 'user') {
-        // this.confirmRelate('/role/saveUserRole', {
-        //   type: '1',
-        //   roleIds: [this.selectedRow[0].id],
-        //   userIds: this.relatedValue
-        // }, {roleId: this.checkedId}, '/role/selectRoleInfo')
         this.axios.get('/user/selectUserByIds',{params:{userIds:this.relatedValue.join(',')}})
         .then(res=>{
           if (res.data.code.toString() === '200'){
