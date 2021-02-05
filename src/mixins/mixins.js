@@ -140,7 +140,7 @@ export const mixins = {
       obj[paramName] = this.checkedId
       this.getDialogInfo({...obj}, url)
     },
-    confirmEditRow(saveUrl, pageUrl) {
+    confirmEditRow(saveUrl, pageUrl,relateData) {
       this.$refs.editDialog.validate((valid) => {
         if (valid) {
           this.editDialogVisible = false
@@ -158,10 +158,10 @@ export const mixins = {
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
-                this.saveUser(saveUrl, pageUrl, editData)
+                this.saveUser(saveUrl, pageUrl, editData,relateData)
               }).catch()
             } else {
-              this.saveUser(saveUrl, pageUrl, editData)
+              this.saveUser(saveUrl, pageUrl, editData,relateData)
             }
           }
         } else {
@@ -169,8 +169,8 @@ export const mixins = {
         }
       })
     },
-    saveUser(saveUrl, pageUrl, editData) {
-        this.axios.post(saveUrl, {...editData})
+    saveUser(saveUrl, pageUrl, editData,relateData) {
+        this.axios.post(saveUrl, {...editData,...relateData})
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.$message.success('保存成功')
@@ -309,6 +309,7 @@ export const mixins = {
         if (res.data.code.toString() === '200') {
           this.transformData = res.data.data['allList']
           this.relatedValue = res.data.data['checkList']
+          // this.relatedUserIds = res.data.data['checkList']
         }
       })
         .catch()
@@ -338,6 +339,7 @@ export const mixins = {
       this.$refs['editDialog'].resetFields()
       this.isShowCascader = false
       this.test_options = []
+      console.log(this.editFormInfo)
     }
   },
 }

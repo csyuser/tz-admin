@@ -1,5 +1,5 @@
 <template>
-  <div class="post-manage-wrap">
+  <div class="post-manage-wrap">{{ this.relatedValue }}  {{this.relatedUserIds}}
     <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item>
         <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
@@ -90,7 +90,10 @@ export default {
       relateUrl: '',
       params: {},
       teamIds:[],
-      permissionIds:[]
+      permissionIds:[],
+      relatedUserIds:[],
+      relatedPermissionIds:[],
+      relatedTeamIds:[]
     }
   },
   mounted() {
@@ -115,11 +118,16 @@ export default {
       this.addRow()
     },
     update() {
+      this.relatedUserIds = []
+      this.relatedPermissionIds = []
       this.dialogTitle = '编辑岗位'
       this.updateRow2('roleId', '/role/selectRoleInfo')
     },
     confirmEdit() {
-      this.confirmEditRow('/role/save', '/role/page')
+      // let userIds = this.relatedUserIds.length>=1?this.relatedUserIds:this.editFormInfo.userIds
+      // let permissionIds = this.relatedPermissionIds.length>=1?this.relatedPermissionIds:this.editFormInfo.permissionList
+      // let teamIds = this.relatedTeamIds.length>=1?this.relatedTeamIds:this.editFormInfo.teamIds
+      // this.confirmEditRow('/role/save', '/role/page',{userIds: userIds,permissionIds:permissionIds,teamIds:teamIds})
     },
     view(row) {
       this.dialogTitle = '查看岗位信息'
@@ -155,21 +163,36 @@ export default {
     },
     confirmTransform() {
       if (this.relatedName === 'permission') {
-        console.log(this.teamIds)
-        console.log(this.permissionIds)
-        this.confirmRelate('/permission-relation/saveTeamAndPermission', {
-          type: '0',
-          relationIds: [this.selectedRow[0].id],
-          permissionIds: this.permissionIds,
-          teamIds:this.teamIds,
-          relationType: '1'
-        }, {roleId: this.checkedId}, '/role/selectRoleInfo')
+        // console.log(this.teamIds)
+        // console.log(this.permissionIds)
+        // this.confirmRelate('/permission-relation/saveTeamAndPermission', {
+        //   type: '0',
+        //   relationIds: [this.selectedRow[0].id],
+        //   permissionIds: this.permissionIds,
+        //   teamIds:this.teamIds,
+        //   relationType: '1'
+        // }, {roleId: this.checkedId}, '/role/selectRoleInfo')
+        this.axios.get('/user/selectUserByIds',{params:{userIds:this.relatedValue.join(',')}})
+            .then(res=>{
+              if (res.data.code.toString() === '200'){
+                this.editFormInfo['userList'] = res.data.data
+                this.relatedUserIds = this.relatedValue
+              }
+            })
       } else if (this.relatedName === 'user') {
-        this.confirmRelate('/role/saveUserRole', {
-          type: '1',
-          roleIds: [this.selectedRow[0].id],
-          userIds: this.relatedValue
-        }, {roleId: this.checkedId}, '/role/selectRoleInfo')
+        // this.confirmRelate('/role/saveUserRole', {
+        //   type: '1',
+        //   roleIds: [this.selectedRow[0].id],
+        //   userIds: this.relatedValue
+        // }, {roleId: this.checkedId}, '/role/selectRoleInfo')
+        this.axios.get('/user/selectUserByIds',{params:{userIds:this.relatedValue.join(',')}})
+        .then(res=>{
+          if (res.data.code.toString() === '200'){
+            this.editFormInfo['userList'] = res.data.data
+            this.relatedUserIds = this.relatedValue
+          }
+        })
+        .catch()
       }
     },
     closedTransfer(){
