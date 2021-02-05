@@ -1,8 +1,15 @@
 <template>
   <div class="user-manage-wrap">
-    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
-      <el-form-item>
-        <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
+    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm" size="small">
+      <el-form-item label="">
+        <el-input v-model="searchData.name" placeholder="输入名称" size="small" suffix-icon="xxx"></el-input>
+      </el-form-item>
+      <el-form-item label="">
+        <el-select v-model="searchData.status" placeholder="请选择角色状态" clearable>
+          <el-option label="正常" value="1"></el-option>
+          <el-option label="锁定" value="2"></el-option>
+          <el-option label="注销" value="3"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search" size="small">查询</el-button>
@@ -18,7 +25,7 @@
     </Table>
     <Card v-if="isCard" :title-list="cardListHead" :card-list="tableDatas.data" :is-card="isCard" input-width="small"
           @update:cardCheck="cardCheck" @dblclickCard="cardView"></Card>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose" @closed="closedDialog">
+    <el-dialog :title="dialogTitle" class="editDialog" :visible.sync="editDialogVisible" width="987px" :before-close="handleClose" @closed="closedDialog">
       <el-form label-position="right" label-width="85px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="人员头像" class="avatar">
@@ -38,21 +45,30 @@
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="风险等级">
-          <el-select v-model="editFormInfo.riskLevel">
-            <el-option label="异地登录" value="1"></el-option>
-            <el-option label="频繁登录" value="2"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="角色状态" prop="status">
           <el-select v-model="editFormInfo.status">
             <el-option label="正常" value="1"></el-option>
             <el-option label="锁定" value="2"></el-option>
             <el-option label="注销" value="3"></el-option>
           </el-select>
+<!--          <el-radio-group v-model="editFormInfo['status']">-->
+<!--            <el-radio label="1"  @click.native.prevent="onRadioChange('1')">正常</el-radio>-->
+<!--            <el-radio label="2" @click.native.prevent="onRadioChange('2')">锁定</el-radio>-->
+<!--            <el-radio label="3" @click.native.prevent="onRadioChange('3')">注销</el-radio>-->
+<!--          </el-radio-group>-->
         </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px" class="SelectTree-item">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
+        </el-form-item>
+        <el-form-item label="风险等级">
+          <!--          <el-select v-model="editFormInfo.riskLevel">-->
+          <!--            <el-option label="异地登录" value="1"></el-option>-->
+          <!--            <el-option label="频繁登录" value="2"></el-option>-->
+          <!--          </el-select>-->
+          <el-radio-group v-model="editFormInfo['riskLevel']">
+            <el-radio label="1"  @click.native.prevent="onRadioChange('1')">异地登录</el-radio>
+            <el-radio label="2" @click.native.prevent="onRadioChange('2')">频繁登录</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="角色说明" class="texArea">
           <el-input v-model="editFormInfo['remark']" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
@@ -132,6 +148,11 @@ export default {
         .catch()
   },
   methods: {
+    onRadioChange(e) {
+      if (e === this.editFormInfo['riskLevel']){
+        this.$set(this.editFormInfo,'riskLevel','')
+      }else {this.$set(this.editFormInfo,'riskLevel',e)}
+    },
     currentChange(val, row) {
       this.currentPageChange(val, row, '/user/page')
     },
@@ -219,6 +240,17 @@ export default {
   > .searchForm {
     > .selectInput {
       width: 100px;
+    }
+    //> .el-form-item ::v-deep{
+    //  .el-form-item__content{
+    //    width: 150px;
+    //  }
+    //}
+  }
+  .editDialog ::v-deep{
+    .el-dialog__body{
+      max-height: 650px;
+      overflow: auto;
     }
   }
   > .table {

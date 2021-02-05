@@ -33,7 +33,7 @@ export const mixins = {
       relatedValue: [],
       relatedName: '',
       filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
+        return item.label && item.label.indexOf(query) > -1
       },
       rules: {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
