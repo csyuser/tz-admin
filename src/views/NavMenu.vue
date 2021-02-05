@@ -75,6 +75,7 @@ export default {
     }
   },
   async mounted() {
+    console.log( '执行了')
     this.$store.commit('getUserInfo')
     this.$store.commit('fetch')
     this.nowBreadcrumb = this.$store.state.selectedMenu

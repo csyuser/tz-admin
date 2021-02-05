@@ -122,6 +122,7 @@ export default {
             this.$router.push('/HomePage')
           }
           window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+          window.localStorage.setItem('selectedMenu', JSON.stringify([]))
         }
       })
           .catch(()=>{
@@ -149,6 +150,7 @@ export default {
               this.userInfo.id = res.data.data['curUser'].id
               this.userInfo.photoPath = res.data.data['curUser'].photoPath
               window.localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+              window.localStorage.setItem('selectedMenu', JSON.stringify([]))
               this.$router.push('/HomePage')
             }
           })
