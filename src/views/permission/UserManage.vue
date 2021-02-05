@@ -118,7 +118,7 @@ export default {
   mixins:[mixins],
   data() {
     return {
-      colsHead: [{prop: 'roleName', label: '角色名'}, {prop: 'code', label: '编号'}, {prop: 'departmentName', label: '部门'},
+      colsHead: [{prop: 'roleName', label: '角色名'}, {prop: 'person', label: '人员名称'},{prop: 'code', label: '人员编号'}, {prop: 'departmentName', label: '部门'},
         {prop: 'riskLevel', label: '风险等级'}, {prop: 'status', label: '角色状态'}],
       userCodes: [],
       staffInfo:{},

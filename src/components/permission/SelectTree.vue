@@ -71,6 +71,9 @@ export default {
     value(val) {
       this.labelModel = this.queryTree(this.data, val)
     },
+    disabled(val){
+      this.disabled1 = val
+    }
   },
   data() {
     return {
@@ -121,7 +124,6 @@ export default {
 // 隐藏时触发
     onHidePopover() {
       this.showStatus = false
-      this.$emit('selected', this.valueModel)
     },
 // 树节点过滤方法
     filterNode(query, data) {

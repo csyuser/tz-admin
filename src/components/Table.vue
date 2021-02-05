@@ -43,6 +43,7 @@
             <span v-else-if="col.prop === 'createTime'">{{ formatTime(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'type'">{{ newsType(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'roleType'">{{ roleType(scope.row[col.prop]) }} </span>
+            <span v-if="col.prop === 'person'">{{ scope.row[col.prop].name }} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
