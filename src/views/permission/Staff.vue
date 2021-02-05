@@ -1,8 +1,14 @@
 <template>
   <div class="staff-wrap">
     <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
-      <el-form-item>
+      <el-form-item label="人员名称">
         <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
+      </el-form-item>
+      <el-form-item label="人员编码">
+        <el-input v-model="searchData.code" placeholder="输入编码" size="small"></el-input>
+      </el-form-item>
+      <el-form-item label="部门名称">
+        <el-input v-model="searchData['departmentName']" placeholder="输入部门" size="small"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search" size="small">查询</el-button>
@@ -172,6 +178,14 @@ export default {
 
     > .selectInput {
       width: 100px;
+    }
+    &::v-deep{
+      label{
+        padding-right: 0.5em;
+      }
+    }
+    .el-form-item{
+      margin-right: 1em;
     }
   }
 

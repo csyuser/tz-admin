@@ -3,7 +3,7 @@
     <el-tree ref="tree" class="select-tree" highlight-current :style="`min-width: ${treeWidth}`" :data="data"
              :props="props" :expand-on-click-node="false" :filter-node-method="filterNode" :default-expand-all="false"
              @node-click="onClickNode">
-    </el-tree>
+    </el-tree>{{labelModel}}
     <el-input slot="reference" ref="input" v-model="labelModel" clearable
               :style="`width: ${width}px`" :class="{ 'rotate': showStatus }" suffix-icon="el-icon-arrow-down"
               :placeholder="placeholder">
@@ -124,6 +124,7 @@ export default {
 // 隐藏时触发
     onHidePopover() {
       this.showStatus = false
+      this.$emit('selected', this.valueModel)
     },
 // 树节点过滤方法
     filterNode(query, data) {
