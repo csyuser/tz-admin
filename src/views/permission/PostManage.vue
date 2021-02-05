@@ -12,8 +12,9 @@
            @add="add" @update="update" @postSelect="selectPostRow"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" :width="dialogType==='add'?'650px':'970px'"
-               :before-close="handleClose" @closed="closedDialog">
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible"
+               :width="dialogType==='add'?'650px':'972px'" :top="dialogType==='add'?'15vh':'10vh'"
+               :before-close="handleClose" @closed="closedDialog" class="editDialog">
       <el-form label-position="right" label-width="80px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"
                :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
@@ -28,10 +29,14 @@
                       :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="岗位类型" prop="roleType">
-          <el-select v-model="editFormInfo['roleType']">
-            <el-option label="管理岗位" value="0"></el-option>
-            <el-option label="普通岗位" value="1"></el-option>
-          </el-select>
+<!--          <el-select v-model="editFormInfo['roleType']">-->
+<!--            <el-option label="管理岗位" value="0"></el-option>-->
+<!--            <el-option label="普通岗位" value="1"></el-option>-->
+<!--          </el-select>-->
+          <el-radio-group v-model="editFormInfo['roleType']">
+            <el-radio label="0">管理岗位</el-radio>
+            <el-radio label="1">普通岗位</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="岗位描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 3, maxRows: 3}"></el-input>
@@ -63,7 +68,6 @@
     </el-dialog>
   </div>
 </template>
-D
 <script>
 import Table from '@/components/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
@@ -90,7 +94,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.relatedName)
     this.getPages('/role/page')
     this.getDepartmentTree('/department/selectDepartmentTree')
     this.$store.commit('setBreadcrumb', [''])
@@ -183,6 +186,12 @@ export default {
   > .searchForm {
     > .selectInput {
       width: 100px;
+    }
+  }
+  .editDialog ::v-deep{
+    .el-dialog__body{
+      max-height: 650px;
+      overflow: auto;
     }
   }
 
