@@ -48,14 +48,14 @@
                        :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-select v-model="editFormInfo['sex']">
-            <el-option label="女" value="0"></el-option>
-            <el-option label="男" value="1"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px" class="SelectTree-item">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"/>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex" style="width: 310px">
+          <el-radio-group v-model="editFormInfo['sex']">
+            <el-radio label="0">女</el-radio>
+            <el-radio label="1">男</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
           <el-input v-model="editFormInfo.phone" suffix-icon="xxx"></el-input>
