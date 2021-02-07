@@ -38,10 +38,7 @@
           <el-input v-model="editFormInfo.regionName" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="选用标志" prop="selection">
-          <el-select v-model="editFormInfo.selection">
-            <el-option label="选用" value="1"></el-option>
-            <el-option label="禁用" value="0"></el-option>
-          </el-select>
+          <Radio v-model="editFormInfo.selection" :radio-list="radioList"></Radio>
         </el-form-item>
         <el-form-item label="描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
@@ -59,21 +56,22 @@
 </template>
 
 <script>
-// import Qs from 'qs'
 import Table from '@/components/Table'
 import DeleteRow from '@/components/permission/DeleteRow'
 import SelectTree from '@/components/permission/SelectTree'
+import Radio from '@/components/permission/dialog/Radio'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'Department',
-  components: {Table, DeleteRow,SelectTree},
+  components: {Table, DeleteRow,SelectTree,Radio},
   mixins:[mixins],
   data() {
     return {
       colsHead: [{prop: 'className', label: '部门分类'}, {prop: 'name', label: '部门名称'}, {prop: 'code', label: '部门编号'},
         {prop: 'level2Name', label: '部门级别'}, {prop: 'parentName', label: '上级部门'}, {prop: 'regionName', label: '行政区划'},
         {prop: 'selection', label: '选用标志'}, {prop: 'describe', label: '描述'}],
+      radioList:[{label:'1',name:'选用'},{label:'0',name:'禁用'}]
     }
   },
   mounted() {

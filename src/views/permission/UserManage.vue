@@ -65,10 +65,11 @@
           <!--            <el-option label="异地登录" value="1"></el-option>-->
           <!--            <el-option label="频繁登录" value="2"></el-option>-->
           <!--          </el-select>-->
-          <el-radio-group v-model="editFormInfo['riskLevel']">
-            <el-radio label="1"  @click.native.prevent="onRadioChange('1')">异地登录</el-radio>
-            <el-radio label="2" @click.native.prevent="onRadioChange('2')">频繁登录</el-radio>
-          </el-radio-group>
+<!--          <el-radio-group v-model="editFormInfo['riskLevel']">-->
+<!--            <el-radio label="1"  @click.native.prevent="onRadioChange('1')">异地登录</el-radio>-->
+<!--            <el-radio label="2" @click.native.prevent="onRadioChange('2')">频繁登录</el-radio>-->
+<!--          </el-radio-group>-->
+          <Radio v-model="editFormInfo['riskLevel']" :radio-list="radioList"></Radio>
         </el-form-item>
         <el-form-item label="角色说明" class="texArea">
           <el-input v-model="editFormInfo['remark']" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
@@ -110,11 +111,12 @@ import SelectTree from '@/components/permission/SelectTree'
 import Card from '@/components/permission/Card'
 import AuthorityListDialog from '@/components/permission/dialog/AuthorityListDialog'
 import IconListDialog from '@/components/permission/dialog/IconListDialog'
+import Radio from '@/components/permission/dialog/Radio'
 import {mixins} from '@/mixins/mixins'
 
 export default {
   name: 'userManage',
-  components: {Table, DeleteRow,SelectTree,Card,AuthorityListDialog,IconListDialog},
+  components: {Table, DeleteRow,SelectTree,Card,AuthorityListDialog,IconListDialog,Radio},
   mixins:[mixins],
   data() {
     return {
@@ -126,7 +128,8 @@ export default {
       cardCheckList:[],
       cardListHead: [{prop: 'name', label: '角色名称'},{prop: 'departmentName', label: '部门名称'}, {prop: 'status', label: '角色状态'},],
       permissionList:[],
-      prePwd:''
+      prePwd:'',
+      radioList:[{label:'1',name:'异地登录'},{label:'2',name:'频繁登录'}]
     }
   },
   watch:{
