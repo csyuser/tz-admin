@@ -165,7 +165,7 @@ export default {
         this.axios.get('/permission/selectPermissionByIds',{params:{permissionIds:this.permissionIds1.join(',')}})
             .then(res=>{
               if (res.data.code.toString() === '200'){
-                this.editFormInfo['permissionList'] = res.data.data
+                this.$set(this.editFormInfo,'permissionList',res.data.data)
                 this.editFormInfo['permissionIds'] = this.permissionIds
                 this.editFormInfo['teamIds'] = this.teamIds
               }
@@ -174,7 +174,7 @@ export default {
         this.axios.get('/user/selectUserByIds',{params:{userIds:this.relatedValue.join(',')}})
         .then(res=>{
           if (res.data.code.toString() === '200'){
-            this.editFormInfo['userList'] = res.data.data
+            this.$set(this.editFormInfo,'userList',res.data.data)
             this.editFormInfo['userIds'] = this.relatedValue
           }
         })

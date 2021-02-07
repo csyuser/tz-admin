@@ -51,31 +51,18 @@
             <el-option label="锁定" value="2"></el-option>
             <el-option label="注销" value="3"></el-option>
           </el-select>
-<!--          <el-radio-group v-model="editFormInfo['status']">-->
-<!--            <el-radio label="1"  @click.native.prevent="onRadioChange('1')">正常</el-radio>-->
-<!--            <el-radio label="2" @click.native.prevent="onRadioChange('2')">锁定</el-radio>-->
-<!--            <el-radio label="3" @click.native.prevent="onRadioChange('3')">注销</el-radio>-->
-<!--          </el-radio-group>-->
         </el-form-item>
         <el-form-item label="所属部门" prop="departmentId" style="height: 32px" class="SelectTree-item">
           <SelectTree v-model="editFormInfo.departmentId" :options="treeData" :props="defaultProps" :disabled="editDialogDisabled"></SelectTree>
         </el-form-item>
         <el-form-item label="风险等级">
-          <!--          <el-select v-model="editFormInfo.riskLevel">-->
-          <!--            <el-option label="异地登录" value="1"></el-option>-->
-          <!--            <el-option label="频繁登录" value="2"></el-option>-->
-          <!--          </el-select>-->
-<!--          <el-radio-group v-model="editFormInfo['riskLevel']">-->
-<!--            <el-radio label="1"  @click.native.prevent="onRadioChange('1')">异地登录</el-radio>-->
-<!--            <el-radio label="2" @click.native.prevent="onRadioChange('2')">频繁登录</el-radio>-->
-<!--          </el-radio-group>-->
           <Radio v-model="editFormInfo['riskLevel']" :radio-list="radioList"></Radio>
         </el-form-item>
         <el-form-item label="角色说明" class="texArea">
           <el-input v-model="editFormInfo['remark']" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
                   :role-no-admin-list="editFormInfo.roleNoAdminList"
                   :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
      <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="checkedId" :type="dialogType"
@@ -197,13 +184,24 @@ export default {
 //关联岗位
     relatedPost() {
       this.relatedName = 'post'
-      this.related('/user/selectUserAndRole','关联岗位', {userId: this.checkedId})
+      let id = this.dialogType==='add'?'':this.selectedRow[0] && this.selectedRow[0].id
+      this.related('/user/selectUserAndRole','关联岗位', {userId: id})
     },
-    confirmTransform() {this.confirmRelate('/role/saveUserRole', {
-      type: '0',
-      userIds: [this.checkedId],
-      roleIds: this.relatedValue
-    },{userId:this.checkedId},'/user/selectUserInfo')
+    confirmTransform() {
+      this.relatedDialogVisible = false
+    //   this.confirmRelate('/role/saveUserRole', {
+    //   type: '0',
+    //   userIds: [this.checkedId],
+    //   roleIds: this.relatedValue
+    // },{userId:this.checkedId},'/user/selectUserInfo')
+      this.axios.get('/role/selectRoleByIds',{params:{roleIds:this.relatedValue.join(',')}})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$set(this.editFormInfo,'roleAdminList',res.data.data)
+              this.editFormInfo['roleIds'] = this.relatedValue
+            }
+          })
+          .catch()
     },
 //获取用户详情
     getUserInfo(id){

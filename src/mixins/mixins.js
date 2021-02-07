@@ -173,6 +173,8 @@ export const mixins = {
       })
     },
     saveUser(saveUrl, pageUrl, editData) {
+      // let xxx = {...editData}
+      // console.log(xxx)
         this.axios.post(saveUrl, {...editData})
           .then(res => {
             if (res.data.code.toString() === '200') {
@@ -319,18 +321,26 @@ export const mixins = {
       this.relatedTitle = title
       this.relatedDialogVisible = true
     },
-    // confirmRelate(saveUrl, params, dialogInfoParams, dialogInfoUrl) {
-    //   this.relatedDialogVisible = false
-    //   this.axios.post(saveUrl, {
-    //     ...params
-    //   }).then(res => {
-    //     if (res.data.code.toString() === '200') {
-    //       this.$message.success('保存成功')
-    //       // this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
-    //     }
-    //   })
-    //     .catch()
-    // },
+    confirmRelate(selecUrl, params) {
+      // this.relatedDialogVisible = false
+      // this.axios.post(saveUrl, {
+      //   ...params
+      // }).then(res => {
+      //   if (res.data.code.toString() === '200') {
+      //     this.$message.success('保存成功')
+      //     // this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
+      //   }
+      // })
+      //   .catch()
+      this.axios.get(selecUrl,{params:{...params}})
+        .then(res=>{
+          if (res.data.code.toString() === '200'){
+            this.editFormInfo['userList'] = res.data.data
+            this.editFormInfo['roleIds'] = this.relatedValue
+          }
+        })
+        .catch()
+    },
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(() => {
