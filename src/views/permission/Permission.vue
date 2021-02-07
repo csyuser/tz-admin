@@ -8,7 +8,7 @@
         <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :allow-select="allowSelect" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow" class="table"
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow" class="table"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <template #simple>
         <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
@@ -57,7 +57,7 @@
         <el-form-item label="权限组名称" prop="teamName">
           <el-input v-model="editFormInfo['teamName']" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="相关权限">
+        <el-form-item label="相关权限" prop="permissionNameList">
           <el-input v-model="editFormInfo['permissionNameList']" suffix-icon="xxx" readonly @focus="openTree"></el-input>
         </el-form-item>
         <el-form-item label="权限描述" class="texArea">
@@ -125,7 +125,6 @@ export default {
         children: 'children',
         label: 'label'
       },
-      allowSelect:true,
     }
   },
   watch: {
@@ -161,13 +160,11 @@ export default {
       this.page = 1
       switch (this.activeName) {
         case 'first':
-          this.allowSelect = true
           this.colsHead = [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'},
             {prop: 'describe', label: '权限描述'}]
           this.getPages('/permission/page')
           break
         case 'second':
-          this.allowSelect = false
           this.colsHead = [{prop: 'teamName', label: '权限组名称'}, {prop: 'name', label: '权限名称'},
             {prop: 'describe', label: '权限描述'}]
           this.getPages('/team/page')
@@ -179,9 +176,7 @@ export default {
 //权限组选择权限树结构
     filterNode(value, data) {
       if (!value) return true
-      console.log('执行了')
-      console.log(data)
-      return data.label && data.label.indexOf(value) !== -1
+      return data && data.label && data.label.indexOf(value) !== -1
     },
     openTree() {
       this.selectPermission = true
@@ -193,7 +188,13 @@ export default {
           }).catch()
     },
     dialogOpened(){
-      this.permissionIds.length>=1 && this.$refs.tree.setCheckedKeys(this.permissionIds);
+      if(this.permissionIds.length){
+        this.$refs.tree.setCheckedKeys(this.permissionIds);
+        this.checkedPermission = this.$refs.tree.getCheckedNodes()
+      }else {
+        this.$refs.tree.setCheckedKeys([]);
+        this.checkedPermission = []
+      }
     },
     checkChange() {
       this.checkedPermission = this.$refs.tree.getCheckedNodes()
@@ -227,7 +228,7 @@ export default {
     },
     add() {
       this.permissionIds = []
-      this.dialogTitle = '新增权限'
+      this.dialogTitle = this.activeName === 'first'?'新增权限':'新增权限组'
       this.addRow()
     },
     update() {
@@ -250,7 +251,7 @@ export default {
           this.confirmEditRow('/permission/save', '/permission/page')
           break
         case 'second':
-          this.editFormInfo.permissionNameList = this.editFormInfo.permissionNameList.split(',')
+          this.editFormInfo.permissionNameList = this.editFormInfo.permissionNameList && this.editFormInfo.permissionNameList.split(',')
           this.confirmEditRow('/team/save', '/team/page')
           break
         default:

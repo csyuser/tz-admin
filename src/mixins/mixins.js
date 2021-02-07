@@ -67,7 +67,8 @@ export const mixins = {
         xzqhmc:[{required: true, message: '不能为空', trigger: 'blur'}],
         xybz:[{required: true, message: '选用标志必须', trigger: 'change'}],
         sjxzqhszDm:[{required: true, message: '上级行政区划数字代码不能为空', trigger: 'change'}],
-        roleType:[{required: true, message: '岗位类型必须', trigger: 'change'}]
+        roleType:[{required: true, message: '岗位类型必须', trigger: 'change'}],
+        permissionNameList:[{required: true, message: '相关权限不能为空', trigger: 'change'}]
       }
     }
   },
