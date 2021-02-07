@@ -319,18 +319,18 @@ export const mixins = {
       this.relatedTitle = title
       this.relatedDialogVisible = true
     },
-    confirmRelate(saveUrl, params, dialogInfoParams, dialogInfoUrl) {
-      this.relatedDialogVisible = false
-      this.axios.post(saveUrl, {
-        ...params
-      }).then(res => {
-        if (res.data.code.toString() === '200') {
-          this.$message.success('保存成功')
-          // this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
-        }
-      })
-        .catch()
-    },
+    // confirmRelate(saveUrl, params, dialogInfoParams, dialogInfoUrl) {
+    //   this.relatedDialogVisible = false
+    //   this.axios.post(saveUrl, {
+    //     ...params
+    //   }).then(res => {
+    //     if (res.data.code.toString() === '200') {
+    //       this.$message.success('保存成功')
+    //       // this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
+    //     }
+    //   })
+    //     .catch()
+    // },
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(() => {
