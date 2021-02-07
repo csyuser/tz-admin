@@ -2,13 +2,15 @@
   <div class="region-wrap">
     <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
       <el-form-item>
-        <el-select v-model="searchData['province']" placeholder="选择省份" clearable size="small" @change="provinceChange">
+        <el-select v-model="searchData['province']" filterable placeholder="选择省份" clearable size="small"
+                   @change="provinceChange">
           <el-option :label="item['xzqhmc']" :value="item['xzqhszDm']" v-for="item in provinceList"
                      :key="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="searchData['city']" placeholder="选择市级" clearable size="small" :disabled="!provinceSelected">
+        <el-select v-model="searchData['city']" filterable placeholder="选择市级" clearable size="small"
+                   :disabled="!provinceSelected">
           <el-option :label="item['xzqhmc']" :value="item['xzqhszDm']" v-for="item in cityList"
                      :key="item.id"></el-option>
         </el-select>
@@ -44,17 +46,22 @@
         <el-form-item label="行政区划罗马代码">
           <el-input v-model="editFormInfo.xzqhlmzmDm" suffix-icon="xxx"></el-input>
         </el-form-item>
+        <el-form-item label="上级行政区划名称" prop="sjxzqhszDm" v-if="editFormInfo.xzqhjc !== '1'">
+          <el-cascader v-model="editFormInfo.sjxzqhszDm" :props="cascaderProps" :options="test_options" @change="cascaderChange"
+                       v-if="isShowCascader" :show-all-levels="false" ref="cascaterNumber"></el-cascader>
+        </el-form-item>
+        <el-form-item label="上级行政区数字代码" v-if="editFormInfo.xzqhjc !== '1'">
+          <el-input v-model="editFormInfo.sjxzqhszDm" readonly suffix-icon="xxx"></el-input>
+        </el-form-item>
         <el-form-item label="行政区类型代码" prop="xzqhlxDm">
-          <el-select v-model="editFormInfo['xzqhlxDm']" placeholder="选择区划级次" clearable size="small">
-            <el-option label="行政区划" value="1"></el-option>
-            <el-option label="经济区划" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="上级行政区划名称">
-          <el-input v-model="editFormInfo.ssxzqmc" suffix-icon="xxx"></el-input>
-        </el-form-item>
-        <el-form-item label="上级行政区数字代码" prop="sjxzqhszDm" v-if="editFormInfo.xzqhjc !== '1'">
-          <el-cascader v-model="editFormInfo.sjxzqhszDm" :props="cascaderProps"  :options="test_options" v-if="isShowCascader"></el-cascader>
+          <!--          <el-select v-model="editFormInfo['xzqhlxDm']" placeholder="选择区划级次" clearable size="small">-->
+          <!--            <el-option label="行政区划" value="1"></el-option>-->
+          <!--            <el-option label="经济区划" value="2"></el-option>-->
+          <!--          </el-select>-->
+          <el-radio-group v-model="editFormInfo['xzqhlxDm']">
+            <el-radio label="1">行政区划</el-radio>
+            <el-radio label="2">经济区划</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="选用标志" prop="xybz">
           <el-switch v-model="editFormInfo['xybz']" active-color="#13ce66" inactive-color="#ff4949"
@@ -82,7 +89,7 @@ import Vue from 'vue'
 export default {
   name: 'Region',
   mixins: [mixins],
-  components: {Table,DeleteRow},
+  components: {Table, DeleteRow},
   data() {
     let that = this
     return {
@@ -92,26 +99,37 @@ export default {
       provinceList: [],
       cityList: [],
       provinceSelected: false,
-      isShowCascader:false,
+      isShowCascader: false,
       cascaderProps: {
         lazy: true,
-        expandTrigger:'hover',
+        expandTrigger: 'hover',
         checkStrictly: true,
         lazyLoad(node, resolve) {
           setTimeout(() => {
-            that.cascaderLazy(node,resolve)
+            that.cascaderLazy(node, resolve)
             that.isShowAddressInfo = true
           }, 10)
         }
       },
-      test_options:[]
+      test_options: []
+    }
+  },
+  watch: {
+    searchData: {
+      handler(newVal) {
+        if (newVal['province'] === '') {
+          this.provinceSelected = false
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   mounted() {
     this.getProvince()
   },
   methods: {
-    cascaderLazy(node,resolve){
+    cascaderLazy(node, resolve) {
       let nodes = []
       const {level} = node
       if (level === 0) {
@@ -189,10 +207,9 @@ export default {
       this.viewRow2(row, 'xzqhId', '/xzqh/selectXzqhInfo')
     },
     confirmEdit() {
-      console.log('确定编辑')
       let val = this.editFormInfo.sjxzqhszDm
-      let last = val instanceof Array?val && val[val.length - 1]:val
-      this.editFormInfo.sjxzqhszDm = this.editFormInfo.xzqhjc === '1'? '':last
+      let last = val instanceof Array ? val && val[val.length - 1] : val
+      this.editFormInfo.sjxzqhszDm = this.editFormInfo.xzqhjc === '1' ? '' : last
       let pageUrl = this.searchData.xzqhszDm && this.searchData.xzqhszDm !== '' ? '/xzqh/selectXzqhBySzdm' : ''
       this.confirmEditRow('/xzqh/save', pageUrl)
     },
@@ -202,6 +219,13 @@ export default {
     confirmDelete() {
       this.confirmDeleteRow('/xzqh/delete', '/xzqh/selectXzqhBySzdm')
     },
+    //选择上级数字代码填充上级名称
+    cascaderChange(val){
+      var end = val.slice(-1).toString();
+      this.$set(this.editFormInfo,'sjxzqhszDm',end)
+      let label = this.$refs.cascaterNumber.getCheckedNodes()[0].label
+      this.editFormInfo.ssxzqmc = label
+    }
   }
 }
 </script>
