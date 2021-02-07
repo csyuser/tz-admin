@@ -1,9 +1,10 @@
 <template>
-  <el-popover ref="popover" placement="bottom-start" trigger="click" @show="onShowPopover" @hide="onHidePopover" :disabled="disabled1">
+  <el-popover ref="popover" placement="bottom-start" trigger="click" @show="onShowPopover" @hide="onHidePopover"
+              :disabled="disabled1">
     <el-tree ref="tree" class="select-tree" highlight-current :style="`min-width: ${treeWidth}`" :data="data"
              :props="props" :expand-on-click-node="false" :filter-node-method="filterNode" :default-expand-all="false"
              @node-click="onClickNode">
-    </el-tree>{{labelModel}}
+    </el-tree>
     <el-input slot="reference" ref="input" v-model="labelModel" clearable
               :style="`width: ${width}px`" :class="{ 'rotate': showStatus }" suffix-icon="el-icon-arrow-down"
               :placeholder="placeholder">
@@ -41,7 +42,7 @@ export default {
         children: 'children',
       }),
     },
-    disabled:{
+    disabled: {
       type: Boolean,
     }
   },
@@ -70,8 +71,9 @@ export default {
     },
     value(val) {
       this.labelModel = this.queryTree(this.data, val)
+      this.valueModel = val
     },
-    disabled(val){
+    disabled(val) {
       this.disabled1 = val
     }
   },
@@ -85,7 +87,7 @@ export default {
       labelModel: '',
 // 实际请求传值
       valueModel: '0',
-      disabled1:false
+      disabled1: false
     }
   },
   mounted() {

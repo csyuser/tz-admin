@@ -137,7 +137,6 @@ export const mixins = {
       this.editDialogDisabled = false
       this.isShowCascader = true
       this.checkedId = this.getRowId()
-      console.log(this.checkedId)
       if (this.checkedId === '' || !this.checkedId) return
       let obj = {}
       obj[paramName] = this.checkedId
@@ -342,7 +341,6 @@ export const mixins = {
       this.$refs['editDialog'].resetFields()
       this.isShowCascader = false
       this.test_options = []
-      console.log(this.editFormInfo)
     }
   },
 }
