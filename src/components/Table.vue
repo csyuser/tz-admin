@@ -89,6 +89,7 @@ export default {
       type: Boolean,
       default: false
     },
+    allowSelect: {type: Boolean, default: true}
   },
   data() {
     return {
@@ -178,9 +179,14 @@ export default {
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkedOptions.length
     },
     selectTable(row) {
-      if(row.children && row.children.length > 0 || !row.parentName || row.parentName === null){
+      // return this.allowSelect
+      if(!this.allowSelect){
+        if(row.children && row.children.length > 0 || !row.parentName || row.parentName === null){
+          return true
+        }else {return false}
+      }else {
         return true
-      }else {return false}
+      }
     },
 
 //选中父元素，全选子元素

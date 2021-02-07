@@ -8,7 +8,7 @@
         <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow" class="table"
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow" class="table" :allow-select="false"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <template #simple>
         <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
