@@ -4,7 +4,7 @@
       <div class="title">
         <h3>{{ titleType }}信息</h3>
         <el-button size="small" class="update" type="primary" @click="$emit('update:relate',$event)"
-                   :disabled="type !=='update'" v-if="needBtn">
+                   :disabled="type ==='view'" v-if="needBtn">
           <!--          <SvgIcon icon-name="post"></SvgIcon>-->
           关联{{ titleType }}
         </el-button>

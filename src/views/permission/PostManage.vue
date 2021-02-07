@@ -12,8 +12,7 @@
            @add="add" @update="update" @postSelect="selectPostRow"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
     </Table>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible"
-               :width="dialogType==='add'?'650px':'972px'" :top="dialogType==='add'?'15vh':'10vh'"
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="972px" top="10vh"
                :before-close="handleClose" @closed="closedDialog" class="editDialog">
       <el-form label-position="right" label-width="80px" :inline="true" :model="editFormInfo" size="small"
                class="addForm"
@@ -38,10 +37,9 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 3, maxRows: 3}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedUser" v-if="dialogType !== 'add'"
+      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedUser"
                       :iconDataList="editFormInfo['userList']"></IconListDialog>
-      <AuthorityListDialog :table-datas1="editFormInfo.permissionList" v-if="dialogType!=='add'" :user-id="checkedId"
-                           need-btn
+      <AuthorityListDialog :table-datas1="editFormInfo.permissionList" :user-id="checkedId" need-btn
                            :type="dialogType" @update:relatePermission="relatedPermission"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取消</el-button>
@@ -152,13 +150,14 @@ export default {
       this.relatedName = 'permission'
       this.relatedDialogVisible = true
       this.relatedTitle = '关联权限'
-      // this.related('/role/selectRoleAndPermission','关联权限',{roleId:this.selectedRow[0] && this.selectedRow[0].id})
       this.relateUrl = '/role/selectRoleAndPermission'
-      this.params = {roleId: this.selectedRow[0] && this.selectedRow[0].id}
+      let id = this.dialogType==='add'?'':this.selectedRow[0] && this.selectedRow[0].id
+      this.params = {roleId: id}
     },
     relatedUser() {
       this.relatedName = 'user'
-      this.related('/role/selectRoleAndUser', '关联用户', {roleId: this.selectedRow[0] && this.selectedRow[0].id})
+      let id = this.dialogType==='add'?'':this.selectedRow[0] && this.selectedRow[0].id
+      this.related('/role/selectRoleAndUser', '关联用户', {roleId: id})
     },
     confirmTransform() {
       this.relatedDialogVisible = false

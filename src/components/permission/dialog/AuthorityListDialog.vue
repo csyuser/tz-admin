@@ -4,7 +4,7 @@
     <Table class="roleTable" :colsHead="colsHead" :tableDatas="tableDatas1" :needButton="false" :needPage="false" :need-select="false">
       <template #simple>
         <el-button size="small" class="update" type="primary" @click="$emit('update:relatePermission',$event)"
-                   :disabled="type !=='update'" v-if="needBtn">
+                   :disabled="type ==='view'" v-if="needBtn">
           <SvgIcon icon-name="permission"></SvgIcon>
           关联权限
         </el-button>
