@@ -30,7 +30,6 @@ export default {
   methods: {
     //规范fromData和toData
     getTransData(){
-      console.log('执行了')
       this.axios.get(this.url,{params:{...this.params}})
         .then(res=>{
           if (res.data.code.toString() === '200'){
@@ -64,7 +63,6 @@ export default {
         this.fromData = this.fromData.filter(data => data.id !== item.id)
       })
       this.$emit('update:relate',this.toData)
-      console.log(this.toData)
     },
     // 监听穿梭框组件移除
     remove(fromData, toData, obj) {
@@ -81,7 +79,6 @@ export default {
         this.toData = this.toData.filter(data => data.id !== item.id)
       })
       this.$emit('update:relate',this.toData)
-      console.log(this.toData)
     }
   },
 

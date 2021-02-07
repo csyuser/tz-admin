@@ -29,10 +29,6 @@
                       :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="岗位类型" prop="roleType">
-<!--          <el-select v-model="editFormInfo['roleType']">-->
-<!--            <el-option label="管理岗位" value="0"></el-option>-->
-<!--            <el-option label="普通岗位" value="1"></el-option>-->
-<!--          </el-select>-->
           <el-radio-group v-model="editFormInfo['roleType']">
             <el-radio label="0">管理岗位</el-radio>
             <el-radio label="1">普通岗位</el-radio>
@@ -91,9 +87,7 @@ export default {
       params: {},
       teamIds:[],
       permissionIds:[],
-      relatedUserIds:[],
-      relatedPermissionIds:[],
-      relatedTeamIds:[]
+      permissionIds1:[]
     }
   },
   mounted() {
@@ -118,16 +112,11 @@ export default {
       this.addRow()
     },
     update() {
-      this.relatedUserIds = []
-      this.relatedPermissionIds = []
       this.dialogTitle = '编辑岗位'
       this.updateRow2('roleId', '/role/selectRoleInfo')
     },
     confirmEdit() {
-      // let userIds = this.relatedUserIds.length>=1?this.relatedUserIds:this.editFormInfo.userIds
-      // let permissionIds = this.relatedPermissionIds.length>=1?this.relatedPermissionIds:this.editFormInfo.permissionList
-      // let teamIds = this.relatedTeamIds.length>=1?this.relatedTeamIds:this.editFormInfo.teamIds
-      // this.confirmEditRow('/role/save', '/role/page',{userIds: userIds,permissionIds:permissionIds,teamIds:teamIds})
+      this.confirmEditRow('/role/save', '/role/page')
     },
     view(row) {
       this.dialogTitle = '查看岗位信息'
@@ -143,11 +132,21 @@ export default {
     updateRelate(val){
       let arr = []
       let teamIds = []
+      let arr2 = []
       val.forEach(item=>{
-        item.children && item.children.length>=1?teamIds.push(item.id): arr.push(item.id)
+        if (item.children && item.children.length>=1){
+          teamIds.push(item.id)
+          item.children.forEach(child=>{
+            arr2.push(child.sign)
+          })
+        }else {
+          arr.push(item.id)
+          arr2.push(item.id)
+        }
       })
       this.permissionIds = arr
       this.teamIds = teamIds
+      this.permissionIds1 = arr2
     },
     relatedPermission() {
       this.relatedName = 'permission'
@@ -162,21 +161,14 @@ export default {
       this.related('/role/selectRoleAndUser', '关联用户', {roleId: this.selectedRow[0] && this.selectedRow[0].id})
     },
     confirmTransform() {
+      this.relatedDialogVisible = false
       if (this.relatedName === 'permission') {
-        // console.log(this.teamIds)
-        // console.log(this.permissionIds)
-        // this.confirmRelate('/permission-relation/saveTeamAndPermission', {
-        //   type: '0',
-        //   relationIds: [this.selectedRow[0].id],
-        //   permissionIds: this.permissionIds,
-        //   teamIds:this.teamIds,
-        //   relationType: '1'
-        // }, {roleId: this.checkedId}, '/role/selectRoleInfo')
-        this.axios.get('/user/selectUserByIds',{params:{userIds:this.relatedValue.join(',')}})
+        this.axios.get('/permission/selectPermissionByIds',{params:{permissionIds:this.permissionIds1.join(',')}})
             .then(res=>{
               if (res.data.code.toString() === '200'){
-                this.editFormInfo['userList'] = res.data.data
-                this.relatedUserIds = this.relatedValue
+                this.editFormInfo['permissionList'] = res.data.data
+                this.editFormInfo['permissionIds'] = this.permissionIds
+                this.editFormInfo['teamIds'] = this.teamIds
               }
             })
       } else if (this.relatedName === 'user') {
@@ -184,7 +176,7 @@ export default {
         .then(res=>{
           if (res.data.code.toString() === '200'){
             this.editFormInfo['userList'] = res.data.data
-            this.relatedUserIds = this.relatedValue
+            this.editFormInfo['userIds'] = this.relatedValue
           }
         })
         .catch()

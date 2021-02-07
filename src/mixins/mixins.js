@@ -143,7 +143,7 @@ export const mixins = {
       obj[paramName] = this.checkedId
       this.getDialogInfo({...obj}, url)
     },
-    confirmEditRow(saveUrl, pageUrl,relateData) {
+    confirmEditRow(saveUrl, pageUrl) {
       this.$refs.editDialog.validate((valid) => {
         if (valid) {
           this.editDialogVisible = false
@@ -161,10 +161,10 @@ export const mixins = {
                 cancelButtonText: '取消',
                 type: 'warning'
               }).then(() => {
-                this.saveUser(saveUrl, pageUrl, editData,relateData)
+                this.saveUser(saveUrl, pageUrl, editData)
               }).catch()
             } else {
-              this.saveUser(saveUrl, pageUrl, editData,relateData)
+              this.saveUser(saveUrl, pageUrl, editData)
             }
           }
         } else {
@@ -172,8 +172,8 @@ export const mixins = {
         }
       })
     },
-    saveUser(saveUrl, pageUrl, editData,relateData) {
-        this.axios.post(saveUrl, {...editData,...relateData})
+    saveUser(saveUrl, pageUrl, editData) {
+        this.axios.post(saveUrl, {...editData})
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.$message.success('保存成功')
