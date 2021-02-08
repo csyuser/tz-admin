@@ -24,7 +24,7 @@
                class="addForm" :disabled="editDialogDisabled" :rules="rules">
         <el-form-item label="功能类型" prop="menuType">
           <!--          <el-input v-model="editFormInfo.type" suffix-icon="xxx"></el-input>-->
-          <el-radio-group v-model="editFormInfo['menuType']" @change="radioChange">
+          <el-radio-group v-model="editFormInfo['menuType']">
             <el-radio label="0">一级菜单</el-radio>
             <el-radio label="1">页面菜单</el-radio>
             <el-radio label="2">页面功能</el-radio>
@@ -93,9 +93,17 @@ export default {
   mounted() {
     this.getPages('/menu/page')
   },
+  watch:{
+    editFormInfo: {
+      handler(newVal) {
+        this.menuTypeChange(newVal.menuType)
+      },
+      deep: true
+    }
+  },
   methods: {
-    radioChange() {
-      switch (this.editFormInfo.menuType) {
+    menuTypeChange(menuType) {
+      switch (menuType) {
         case '1':
           this.getMenu('/dropList/selectMenu')
           break
@@ -111,6 +119,10 @@ export default {
           .then(res => {
             if (res.data.code.toString() === '200') {
               this.parentMenus = res.data.data
+              if (this.editFormInfo.menuType === '2'){
+                let parentId = this.editFormInfo.parentId
+                this.$set(this.editFormInfo,'parentId',parentId)
+              }
             } else {this.parentMenus = []}
           })
           .catch()

@@ -136,7 +136,10 @@ export default {
           this.total = newVal.count
         } else if (newVal && newVal.length && newVal.length >= 1) {
           this.tableData = newVal
-        } else {this.tableData = []}
+        } else {
+          this.tableData = []
+          this.total = 0
+        }
         this.selectedRow = []
       },
       immediate: true,

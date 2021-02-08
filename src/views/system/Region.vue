@@ -10,7 +10,7 @@
       </el-form-item>
       <el-form-item>
         <el-select v-model="searchData['city']" filterable placeholder="选择市级" clearable size="small"
-                   :disabled="!provinceSelected">
+                   :disabled="!searchData['province']">
           <el-option :label="item['xzqhmc']" :value="item['xzqhszDm']" v-for="item in cityList"
                      :key="item.id"></el-option>
         </el-select>
@@ -98,7 +98,6 @@ export default {
       }, {prop: 'xzqhszDm', label: '本级次数字代码'}, {prop: 'sjxzqhszDm', label: '上级次数字代码'}],
       provinceList: [],
       cityList: [],
-      provinceSelected: false,
       isShowCascader: false,
       cascaderProps: {
         lazy: true,
@@ -112,17 +111,6 @@ export default {
         }
       },
       test_options: []
-    }
-  },
-  watch: {
-    searchData: {
-      handler(newVal) {
-        if (newVal['province'] === '') {
-          this.provinceSelected = false
-        }
-      },
-      deep: true,
-      immediate: true
     }
   },
   mounted() {
@@ -187,7 +175,6 @@ export default {
     },
     provinceChange(val) {
       this.getCity(val)
-      this.provinceSelected = true
       this.$set(this.searchData, 'city', '')
     },
 //行政区划增删改

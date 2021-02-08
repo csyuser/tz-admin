@@ -1,8 +1,15 @@
 <template>
   <div class="permission-wrap">
-    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm">
-      <el-form-item>
-        <el-input v-model="searchData.name" placeholder="输入名称" size="small"></el-input>
+    <el-form :inline="true" :model="searchData" class="demo-form-inline searchForm" size="small">
+      <el-form-item v-if="this.activeName!=='third'">
+        <el-input v-model="searchData.name" placeholder="输入名称"></el-input>
+      </el-form-item>
+      <el-form-item label="部门名称" :style="{height: '32px',marginTop:'1px'}" class="SelectTree-item"
+                    v-if="this.activeName==='third'">
+        <SelectTree v-model="searchData.departmentId" :options="treeData" :props="defaultProps" placeholder="选择部门"/>
+      </el-form-item>
+      <el-form-item label="岗位名称" v-if="this.activeName==='third'" >
+        <el-input v-model="searchData.roleId" placeholder="选择岗位" size="small" :disabled="!searchData.departmentId"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small" @click="search">查询</el-button>
@@ -15,6 +22,7 @@
         <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
           <el-tab-pane label="权限管理" name="first"></el-tab-pane>
           <el-tab-pane label="权限组管理" name="second"></el-tab-pane>
+          <el-tab-pane label="权限范围管理" name="third"></el-tab-pane>
         </el-tabs>
       </template>
     </Table>
@@ -24,15 +32,16 @@
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
         <el-form-item label="权限类型" prop="type">
           <el-radio-group v-model="editFormInfo['type']">
-            <el-radio :label="item['dropSort']" v-for="item in permissionTypeDrop" :key="item.id" @change="radioChange">
-              {{item['dropName']}}</el-radio>
+            <el-radio :label="item['dropSort']" v-for="item in permissionTypeDrop" :key="item.id">
+              {{ item['dropName'] }}
+            </el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="权限名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="依赖菜单" prop="menuId" style="height: 32px" class="SelectTree-item">
-          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" @selected="selectMenu"
+          <SelectTree v-model="editFormInfo.menuId" :options="allMenuTree" :props="defaultProps" @selected="selectMenu"
                       :disabled="editDialogDisabled"/>
         </el-form-item>
         <el-form-item label="依赖功能" prop="controlId" style="height: 32px" class="SelectTree-item"
@@ -151,8 +160,9 @@ export default {
         children: 'children',
         label: 'label'
       },
-      controlList:[],
-      fieldList:[]
+      controlList: [],
+      fieldList: [],
+      allMenuTree:[]
     }
   },
   watch: {
@@ -164,6 +174,10 @@ export default {
         if (newVal['permissionNameList'] instanceof Array) {
           newVal['permissionNameList'] = newVal['permissionNameList'] && newVal['permissionNameList'].join(',')
         }
+        if (newVal.type === '2' || newVal.type === '3') {
+          if (!newVal.menuId || newVal.menuId === '') return
+          this.typeChange()
+        }
       },
       deep: true
     }
@@ -173,11 +187,12 @@ export default {
     this.axios.get('/menu/selectAllMenuTree')
         .then(res => {
           if (res.data.code.toString() === '200') {
-            this.treeData = res.data.data
-          } else {this.treeData = []}
+            this.allMenuTree = res.data.data
+          } else {this.allMenuTree = []}
         })
         .catch()
     this.getDropList('4')
+    this.getDepartmentTree('/department/selectDepartmentTree')
   },
   methods: {
     currentChange(val, row) {
@@ -187,30 +202,25 @@ export default {
     selectMenu() {
       this.typeChange()
     },
-    radioChange(){
-      if (!this.editFormInfo.menuId ||this.editFormInfo.menuId==='') return
-      this.typeChange()
-    },
-    typeChange(){
+    typeChange() {
       switch (this.editFormInfo.type) {
         case '2':
-          this.getList('/menu/selectButtonMenuByParentId','2')
+          this.getList('/menu/selectButtonMenuByParentId', '2')
           break
         case '3':
-          this.getList('/system-field/selectFieldMenuByParentId','3')
+          this.getList('/system-field/selectFieldMenuByParentId', '3')
           break
         default:
           break
       }
     },
-    getList(url,type){
+    getList(url, type) {
       this.controlList = []
       this.fieldList = []
-      this.axios.get(url,{params:{parentId:this.editFormInfo.menuId}})
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
-              if (type==='2'){this.controlList = res.data.data}
-              else if (type === '3'){this.fieldList = res.data.data}
+      this.axios.get(url, {params: {parentId: this.editFormInfo.menuId}})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              if (type === '2') {this.controlList = res.data.data} else if (type === '3') {this.fieldList = res.data.data}
             }
           })
           .catch()
@@ -218,6 +228,7 @@ export default {
 //tab切换
     handleClick() {
       this.page = 1
+      this.tableDatas = {}
       switch (this.activeName) {
         case 'first':
           this.colsHead = [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'},
@@ -228,6 +239,13 @@ export default {
           this.colsHead = [{prop: 'teamName', label: '权限组名称'}, {prop: 'name', label: '权限名称'},
             {prop: 'describe', label: '权限描述'}]
           this.getPages('/team/page')
+          break
+        case 'third':
+          this.colsHead = [{prop: 'permissionName', label: '权限名称'}, {prop: 'roleName', label: '岗位名称'},
+            {prop: 'xzqhName', label: '行政区划范围'}, {prop: 'departmentName', label: '部门范围'},
+            {prop: 'describe', label: '权限描述'}]
+          // this.searchData = {departmentId:'',roleId:''}
+          // this.getPages('/permission-range/selectPermissionRange',)
           break
         default:
           break
@@ -281,6 +299,9 @@ export default {
           break
         case 'second':
           this.searchRow('/team/page')
+          break
+        case 'third':
+          this.searchRow('/permission-range/selectPermissionRange')
           break
         default:
           break
@@ -387,6 +408,30 @@ export default {
 <style scoped lang='scss'>
 .permission-wrap {
   padding: 20px;
+
+  > .searchForm {
+    position: relative;
+
+    > .selectInput {
+      width: 100px;
+    }
+
+    &::v-deep {
+      label {
+        padding-right: 0.5em;
+      }
+    }
+
+    .el-form-item {
+      margin-right: 1em;
+    }
+
+    > .SelectTree-item::v-deep {
+      .el-form-item__content {
+        height: 32px;
+      }
+    }
+  }
 
   .addForm {
     > .el-form-item {

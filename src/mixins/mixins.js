@@ -71,7 +71,6 @@ export const mixins = {
     }
   },
   mounted() {
-    console.log(this.$route.query.name)
     this.axios.get('/menu/selectButtonByMenuId',{params:{menuId:this.$route.query.name}})
       .then(res=>{
         if (res.data.code === '200'){
@@ -90,12 +89,13 @@ export const mixins = {
         })
         .catch()
     },
-    getPages(url,) {
+    getPages(url) {
       this.tableDatas = {}
       this.axios.get(url, {
         params: {
           page: this.page,
           pageSize: this.pageSize,
+          menuId:this.$route.query.name,
           ...this.searchData,
         },
       }).then(res => {
