@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     radioChange() {
-      switch (this.editFormInfo.type) {
+      switch (this.editFormInfo.menuType) {
         case '1':
           this.getMenu('/dropList/selectMenu')
           break
