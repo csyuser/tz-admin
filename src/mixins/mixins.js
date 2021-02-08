@@ -196,7 +196,7 @@ export const mixins = {
         })
       } else {info = row}
       this.dialogType = 'view'
-      this.editFormInfo = info
+      this.editFormInfo = JSON.parse(JSON.stringify(info))
       this.editFormInfo.sort = info.sort && parseInt(row.sort)
       this.editDialogVisible = true
       this.editDialogDisabled = true
