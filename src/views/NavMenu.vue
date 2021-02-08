@@ -15,7 +15,7 @@
             <SvgIcon :icon-name="lists.icon"></SvgIcon>
             <span>{{ lists.name }}</span>
           </template>
-          <el-menu-item v-for="list in lists.children" :key="list.id" :index="list.url">
+          <el-menu-item v-for="list in lists.children" :key="list.id" :index="list.url" :route="{ path: list.url, query: { name: list.id } }">
             {{ list.name }}
           </el-menu-item>
         </el-submenu>
@@ -75,7 +75,6 @@ export default {
     }
   },
   async mounted() {
-    console.log( '执行了')
     this.$store.commit('getUserInfo')
     this.$store.commit('fetch')
     this.nowBreadcrumb = this.$store.state.selectedMenu

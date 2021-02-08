@@ -74,6 +74,16 @@ export const mixins = {
       }
     }
   },
+  mounted() {
+    console.log(this.$route.query.name)
+    this.axios.get('/menu/selectButtonByMenuId',{params:{menuId:this.$route.query.name}})
+      .then(res=>{
+        if (res.data.code === '200'){
+          console.log(res)
+        }
+      })
+      .catch()
+  },
   methods: {
     getDepartmentTree(treeUrl) {
       this.axios.get(treeUrl)
