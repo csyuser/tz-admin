@@ -44,7 +44,7 @@
         <el-form-item label="依赖字段" prop="fieldId" style="height: 32px" class="SelectTree-item"
                       v-if="editFormInfo.menuId && editFormInfo.type ==='3'">
           <el-select v-model="editFormInfo.fieldId">
-            <el-option :label="item.fieldName" :value="item.id" v-for="item in fieldList" :key="item.id"></el-option>
+            <el-option :label="item['fieldName']" :value="item.id" v-for="item in fieldList" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否需要范围" prop="isNeededScope">
@@ -133,6 +133,14 @@ export default {
   data() {
     return {
       colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}],
+      rules: {
+        controlId: [{required: true, message: '依赖功能不能为空', trigger: 'change'}],
+        fieldId: [{required: true, message: '依赖字段不能为空', trigger: 'change'}],
+        menuId: [{required: true, message: '依赖菜单不能为空', trigger: 'change'}],
+        teamName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+        permissionNameList: [{required: true, message: '相关权限不能为空', trigger: 'change'}],
+        isNeededScope: [{required: true, message: '是否需要范围必须', trigger: 'change'}],
+      },
       activeName: 'first',
       permissionData: [],
       selectPermission: false,

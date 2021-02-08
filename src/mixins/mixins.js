@@ -59,10 +59,7 @@ export const mixins = {
         level2: [{required: true, message: '部门级别不能为空', trigger: 'change'}],
         selection: [{required: true, message: '选用标志不能为空', trigger: 'change'}],
         type: [{required: true, message: '类型不能为空', trigger: 'change'}],
-        menuId: [{required: true, message: '依赖菜单不能为空', trigger: 'change'}],
-        isNeededScope: [{required: true, message: '是否需要范围必须', trigger: 'change'}],
         userType: [{required: true, message: '角色类型不能为空', trigger: 'change'}],
-        teamName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
         xzqhszDm: [{pattern: /^\d*$/, required: true, message: '数字必须为数字值'}],
         xzqhjc: [{required: true, message: '不能为空', trigger: 'change'}],
         xzqhlxDm: [{required: true, message: '不能为空', trigger: 'change'}],
@@ -70,7 +67,6 @@ export const mixins = {
         xybz: [{required: true, message: '选用标志必须', trigger: 'change'}],
         sjxzqhszDm: [{required: true, message: '上级行政区划数字代码不能为空', trigger: 'change'}],
         roleType: [{required: true, message: '岗位类型必须', trigger: 'change'}],
-        permissionNameList: [{required: true, message: '相关权限不能为空', trigger: 'change'}],
       }
     }
   },
