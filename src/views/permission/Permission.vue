@@ -8,7 +8,8 @@
         <el-button type="primary" size="small" @click="search">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow" class="table" :allow-select="false"
+    <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
+           class="table" :allow-select="false"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <template #simple>
         <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
@@ -21,18 +22,30 @@
                v-if="activeName === 'first'" @closed="closedDialog">
       <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="权限类型" prop="type">
+          <el-radio-group v-model="editFormInfo['type']">
+            <el-radio :label="item['dropSort']" v-for="item in permissionTypeDrop" :key="item.id" @change="radioChange">
+              {{item['dropName']}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="权限名称" prop="name">
           <el-input v-model="editFormInfo.name" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="权限类型" prop="type">
-          <el-select v-model="editFormInfo.type">
-            <el-option :label="item['dropName']" :value="item['id']" v-for="item in permissionTypeDrop"
-                       :key="item.id"></el-option>
+        <el-form-item label="依赖菜单" prop="menuId" style="height: 32px" class="SelectTree-item">
+          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps" @selected="selectMenu"
+                      :disabled="editDialogDisabled"/>
+        </el-form-item>
+        <el-form-item label="依赖功能" prop="controlId" style="height: 32px" class="SelectTree-item"
+                      v-if="editFormInfo.menuId && editFormInfo.type ==='2'">
+          <el-select v-model="editFormInfo.controlId">
+            <el-option :label="item.name" :value="item.id" v-for="item in controlList" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="依赖菜单" prop="menuId" style="height: 32px" class="SelectTree-item">
-          <SelectTree v-model="editFormInfo.menuId" :options="treeData" :props="defaultProps"
-                      :disabled="editDialogDisabled"/>
+        <el-form-item label="依赖字段" prop="fieldId" style="height: 32px" class="SelectTree-item"
+                      v-if="editFormInfo.menuId && editFormInfo.type ==='3'">
+          <el-select v-model="editFormInfo.fieldId">
+            <el-option :label="item.fieldName" :value="item.id" v-for="item in fieldList" :key="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="是否需要范围" prop="isNeededScope">
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"
@@ -47,7 +60,8 @@
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmEdit">{{dialogType!=='view'?'确 定':'关 闭'}}</el-button>
+        <el-button type="primary" size="small"
+                   @click="confirmEdit">{{ dialogType !== 'view' ? '确 定' : '关 闭' }}</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="550px" :before-close="handleClose"
@@ -58,7 +72,8 @@
           <el-input v-model="editFormInfo['teamName']" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="相关权限" prop="permissionNameList">
-          <el-input v-model="editFormInfo['permissionNameList']" suffix-icon="xxx" readonly @focus="openTree"></el-input>
+          <el-input v-model="editFormInfo['permissionNameList']" suffix-icon="xxx" readonly
+                    @focus="openTree"></el-input>
         </el-form-item>
         <el-form-item label="权限描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
@@ -68,13 +83,15 @@
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirmEdit">{{dialogType!=='view'?'确 定':'关 闭'}}</el-button>
+        <el-button type="primary" size="small"
+                   @click="confirmEdit">{{ dialogType !== 'view' ? '确 定' : '关 闭' }}</el-button>
       </span>
     </el-dialog>
     <el-dialog title="删除权限" :visible.sync="deleteDialogVisible" width="650px" :before-close="handleClose">
       <DeleteRow @cancel="deleteDialogVisible = false" @confirm="confirmDelete"></DeleteRow>
     </el-dialog>
-    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body class="relatedDialog"
+    <el-dialog :title="relatedTitle" :visible.sync="relatedDialogVisible" width="700px" append-to-body
+               class="relatedDialog"
                :before-close="handleClose">
       <el-transfer
           filterable
@@ -88,7 +105,8 @@
         <el-button type="primary" size="small" @click="confirmTransform">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择权限" width="700px" append-to-body :before-close="handleClose" :visible="selectPermission" @opened="dialogOpened">
+    <el-dialog title="选择权限" width="700px" append-to-body :before-close="handleClose" :visible="selectPermission"
+               @opened="dialogOpened">
       <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
       <el-tree show-checkbox class="filter-tree" :data="permissionData" :props="defaultProps2" node-key="id"
                :filter-node-method="filterNode" ref="tree" @check="checkChange">
@@ -116,28 +134,30 @@ export default {
     return {
       colsHead: [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'}, {prop: 'describe', label: '权限描述'}],
       activeName: 'first',
-      permissionData:[],
+      permissionData: [],
       selectPermission: false,
       filterText: '',
       checkedPermission: [],
-      permissionIds:[],
+      permissionIds: [],
       defaultProps2: {
         children: 'children',
         label: 'label'
       },
+      controlList:[],
+      fieldList:[]
     }
   },
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val)
     },
-    editFormInfo:{
-      handler(newVal){
-        if (newVal['permissionNameList'] instanceof Array){
+    editFormInfo: {
+      handler(newVal) {
+        if (newVal['permissionNameList'] instanceof Array) {
           newVal['permissionNameList'] = newVal['permissionNameList'] && newVal['permissionNameList'].join(',')
         }
       },
-      deep:true
+      deep: true
     }
   },
   mounted() {
@@ -154,6 +174,38 @@ export default {
   methods: {
     currentChange(val, row) {
       this.currentPageChange(val, row, '/permission/page')
+    },
+//根据不同的上级菜单选择依赖功能和字段
+    selectMenu() {
+      this.typeChange()
+    },
+    radioChange(){
+      if (!this.editFormInfo.menuId ||this.editFormInfo.menuId==='') return
+      this.typeChange()
+    },
+    typeChange(){
+      switch (this.editFormInfo.type) {
+        case '2':
+          this.getList('/menu/selectButtonMenuByParentId','2')
+          break
+        case '3':
+          this.getList('/system-field/selectFieldMenuByParentId','3')
+          break
+        default:
+          break
+      }
+    },
+    getList(url,type){
+      this.controlList = []
+      this.fieldList = []
+      this.axios.get(url,{params:{parentId:this.editFormInfo.menuId}})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              if (type==='2'){this.controlList = res.data.data}
+              else if (type === '3'){this.fieldList = res.data.data}
+            }
+          })
+          .catch()
     },
 //tab切换
     handleClick() {
@@ -181,18 +233,18 @@ export default {
     openTree() {
       this.selectPermission = true
       this.axios.get('/permission/selectAll')
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
+          .then(res => {
+            if (res.data.code.toString() === '200') {
               this.permissionData = res.data.data
             }
           }).catch()
     },
-    dialogOpened(){
-      if(this.permissionIds.length){
-        this.$refs.tree.setCheckedKeys(this.permissionIds);
+    dialogOpened() {
+      if (this.permissionIds.length) {
+        this.$refs.tree.setCheckedKeys(this.permissionIds)
         this.checkedPermission = this.$refs.tree.getCheckedNodes()
-      }else {
-        this.$refs.tree.setCheckedKeys([]);
+      } else {
+        this.$refs.tree.setCheckedKeys([])
         this.checkedPermission = []
       }
     },
@@ -203,12 +255,12 @@ export default {
       this.selectPermission = false
       let labels = []
       let ids = []
-      this.checkedPermission.forEach(item=>{
+      this.checkedPermission.forEach(item => {
         ids.push(item.id)
         labels.push(item.label)
       })
       this.permissionIds = ids
-      this.$set(this.editFormInfo, 'permissionNameList',  labels)
+      this.$set(this.editFormInfo, 'permissionNameList', labels)
     },
 //表格增删改查
     selectRow(val) {
@@ -228,7 +280,7 @@ export default {
     },
     add() {
       this.permissionIds = []
-      this.dialogTitle = this.activeName === 'first'?'新增权限':'新增权限组'
+      this.dialogTitle = this.activeName === 'first' ? '新增权限' : '新增权限组'
       this.addRow()
       this.editFormInfo.isNeededScope = '0'
     },
@@ -236,11 +288,11 @@ export default {
       switch (this.activeName) {
         case 'first':
           this.dialogTitle = '编辑权限'
-          this.updateRow2("permissionId",'/permission/selectPermissionInfo')
+          this.updateRow2('permissionId', '/permission/selectPermissionInfo')
           break
         case 'second':
           this.dialogTitle = '编辑权限组'
-          this.updateRow2("teamId",'/team/selectTeamInfo')
+          this.updateRow2('teamId', '/team/selectTeamInfo')
           break
         default:
           break
@@ -263,11 +315,11 @@ export default {
       switch (this.activeName) {
         case 'first':
           this.dialogTitle = '查看权限信息'
-          this.viewRow2(row,"permissionId",'/permission/selectPermissionInfo')
+          this.viewRow2(row, 'permissionId', '/permission/selectPermissionInfo')
           break
         case 'second':
           this.dialogTitle = '查看权限组信息'
-          this.viewRow2(row,"teamId",'/team/selectTeamInfo')
+          this.viewRow2(row, 'teamId', '/team/selectTeamInfo')
           break
         default:
           break
@@ -291,7 +343,7 @@ export default {
 //关联权限范围，岗位，小组
     relatedPost() {
       this.relatedName = 'post'
-      let id = this.dialogType==='add'?'':this.selectedRow[0] && this.selectedRow[0].id
+      let id = this.dialogType === 'add' ? '' : this.selectedRow[0] && this.selectedRow[0].id
       let type
       switch (this.activeName) {
         case 'first':
@@ -305,15 +357,15 @@ export default {
       }
       this.related('/permission-relation/selectPermissionAndRole', '关联岗位', {
         permissionId: id,
-        type:type
+        type: type
       })
     },
     confirmTransform() {
       this.relatedDialogVisible = false
-      this.axios.get('/role/selectRoleByIds',{params:{roleIds:this.relatedValue.join(',')}})
-          .then(res=>{
-            if (res.data.code.toString() === '200'){
-              this.$set(this.editFormInfo,'roleList',res.data.data)
+      this.axios.get('/role/selectRoleByIds', {params: {roleIds: this.relatedValue.join(',')}})
+          .then(res => {
+            if (res.data.code.toString() === '200') {
+              this.$set(this.editFormInfo, 'roleList', res.data.data)
               this.editFormInfo['roleIds'] = this.relatedValue
             }
           })
@@ -378,19 +430,23 @@ export default {
     }
   }
 }
-.relatedDialog::v-deep{
-  .el-transfer{
+
+.relatedDialog::v-deep {
+  .el-transfer {
     display: flex;
     align-items: center;
     justify-content: center;
   }
+
   .el-transfer-panel__body {
     height: 350px;
   }
+
   .el-transfer-panel__list.is-filterable {
     height: 298px;
   }
-  .el-transfer-panel{
+
+  .el-transfer-panel {
     width: 239px;
   }
 }
