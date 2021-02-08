@@ -12,7 +12,9 @@ export const mixins = {
       editDialogDisabled: false,
       deleteDialogVisible: false,
       selectedRow: [],
-      editFormInfo: {type: [],},
+      editFormInfo: {
+        type: [],
+      },
       searchData: {},
       defaultProps: {
         children: 'children',
@@ -304,41 +306,28 @@ export const mixins = {
     },
 //关联功能
     related(treeUrl, title, params) {
-      // if (this.selectedRow.length !== 1) {
-      //   this.$message.error('请选择一行数据')
-      //   return
-      // }
       this.axios.get(treeUrl, {
         params: {...params}
       }).then(res => {
         if (res.data.code.toString() === '200') {
           this.transformData = res.data.data['allList']
           this.relatedValue = res.data.data['checkList']
-          // this.relatedUserIds = res.data.data['checkList']
         }
       })
         .catch()
       this.relatedTitle = title
       this.relatedDialogVisible = true
     },
-    confirmRelate(selecUrl, params) {
-      // this.relatedDialogVisible = false
-      // this.axios.post(saveUrl, {
-      //   ...params
-      // }).then(res => {
-      //   if (res.data.code.toString() === '200') {
-      //     this.$message.success('保存成功')
-      //     // this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
-      //   }
-      // })
-      //   .catch()
-      this.axios.get(selecUrl,{params:{...params}})
-        .then(res=>{
-          if (res.data.code.toString() === '200'){
-            this.editFormInfo['userList'] = res.data.data
-            this.editFormInfo['roleIds'] = this.relatedValue
-          }
-        })
+    confirmRelate(saveUrl, params) {
+      this.relatedDialogVisible = false
+      this.axios.post(saveUrl, {
+        ...params
+      }).then(res => {
+        if (res.data.code.toString() === '200') {
+          this.$message.success('保存成功')
+          // this.getDialogInfo(dialogInfoParams, dialogInfoUrl)
+        }
+      })
         .catch()
     },
     handleClose(done) {

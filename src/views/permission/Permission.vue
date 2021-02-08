@@ -43,7 +43,7 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
@@ -64,7 +64,7 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" v-if="dialogType !== 'add'"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
@@ -230,6 +230,7 @@ export default {
       this.permissionIds = []
       this.dialogTitle = this.activeName === 'first'?'新增权限':'新增权限组'
       this.addRow()
+      this.editFormInfo.isNeededScope = '0'
     },
     update() {
       switch (this.activeName) {
@@ -290,6 +291,7 @@ export default {
 //关联权限范围，岗位，小组
     relatedPost() {
       this.relatedName = 'post'
+      let id = this.dialogType==='add'?'':this.selectedRow[0] && this.selectedRow[0].id
       let type
       switch (this.activeName) {
         case 'first':
@@ -302,34 +304,19 @@ export default {
           break
       }
       this.related('/permission-relation/selectPermissionAndRole', '关联岗位', {
-        permissionId: this.selectedRow[0] && this.selectedRow[0].id,
+        permissionId: id,
         type:type
       })
     },
     confirmTransform() {
-      let dialogUrl = ''
-      let dialogParams = ''
-      let relationType
-      switch (this.activeName) {
-        case 'first':
-          dialogUrl = '/permission/selectPermissionInfo'
-          dialogParams = {permissionId: this.selectedRow[0] && this.selectedRow[0].id}
-          relationType = '1'
-          break
-        case 'second':
-          relationType = '2'
-          dialogUrl = '/team/selectTeamInfo'
-          dialogParams = {teamId: this.selectedRow[0] && this.selectedRow[0].id}
-          break
-        default:
-          break
-      }
-      this.confirmRelate('/permission-relation/saveTeamAndPermission', {
-        type: '1',
-        permissionIds: [this.selectedRow[0].id],
-        relationIds: this.relatedValue,
-        relationType: relationType
-      },dialogParams,dialogUrl)
+      this.relatedDialogVisible = false
+      this.axios.get('/role/selectRoleByIds',{params:{roleIds:this.relatedValue.join(',')}})
+          .then(res=>{
+            if (res.data.code.toString() === '200'){
+              this.$set(this.editFormInfo,'roleList',res.data.data)
+              this.editFormInfo['roleIds'] = this.relatedValue
+            }
+          })
     },
   },
 

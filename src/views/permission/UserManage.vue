@@ -189,11 +189,6 @@ export default {
     },
     confirmTransform() {
       this.relatedDialogVisible = false
-    //   this.confirmRelate('/role/saveUserRole', {
-    //   type: '0',
-    //   userIds: [this.checkedId],
-    //   roleIds: this.relatedValue
-    // },{userId:this.checkedId},'/user/selectUserInfo')
       this.axios.get('/role/selectRoleByIds',{params:{roleIds:this.relatedValue.join(',')}})
           .then(res=>{
             if (res.data.code.toString() === '200'){
