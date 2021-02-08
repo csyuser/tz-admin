@@ -44,6 +44,7 @@
             <span v-else-if="col.prop === 'type'">{{ newsType(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'roleType'">{{ roleType(scope.row[col.prop]) }} </span>
             <span v-else-if="col.prop === 'person'">{{ scope.row[col.prop].name }} </span>
+            <span v-else-if="col.prop === 'menuType'">{{ menuType(scope.row[col.prop])}} </span>
             <span v-else>{{ scope.row[col.prop] }} </span>
           </template>
         </el-table-column>
@@ -338,6 +339,9 @@ export default {
     roleType(val) {
       return helper.roleType(val)
     },
+    menuType(val){
+      return helper.menuType(val)
+    }
     //切换type时对话框确认
 //     changeType(row) {
 //       this.$confirm(`此操作将${!row ? '开启' : '关闭'}验证, 是否继续？`, '提示', {

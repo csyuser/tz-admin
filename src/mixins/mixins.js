@@ -62,15 +62,15 @@ export const mixins = {
         menuId: [{required: true, message: '依赖菜单不能为空', trigger: 'change'}],
         isNeededScope: [{required: true, message: '是否需要范围必须', trigger: 'change'}],
         userType: [{required: true, message: '角色类型不能为空', trigger: 'change'}],
-        teamName:[{required: true, message: '名称不能为空', trigger: 'blur'}],
-        xzqhszDm:[{pattern: /^\d*$/, required: true, message: '数字必须为数字值'}],
-        xzqhjc:[{required: true, message: '不能为空', trigger: 'change'}],
-        xzqhlxDm:[{required: true, message: '不能为空', trigger: 'change'}],
-        xzqhmc:[{required: true, message: '不能为空', trigger: 'blur'}],
-        xybz:[{required: true, message: '选用标志必须', trigger: 'change'}],
-        sjxzqhszDm:[{required: true, message: '上级行政区划数字代码不能为空', trigger: 'change'}],
-        roleType:[{required: true, message: '岗位类型必须', trigger: 'change'}],
-        permissionNameList:[{required: true, message: '相关权限不能为空', trigger: 'change'}]
+        teamName: [{required: true, message: '名称不能为空', trigger: 'blur'}],
+        xzqhszDm: [{pattern: /^\d*$/, required: true, message: '数字必须为数字值'}],
+        xzqhjc: [{required: true, message: '不能为空', trigger: 'change'}],
+        xzqhlxDm: [{required: true, message: '不能为空', trigger: 'change'}],
+        xzqhmc: [{required: true, message: '不能为空', trigger: 'blur'}],
+        xybz: [{required: true, message: '选用标志必须', trigger: 'change'}],
+        sjxzqhszDm: [{required: true, message: '上级行政区划数字代码不能为空', trigger: 'change'}],
+        roleType: [{required: true, message: '岗位类型必须', trigger: 'change'}],
+        permissionNameList: [{required: true, message: '相关权限不能为空', trigger: 'change'}],
       }
     }
   },
@@ -177,16 +177,16 @@ export const mixins = {
     saveUser(saveUrl, pageUrl, editData) {
       // let xxx = {...editData}
       // console.log(xxx)
-        this.axios.post(saveUrl, {...editData})
-          .then(res => {
-            if (res.data.code.toString() === '200') {
-              this.$message.success('保存成功')
-              if (pageUrl){
-                this.getPages(pageUrl)
-              }
+      this.axios.post(saveUrl, {...editData})
+        .then(res => {
+          if (res.data.code.toString() === '200') {
+            this.$message.success('保存成功')
+            if (pageUrl) {
+              this.getPages(pageUrl)
             }
-          })
-          .catch()
+          }
+        })
+        .catch()
     },
     viewRow(row, cardId) {
       let info
@@ -201,22 +201,22 @@ export const mixins = {
       this.editDialogVisible = true
       this.editDialogDisabled = true
     },
-    viewRow2(row,paramName,url) {
+    viewRow2(row, paramName, url) {
       this.dialogType = 'view'
       this.editDialogVisible = true
       this.editDialogDisabled = true
       this.isShowCascader = true
       let id
-      if (this.isCard){
+      if (this.isCard) {
         id = this.cardCheckList[0]
-      }else if (row.parentId){
+      } else if (row.parentId) {
         id = row.parentId
-      }else {
+      } else {
         id = row.id
       }
       let obj = {}
       obj[paramName] = id
-      this.getDialogInfo({...obj},url)
+      this.getDialogInfo({...obj}, url)
     },
     deleteRow() {
       this.deleteIds = this.getDeleteIds()
@@ -285,8 +285,8 @@ export const mixins = {
           this.permissionList = res.data.data['permissionList']
           this.prePwd = res.data.data.password
           this.permissionIds = res.data.data.permissionIds
-          if (this.editFormInfo.sjxzqhszDm){
-            this.test_options = [{value: this.editFormInfo.sjxzqhszDm, label: this.editFormInfo.ssxzqmc,leaf: true}]
+          if (this.editFormInfo.sjxzqhszDm) {
+            this.test_options = [{value: this.editFormInfo.sjxzqhszDm, label: this.editFormInfo.ssxzqmc, leaf: true}]
           }
         }
       })

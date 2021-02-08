@@ -20,6 +20,9 @@ const helper = {
   },
   roleType(val){
     if (val === '1') {return '普通岗位'} else if (val === '0') {return '管理岗位'}
+  },
+  menuType(val){
+    if (val === '0') {return '一级菜单'} else if (val === '1') {return '页面菜单'}else if (val === '2') {return '页面功能'}
   }
 }
 
