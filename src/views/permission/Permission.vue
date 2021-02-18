@@ -16,7 +16,7 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
-           class="table" :allow-select="false"
+           class="table" :allow-select="false" :button-list="buttonList"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <template #simple>
         <el-tabs v-model="activeName" @tab-click="handleClick" class="tab">
@@ -60,6 +60,7 @@
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"
                      active-value="1" inactive-value="0">
           </el-switch>
+
         </el-form-item>
         <el-form-item label="权限描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>

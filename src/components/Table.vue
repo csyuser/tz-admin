@@ -1,11 +1,14 @@
 <template>
   <div class="table-wrap">
     <div class="buttons" v-if="needButton">
-      <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增
-      </el-button>
-      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑
-      </el-button>
-      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除
+<!--      <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增-->
+<!--      </el-button>-->
+<!--      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑-->
+<!--      </el-button>-->
+<!--      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除-->
+<!--      </el-button>-->
+      <el-button size="small" :type="button.buttonId === 'add'?'primary':''" v-for="button in buttonList" :key="button.buttonId" @click="$emit(`${button.buttonId}`,$event)">
+        <i :class="`el-icon-${getIconName(button.buttonId)} icon`"></i>{{ button.name }}
       </el-button>
       <slot></slot>
       <el-popover placement="bottom" trigger="click" class="popover-button" v-if="!isCard">
@@ -90,7 +93,8 @@ export default {
       type: Boolean,
       default: false
     },
-    allowSelect: {type: Boolean, default: true}
+    allowSelect: {type: Boolean, default: true},
+    buttonList:{type:Array},
   },
   data() {
     return {
@@ -105,6 +109,7 @@ export default {
       selectedRow: [],
       children: [],
       expand: [],
+      iconName:'',
     }
   },
   mounted() {
@@ -158,6 +163,11 @@ export default {
     }
   },
   methods: {
+    getIconName(buttonId){
+      if (buttonId === 'add'){return 'plus'}
+      else if (buttonId === 'update'){return 'edit'}
+      else if (buttonId === 'delete'){return 'delete'}
+    },
     expandChange(row, type) {
       let isContains = false
       this.expand.forEach((item, index) => {

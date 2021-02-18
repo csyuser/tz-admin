@@ -37,6 +37,7 @@ export const mixins = {
       filterMethod(query, item) {
         return item.label && item.label.indexOf(query) > -1
       },
+      buttonList:[],
       rules: {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
         code: [{required: true, message: '编码不能为空', trigger: 'change'}],
@@ -71,10 +72,12 @@ export const mixins = {
     }
   },
   mounted() {
+//获取页面button
     this.axios.get('/menu/selectButtonByMenuId',{params:{menuId:this.$route.query.name}})
       .then(res=>{
-        if (res.data.code === '200'){
-          console.log(res)
+        if (res.data.code.toString() === '200'){
+          this.buttonList = res.data.data.buttonList
+          console.log(this.buttonList)
         }
       })
       .catch()
@@ -347,6 +350,6 @@ export const mixins = {
       this.$refs['editDialog'].resetFields()
       this.isShowCascader = false
       this.test_options = []
-    }
+    },
   },
 }
