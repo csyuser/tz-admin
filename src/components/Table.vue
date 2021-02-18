@@ -52,7 +52,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="(tableName !== 'menu' && needPage)"
+      <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="(tableName !== 'menu' && needPage && hasCol)"
                      :current-page="page"
                      :page-size="pageSize"
                      layout="total, prev, pager, next"
@@ -108,6 +108,7 @@ export default {
       selectedRow: [],
       children: [],
       expand: [],
+      hasCol:false,
     }
   },
   mounted() {
@@ -137,9 +138,11 @@ export default {
         if (newVal && newVal.data) {
           this.tableData = newVal.data
           this.total = newVal.count*1
+          this.hasCol = true
         } else if (newVal && newVal.length && newVal.length >= 1) {
           this.tableData = newVal
         } else {
+          this.hasCol = false
           this.tableData = []
         }
         this.selectedRow = []
