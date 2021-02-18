@@ -2,11 +2,11 @@
   <div class="post-dialog-wrap">
     <div class="role">
       <div class="title">
-        <h3>{{ titleType }}信息</h3>
+        <h3>{{getButtonName(titleType)}}信息</h3>
         <el-button size="small" class="update" type="primary" @click="$emit('update:relate',$event)"
-                   :disabled="type ==='view'" v-if="needBtn">
+                   :disabled="type ==='view'" v-if="needBtn && titleType">
           <!--          <SvgIcon icon-name="post"></SvgIcon>-->
-          关联{{ titleType }}
+          关联{{ getButtonName(titleType) }}
         </el-button>
       </div>
       <ul>
@@ -41,6 +41,13 @@ export default {
     titleType: {type: String},
     needBtn: {type: Boolean, default: true}
   },
+  methods:{
+    getButtonName(name){
+      let index=name.lastIndexOf("-");
+      name=name.substring(index+1,name.length);
+      return name;
+    },
+  }
 }
 </script>
 

@@ -38,6 +38,7 @@ export const mixins = {
         return item.label && item.label.indexOf(query) > -1
       },
       buttonList: [],
+      dialogButtonMap: {},
       tabId: '',
       rules: {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
@@ -119,9 +120,14 @@ export const mixins = {
         .then(res => {
           if (res.data.code.toString() === '200') {
             this.buttonList = res.data.data.buttonList
+            this.dialogButtonMap = res.data.data.dialogButtonMap
           }
         })
         .catch()
+    },
+//是否显示弹窗按钮
+    showDialogBtn(title){
+     return  !!this.dialogButtonMap[title]
     },
 //表格增删改查
     selectedRows(val) {

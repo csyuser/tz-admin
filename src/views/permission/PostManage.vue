@@ -37,9 +37,9 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 3, maxRows: 3}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="角色" @update:relate="relatedUser"
+      <IconListDialog :type="dialogType" title-type="角色" :needBtn="showDialogBtn('relateRole')" @update:relate="relatedUser"
                       :iconDataList="editFormInfo['userList']"></IconListDialog>
-      <AuthorityListDialog :table-datas1="editFormInfo.permissionList" :user-id="checkedId" need-btn
+      <AuthorityListDialog :table-datas1="editFormInfo.permissionList" :user-id="checkedId" :need-btn="showDialogBtn('relatePermission')" ButtonTitle="关联岗位"
                            :type="dialogType" @update:relatePermission="relatedPermission"></AuthorityListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取消</el-button>
