@@ -63,7 +63,7 @@
         </el-form-item>
       </el-form>
       <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
-                  :role-no-admin-list="editFormInfo.roleNoAdminList"
+                  :role-no-admin-list="editFormInfo.roleNoAdminList" :needBtn="showDialogBtn('relatePost')"
                   :role-admin-list="editFormInfo.roleAdminList"></IconListDialog>
      <AuthorityListDialog :table-datas1="permissionList" v-if="dialogType!=='add'" :user-id="checkedId" :type="dialogType"
                           @update:dialogInfo="updateDialogInfo"></AuthorityListDialog>
