@@ -18,7 +18,7 @@
            @postSelect="selectRow" :button-list="buttonList"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="viewPost"></Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose"
-               @closed="closedDialog">
+               @closed="closedDialog" class="addForm">
       <el-form label-position="right" label-width="80px" ref="editDialog" :inline="true" :model="editFormInfo"
                size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules">
@@ -36,11 +36,14 @@
         <el-form-item label="英文字段" prop="buttonId" v-if="editFormInfo['menuType'] && editFormInfo['menuType'] === '2'">
           <el-input v-model="editFormInfo['buttonId']" suffix-icon="xxx"></el-input>
         </el-form-item>
+        <el-form-item label="Tab页Id" v-if="editFormInfo['menuType'] && editFormInfo['menuType'] === '2'">
+          <el-input v-model="editFormInfo['tabId']" suffix-icon="xxx"></el-input>
+        </el-form-item>
         <el-form-item label="排序" prop="sort" :rules="{ required: true, type: 'number', message: '排序必须为数字值'}"
                       v-if="editFormInfo['menuType'] && editFormInfo['menuType'] !== '2'">
           <el-input v-model.number="editFormInfo.sort" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="上级菜单" class="departmentItem" prop="parentId"
+        <el-form-item label="上级菜单" class="departmentItem SelectTree-item" prop="parentId"
                       v-if="editFormInfo['menuType'] && editFormInfo['menuType'] !== '0'">
           <el-select v-model="editFormInfo.parentId" v-if="editFormInfo['menuType'] === '1'">
             <el-option :label="parentMenu.name" :value="parentMenu.id" v-for="parentMenu in parentMenus"
@@ -54,6 +57,11 @@
         </el-form-item>
         <el-form-item label="图标名称" v-if="editFormInfo['menuType'] && editFormInfo['menuType'] !== '1'">
           <el-input v-model="editFormInfo.icon" suffix-icon="xxx"></el-input>
+        </el-form-item>
+        <el-form-item label="弹窗按钮" prop="isDialog" v-if="editFormInfo['menuType'] && editFormInfo['menuType'] === '2'">
+          <el-switch v-model="editFormInfo['isDialog']" active-color="#13ce66" inactive-color="#ff4949"
+                     active-value="1" inactive-value="0">
+          </el-switch>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -85,7 +93,8 @@ export default {
       rules: {
         parentId: [{required: true, message: '上级菜单不能为空', trigger: 'change'}],
         buttonId: [{required: true, message: '英文字段不能为空', trigger: 'blur'}],
-        menuType:[{required: true, message: '菜单类型不能为空', trigger: 'change'}]
+        menuType:[{required: true, message: '菜单类型不能为空', trigger: 'change'}],
+        isDialog: [{required: true, message: '是否弹窗按钮必须', trigger: 'change'}],
       },
       parentMenus: [],
     }
@@ -167,6 +176,17 @@ export default {
 .menu-manege-wrap {
   padding: 20px;
 
+  .addForm {
+    > .el-form-item {
+      margin-bottom: 18px;
+    }
+
+    > .SelectTree-item::v-deep {
+      .el-form-item__content {
+        height: 32px;
+      }
+    }
+  }
   > .searchForm {
     > .selectInput {
       width: 150px;

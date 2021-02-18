@@ -6,10 +6,14 @@
       </el-form-item>
       <el-form-item label="部门名称" :style="{height: '32px',marginTop:'1px'}" class="SelectTree-item"
                     v-if="this.activeName==='third'">
-        <SelectTree v-model="searchData.departmentId" :options="treeData" :props="defaultProps" placeholder="选择部门"/>
+        <SelectTree v-model="searchData.departmentId" :options="treeData" :props="defaultProps" placeholder="选择部门"
+                    @selected="selectDepartment"/>
       </el-form-item>
-      <el-form-item label="岗位名称" v-if="this.activeName==='third'" >
-        <el-input v-model="searchData.roleId" placeholder="选择岗位" size="small" :disabled="!searchData.departmentId"></el-input>
+      <el-form-item label="岗位名称" v-if="this.activeName==='third'">
+        <el-select v-model="searchData.roleId" placeholder="选择岗位" size="small" :disabled="!searchData.departmentId">
+          <el-option :label="item.name" :value="item['id']" v-for="item in postList"
+                     :key="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" size="small" @click="search">查询</el-button>
@@ -163,7 +167,8 @@ export default {
       },
       controlList: [],
       fieldList: [],
-      allMenuTree:[]
+      allMenuTree: [],
+      postList: []
     }
   },
   watch: {
@@ -198,6 +203,16 @@ export default {
   methods: {
     currentChange(val, row) {
       this.currentPageChange(val, row, '/permission/page')
+    },
+//根据部门查岗位
+    selectDepartment() {
+      this.axios.get('department/selectRoleById', {params: {id: this.searchData.departmentId}})
+          .then(res=>{
+            if (res.data.code.toString()==='200'){
+              this.postList = res.data.data
+            }
+          })
+          .catch()
     },
 //根据不同的上级菜单选择依赖功能和字段
     selectMenu() {
