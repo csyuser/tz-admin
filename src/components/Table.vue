@@ -8,7 +8,7 @@
 <!--      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除-->
 <!--      </el-button>-->
       <el-button size="small" :type="button.buttonId === 'add'?'primary':''" v-for="button in buttonList" :key="button.buttonId" @click="$emit(`${button.buttonId}`,$event)">
-        <i :class="`el-icon-${getIconName(button.buttonId)} icon`"></i>{{ button.name }}
+        <i :class="`el-icon-${(button.icon)} icon`"></i>{{ button.name }}
       </el-button>
       <slot></slot>
       <el-popover placement="bottom" trigger="click" class="popover-button" v-if="!isCard">
@@ -54,7 +54,6 @@
       </el-table>
       <el-pagination class="pagination" @current-change="handleCurrentChange" v-if="(tableName !== 'menu' && needPage)"
                      :current-page="page"
-                     :page-sizes="[10, 20, 30, 40]"
                      :page-size="pageSize"
                      layout="total, prev, pager, next"
                      :total="total">
@@ -109,7 +108,6 @@ export default {
       selectedRow: [],
       children: [],
       expand: [],
-      iconName:'',
     }
   },
   mounted() {
@@ -138,12 +136,12 @@ export default {
       handler(newVal) {
         if (newVal && newVal.data) {
           this.tableData = newVal.data
-          this.total = newVal.count
+          this.total = newVal.count*1
         } else if (newVal && newVal.length && newVal.length >= 1) {
           this.tableData = newVal
+          this.total = 0
         } else {
           this.tableData = []
-          this.total = 0
         }
         this.selectedRow = []
       },
@@ -163,11 +161,6 @@ export default {
     }
   },
   methods: {
-    getIconName(buttonId){
-      if (buttonId === 'add'){return 'plus'}
-      else if (buttonId === 'update'){return 'edit'}
-      else if (buttonId === 'delete'){return 'delete'}
-    },
     expandChange(row, type) {
       let isContains = false
       this.expand.forEach((item, index) => {

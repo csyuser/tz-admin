@@ -15,7 +15,7 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" tableName="menu" @add="add" @update="update"
-           @postSelect="selectRow"
+           @postSelect="selectRow" :button-list="buttonList"
            @currentChange="currentChange" @delete="deleteRows" @dblclick="viewPost"></Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="650px" :before-close="handleClose"
                @closed="closedDialog">
