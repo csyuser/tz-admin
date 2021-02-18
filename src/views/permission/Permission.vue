@@ -60,11 +60,10 @@
             <el-option :label="item['fieldName']" :value="item.id" v-for="item in fieldList" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否需要范围" prop="isNeededScope">
+        <el-form-item label="是否需要范围" prop="isNeededScope" v-if="editFormInfo.type==='1'">
           <el-switch v-model="editFormInfo['isNeededScope']" active-color="#13ce66" inactive-color="#ff4949"
                      active-value="1" inactive-value="0">
           </el-switch>
-
         </el-form-item>
         <el-form-item label="权限描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
