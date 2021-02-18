@@ -1,15 +1,15 @@
 <template>
   <div class="table-wrap">
     <div class="buttons" v-if="needButton">
-      <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增
-      </el-button>
-      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑
-      </el-button>
-      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除
-      </el-button>
-<!--      <el-button size="small" :type="button.buttonId === 'add'?'primary':''" v-for="button in buttonList" :key="button.buttonId" @click="$emit(`${button.buttonId}`,$event)">-->
-<!--        <i :class="`el-icon-${(button.icon)} icon`"></i>{{ button.name }}-->
+<!--      <el-button type="primary" size="small" class="add" @click="$emit('add',$event)"><i class="el-icon-plus icon"></i>新增-->
 <!--      </el-button>-->
+<!--      <el-button size="small" class="update" @click="$emit('update',$event)"><i class="el-icon-edit icon"></i>编辑-->
+<!--      </el-button>-->
+<!--      <el-button size="small" class="delete" @click="$emit('delete',$event)"><i class="el-icon-delete icon"></i>删除-->
+<!--      </el-button>-->
+      <el-button size="small" :type="button.buttonId === 'add' || button.buttonId ==='permissionRange'?'primary':''" v-for="button in buttonList" :key="button.buttonId" @click="$emit(`${button.buttonId}`,$event)">
+        <i :class="`el-icon-${(button.icon)} icon`" v-if="button.icon"></i>{{ getButtonName(button.name) }}
+      </el-button>
       <slot></slot>
       <el-popover placement="bottom" trigger="click" class="popover-button" v-if="!isCard">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -194,7 +194,12 @@ export default {
         return true
       }
     },
-
+//按钮回显
+    getButtonName(name){
+      let index=name.lastIndexOf("-");
+      name=name.substring(index+1,name.length);
+      return name;
+    },
 //选中父元素，全选子元素
     //如果点击行有子集((选中状态))
     checkedHasChild(row) {

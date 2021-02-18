@@ -37,7 +37,8 @@ export const mixins = {
       filterMethod(query, item) {
         return item.label && item.label.indexOf(query) > -1
       },
-      buttonList:[],
+      buttonList: [],
+      tabId: '',
       rules: {
         name: [{required: true, message: '名称不能为空', trigger: 'blur'}],
         code: [{required: true, message: '编码不能为空', trigger: 'change'}],
@@ -72,15 +73,7 @@ export const mixins = {
     }
   },
   mounted() {
-//获取页面button
-    this.axios.get('/menu/selectButtonByMenuId',{params:{menuId:this.$route.query.name}})
-      .then(res=>{
-        if (res.data.code.toString() === '200'){
-          this.buttonList = res.data.data.buttonList
-          console.log(this.buttonList)
-        }
-      })
-      .catch()
+    this.getButtonList()
   },
   methods: {
     getDepartmentTree(treeUrl) {
@@ -98,7 +91,7 @@ export const mixins = {
         params: {
           page: this.page,
           pageSize: this.pageSize,
-          menuId:this.$route.query.name,
+          menuId: this.$route.query.name,
           ...this.searchData,
         },
       }).then(res => {
@@ -114,6 +107,21 @@ export const mixins = {
       this.selectedRow = row
       this.deleteIds = []
       this.getPages(url)
+    },
+//获取页面buttonList
+    getButtonList() {
+      this.axios.get('/menu/selectButtonByMenuId', {
+        params: {
+          menuId: this.$route.query.name,
+          tabId: this.tabId
+        }
+      })
+        .then(res => {
+          if (res.data.code.toString() === '200') {
+            this.buttonList = res.data.data.buttonList
+          }
+        })
+        .catch()
     },
 //表格增删改查
     selectedRows(val) {

@@ -189,6 +189,8 @@ export default {
     }
   },
   mounted() {
+    this.tabId = 'permission'
+    this.getButtonList()
     this.getPages('/permission/page')
     this.axios.get('/menu/selectAllMenuTree')
         .then(res => {
@@ -249,19 +251,23 @@ export default {
         case 'first':
           this.colsHead = [{prop: 'name', label: '权限名称'}, {prop: 'typeName', label: '权限类型'},
             {prop: 'describe', label: '权限描述'}]
+          this.tabId = 'permission'
+          this.getButtonList()
           this.getPages('/permission/page')
           break
         case 'second':
           this.colsHead = [{prop: 'teamName', label: '权限组名称'}, {prop: 'name', label: '权限名称'},
             {prop: 'describe', label: '权限描述'}]
+          this.tabId = 'permission'
+          this.getButtonList()
           this.getPages('/team/page')
           break
         case 'third':
           this.colsHead = [{prop: 'permissionName', label: '权限名称'}, {prop: 'roleName', label: '岗位名称'},
             {prop: 'xzqhName', label: '行政区划范围'}, {prop: 'departmentName', label: '部门范围'},
             {prop: 'describe', label: '权限描述'}]
-          // this.searchData = {departmentId:'',roleId:''}
-          // this.getPages('/permission-range/selectPermissionRange',)
+          this.tabId = 'permissionRange'
+          this.getButtonList()
           break
         default:
           break
