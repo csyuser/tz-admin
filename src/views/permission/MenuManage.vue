@@ -39,8 +39,7 @@
         <el-form-item label="Tab页Id" v-if="editFormInfo['menuType'] && editFormInfo['menuType'] === '2'">
           <el-input v-model="editFormInfo['tabId']" suffix-icon="xxx"></el-input>
         </el-form-item>
-        <el-form-item label="排序" prop="sort" :rules="{ required: true, type: 'number', message: '排序必须为数字值'}"
-                      v-if="editFormInfo['menuType'] && editFormInfo['menuType'] !== '2'">
+        <el-form-item label="排序" prop="sort" :rules="{ required: true, type: 'number', message: '排序必须为数字值'}">
           <el-input v-model.number="editFormInfo.sort" suffix-icon="xxx"></el-input>
         </el-form-item>
         <el-form-item label="上级菜单" class="departmentItem SelectTree-item" prop="parentId"

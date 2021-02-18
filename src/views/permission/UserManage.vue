@@ -16,7 +16,7 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page"
-           @currentChange="currentChange" class="table" :is-card="isCard"
+           @currentChange="currentChange" class="table" :is-card="isCard" :button-list="buttonList"
            @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows" @dblclick="view">
       <span class="showCard">
         <span>卡片显示</span>

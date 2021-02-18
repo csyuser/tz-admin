@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" @add="add"
-           @update="update"
+           @update="update" :button-list="buttonList"
            @postSelect="selectRow" @delete="deleteRows" @dblclick="view" @currentChange="currentChange">
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="970px" :before-close="handleClose" @closed="closedDialog">

@@ -20,7 +20,7 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" :need-page="false" @add="add" @update="update"
-           @delete="deleteRows"
+           @delete="deleteRows" :button-list="buttonList"
            @dblclick="view" @postSelect="selectRow">
     </Table>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="790px" :before-close="handleClose"

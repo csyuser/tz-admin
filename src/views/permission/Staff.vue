@@ -14,7 +14,7 @@
         <el-button type="primary" @click="search" size="small">查询</el-button>
       </el-form-item>
     </el-form>
-    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" :is-card="isCard"
+    <Table class="table" :colsHead="colsHead" :tableDatas="tableDatas" :pageSize="pageSize" :page="page" :is-card="isCard" :button-list="buttonList"
            @currentChange="currentChange" @add="add" @update="update" @postSelect="selectRow" @delete="deleteRows"
            @dblclick="view">
       <span class="showCard">
