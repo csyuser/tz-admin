@@ -74,7 +74,7 @@ export const mixins = {
     }
   },
   mounted() {
-    this.getButtonList()
+    if (this.$options.name!=='Permission'){this.getButtonList()}
   },
   methods: {
     getDepartmentTree(treeUrl) {
