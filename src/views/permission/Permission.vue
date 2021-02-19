@@ -105,17 +105,6 @@
     </el-dialog>
     <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1085px"  top="10vh" :before-close="handleClose" class="editDialog"
                v-if="activeName === 'third'" @closed="closedDialog">
-      <!--      <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"-->
-      <!--               class="addForm permissionTeam" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">-->
-      <!--        <el-form-item label="设置部门">-->
-      <!--          <el-input v-model="editFormInfo['departmentNames']" suffix-icon="xxx" readonly-->
-      <!--                    @focus="openTree('department')"></el-input>-->
-      <!--        </el-form-item>-->
-      <!--        <el-form-item label="设置行政区划">-->
-      <!--          <el-input v-model="editFormInfo['xzqh']" suffix-icon="xxx" readonly-->
-      <!--                    @focus="openTree('xzqh')"></el-input>-->
-      <!--        </el-form-item>-->
-      <!--      </el-form>-->
       <div class="settings">
         <div class="department-wrap wrap">
           <el-form label-width="70px" :inline="true" :model="editFormInfo" size="small"
@@ -177,29 +166,6 @@
         <el-button type="primary" size="small" @click="treeConfirm('permission')">确 定</el-button>
       </span>
     </el-dialog>
-<!--    <el-dialog title="选择部门" width="700px" append-to-body :before-close="handleClose" :visible="departmentTree"-->
-<!--               @opened="dialogOpened('department')">-->
-<!--      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>-->
-<!--      <el-tree show-checkbox class="filter-tree" :data="dialogTreeData" :props="defaultProps3" node-key="id"-->
-<!--               :filter-node-method="filterNode" ref="departmentTree" @check="checkChange('department')">-->
-<!--      </el-tree>-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="departmentTree = false" size="small">取 消</el-button>-->
-<!--        <el-button type="primary" size="small" @click="treeConfirm('department')">确 定</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
-<!--    <el-dialog title="选择行政区划" width="700px" append-to-body :before-close="handleClose" :visible="xzqhTree"-->
-<!--               class="editDialog"-->
-<!--               top="10vh" @opened="dialogOpened('xzqh')">-->
-<!--      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>-->
-<!--      <el-tree show-checkbox class="filter-tree" :data="dialogTreeData" :props="defaultProps2" node-key="id"-->
-<!--               :filter-node-method="filterNode" ref="xzqhTree" @check="checkChange('xzqh')">-->
-<!--      </el-tree>-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="xzqhTree = false" size="small">取 消</el-button>-->
-<!--        <el-button type="primary" size="small" @click="treeConfirm('xzqh')">确 定</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
   </div>
 </template>
 
