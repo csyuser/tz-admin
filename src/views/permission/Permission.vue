@@ -69,7 +69,7 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" :needBtn="showDialogBtn('relatePost')"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
@@ -92,7 +92,7 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" :needBtn="showDialogBtn('relatePost')"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
