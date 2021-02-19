@@ -163,7 +163,6 @@ export const mixins = {
       this.editDialogDisabled = false
       this.isShowCascader = true
       this.checkedId = this.getRowId()
-      console.log(this.checkedId)
       if (this.checkedId === '' || !this.checkedId) return
       let obj = {}
       obj[paramName] = this.checkedId
@@ -173,7 +172,7 @@ export const mixins = {
       this.$refs.editDialog.validate((valid) => {
         if (valid) {
           this.editDialogVisible = false
-          this.editFormInfo.permissionIds = this.permissionIds
+          // this.editFormInfo.permissionIds = this.permissionIds
           let editData = {}
           if (this.dialogType === 'add') {
             editData = {...this.editFormInfo, photoId: this.imgId}
@@ -297,7 +296,6 @@ export const mixins = {
     },
 //获取弹窗的信息
     getDialogInfo(params, url) {
-      this.editFormInfo = {}
       this.staffInfo = {}
       this.permissionList = []
       this.axios.get(url, {
