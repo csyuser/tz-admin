@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item class="selectInput">
         <el-select v-model="searchData['parentId']" placeholder="上级菜单" clearable size="small">
-          <el-option :label="parentMenu.name" :value="parentMenu.id" v-for="parentMenu in parentMenus"
+          <el-option :label="parentMenu.name" :value="parentMenu.id" v-for="parentMenu in parentMenus1"
                      :key="parentMenu.id"></el-option>
         </el-select>
       </el-form-item>
@@ -23,7 +23,6 @@
                size="small"
                class="addForm" :disabled="editDialogDisabled" :rules="rules">
         <el-form-item label="功能类型" prop="menuType">
-          <!--          <el-input v-model="editFormInfo.type" suffix-icon="xxx"></el-input>-->
           <el-radio-group v-model="editFormInfo['menuType']">
             <el-radio label="0">一级菜单</el-radio>
             <el-radio label="1">页面菜单</el-radio>
@@ -45,10 +44,10 @@
         <el-form-item label="上级菜单" class="departmentItem SelectTree-item" prop="parentId"
                       v-if="editFormInfo['menuType'] && editFormInfo['menuType'] !== '0'">
           <el-select v-model="editFormInfo.parentId" v-if="editFormInfo['menuType'] === '1'">
-            <el-option :label="parentMenu.name" :value="parentMenu.id" v-for="parentMenu in parentMenus"
+            <el-option :label="parentMenu.name" :value="parentMenu.id" v-for="parentMenu in parentMenus1"
                        :key="parentMenu.id"></el-option>
           </el-select>
-          <SelectTree v-model="editFormInfo.parentId" :options="parentMenus" :props="defaultProps"
+          <SelectTree v-model="editFormInfo.parentId" :options="parentMenus2" :props="defaultProps"
                       :disabled="editDialogDisabled" v-if="editFormInfo['menuType'] === '2'"></SelectTree>
         </el-form-item>
         <el-form-item label="菜单地址" v-if="editFormInfo['menuType'] && editFormInfo['menuType'] === '1'">
@@ -92,46 +91,32 @@ export default {
       rules: {
         parentId: [{required: true, message: '上级菜单不能为空', trigger: 'change'}],
         buttonId: [{required: true, message: '英文字段不能为空', trigger: 'blur'}],
-        menuType:[{required: true, message: '菜单类型不能为空', trigger: 'change'}],
+        menuType: [{required: true, message: '菜单类型不能为空', trigger: 'change'}],
         isDialog: [{required: true, message: '是否弹窗按钮必须', trigger: 'change'}],
       },
-      parentMenus: [],
+      parentMenus1: [],
+      parentMenus2: [],
     }
   },
   mounted() {
     this.getPages('/menu/page')
+    this.menuTypeChange('1')
+    this.menuTypeChange('2')
   },
-  watch:{
-    editFormInfo: {
-      handler(newVal) {
-        this.menuTypeChange(newVal.menuType)
-      },
-      deep: true
-    }
-  },
+  watch: {},
   methods: {
     menuTypeChange(menuType) {
-      switch (menuType) {
-        case '1':
-          this.getMenu('/dropList/selectMenu')
-          break
-        case '2':
-          this.getMenu('/menu/selectAllMenuTree')
-          break
-        default:
-          break
-      }
+      if (menuType === '1') {this.getMenu('/dropList/selectMenu', '1')} else if (menuType === '2') { this.getMenu('/menu/selectAllMenuTree', '2')}
     },
-    getMenu(url) {
+    getMenu(url, type) {
       this.axios.get(url)
           .then(res => {
             if (res.data.code.toString() === '200') {
-              this.parentMenus = res.data.data
-              if (this.editFormInfo.menuType === '2'){
-                let parentId = this.editFormInfo.parentId
-                this.$set(this.editFormInfo,'parentId',parentId)
-              }
-            } else {this.parentMenus = []}
+              if (type === '1') {this.parentMenus1 = res.data.data} else if (type === '2') { this.parentMenus2 = res.data.data}
+            } else {
+              this.parentMenus1 = []
+              this.parentMenus2 = []
+            }
           })
           .catch()
     },
@@ -148,7 +133,7 @@ export default {
     add() {
       this.dialogTitle = '新增菜单'
       this.addRow()
-      this.$set(this.editFormInfo,'menuType','0')
+      this.$set(this.editFormInfo, 'menuType', '0')
     },
     update() {
       this.dialogTitle = '编辑菜单'
@@ -186,6 +171,7 @@ export default {
       }
     }
   }
+
   > .searchForm {
     > .selectInput {
       width: 150px;
