@@ -163,7 +163,7 @@
       </el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="selectPermission = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="treeConfirm('permission')">确 定</el-button>
+        <el-button type="primary" size="small" @click="treeConfirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -211,7 +211,6 @@ export default {
       postList: [],
       rangeDialogVisible: false,
       departmentTreeData: [],
-      // dialogTreeData: [],
       checkedDepartment: [],
       departmentIds: [],
       xzqhTreeData: [],
@@ -321,7 +320,7 @@ export default {
           break
       }
     },
-//权限组选择权限树结构
+//权限组&&权限范围选择树结构
     filterNode(value, data) {
       if (!value) return true
       return data && data.label && data.label.indexOf(value) !== -1
@@ -375,21 +374,9 @@ export default {
           break
       }
     },
-    treeConfirm(type) {
-      switch (type) {
-        case 'permission':
+    treeConfirm() {
           this.selectPermission = false
           this.getCheckedTree('permission', this.checkedPermission, 'permissionNameList')
-          break
-        case 'department':
-          this.departmentTree = false
-          this.departmentIds = this.getCheckedTree('department', this.checkedDepartment, 'departmentNames')
-          break
-        case 'xzqh':
-          this.xzqhTree = false
-          this.xzqhIds = this.getCheckedTree('xzqh', this.checkedXzqh, 'xzqh')
-          break
-      }
     },
     getCheckedTree(type, checked, editName) {
       let labels = []
@@ -415,6 +402,7 @@ export default {
           },10)
           break
         case 'department':
+          console.log(this.departmentIds)
           this.$refs.departmentTree.setCheckedKeys(this.departmentIds)
           setTimeout(()=>{
             this.checkedDepartment = this.$refs.departmentTree.getCheckedNodes()
@@ -427,18 +415,6 @@ export default {
           },10)
           break
       }
-      // if (ids.length) {
-      //   this.$refs[treeName].setCheckedKeys(this.permissionIds)
-      //   setTimeout(()=>{
-      //     checkedData = this.$refs.tree.getCheckedNodes()
-      //     console.log(this.$refs.tree.getCheckedNodes())
-      //   },10)
-      // } else {
-      //   this.$refs[treeName].setCheckedKeys([])
-      //   checkedData = []
-      //   // this.checkedPermission = []
-      // }
-      // return checkedData
     },
 //设置权限范围
     setRange() {
@@ -461,7 +437,7 @@ export default {
             this.xzqhIds = res.data.data['checkXzqhList']
             this.$set(this.editFormInfo, 'departmentNames', res.data.data['checkDepartmentNames'].join(','))
             this.$set(this.editFormInfo, 'xzqh', res.data.data['checkXzqhNames'].join(','))
-            this.dialogOpened('departmentNames')
+            this.dialogOpened('department')
             this.dialogOpened('xzqh')
           }
         })
@@ -469,7 +445,6 @@ export default {
       } else {
         this.$message.error('请选择一行数据')
       }
-      // this.updateRow2('permissionId', '/permission-range/selectPermissionRangeInfo')
     },
 //表格增删改查
     selectRow(val) {
@@ -516,13 +491,13 @@ export default {
           this.confirmEditRow('/permission/save', '/permission/page')
           break
         case 'second':
-          // this.editFormInfo.permissionNameList = this.editFormInfo.permissionNameList && this.editFormInfo.permissionNameList.split(',')
+          this.editFormInfo.permissionNameList = this.editFormInfo.permissionNameList && this.editFormInfo.permissionNameList.split(',')
           this.editFormInfo.permissionIds = this.permissionIds
           this.confirmEditRow('/team/save', '/team/page')
           break
         case 'third':
-          // this.editFormInfo.departmentNames = this.editFormInfo.departmentNames && this.editFormInfo.departmentNames.split(',')
-          // this.editFormInfo.xzqh = this.editFormInfo.xzqh && this.editFormInfo.xzqh.split(',')
+          this.departmentIds = this.getCheckedTree('department', this.checkedDepartment, 'departmentNames')
+          this.xzqhIds = this.getCheckedTree('xzqh', this.checkedXzqh, 'xzqh')
           this.editFormInfo.departmentIds = this.departmentIds
           this.editFormInfo.xzqhIds = this.xzqhIds
           this.editFormInfo.permissionId = this.selectedRow[0].id

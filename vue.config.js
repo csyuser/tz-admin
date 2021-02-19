@@ -8,6 +8,7 @@ module.exports = {
         // target: 'http://192.168.11.240:8080/topcheer',
         target: 'http://192.168.30.220:8080/topcheer',
         // target: 'http://192.168.99.145:8080/topcheer',
+        // target: 'http://192.168.99.167:8080/topcheer',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
