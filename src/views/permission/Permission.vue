@@ -20,6 +20,7 @@
       </el-form-item>
     </el-form>
     <Table :colsHead="colsHead" :tableDatas="tableDatas" @add="add" @update="update" @postSelect="selectRow"
+           @permissionRange="setRange"
            class="table" :allow-select="false" :button-list="buttonList"
            :pageSize="pageSize" :page="page" @currentChange="currentChange" @delete="deleteRows" @dblclick="view">
       <template #simple>
@@ -69,7 +70,8 @@
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" :needBtn="showDialogBtn('relatePost')"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
+                      :needBtn="showDialogBtn('relatePost')"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
@@ -86,14 +88,37 @@
         </el-form-item>
         <el-form-item label="相关权限" prop="permissionNameList">
           <el-input v-model="editFormInfo['permissionNameList']" suffix-icon="xxx" readonly
-                    @focus="openTree"></el-input>
+                    @focus="openTree('permission')"></el-input>
         </el-form-item>
         <el-form-item label="权限描述" class="texArea">
           <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
         </el-form-item>
       </el-form>
-      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost" :needBtn="showDialogBtn('relatePost')"
+      <IconListDialog :type="dialogType" title-type="岗位" @update:relate="relatedPost"
+                      :needBtn="showDialogBtn('relatePost')"
                       :iconDataList="editFormInfo['roleList']"></IconListDialog>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
+        <el-button type="primary" size="small"
+                   @click="confirmEdit">{{ dialogType !== 'view' ? '确 定' : '关 闭' }}</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="550px" :before-close="handleClose"
+               v-if="activeName === 'third'" @closed="closedDialog">
+      <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
+               class="addForm permissionTeam" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
+        <el-form-item label="设置部门">
+          <el-input v-model="editFormInfo['departmentNames']" suffix-icon="xxx" readonly
+                    @focus="openTree('department')"></el-input>
+        </el-form-item>
+        <el-form-item label="设置行政区划">
+          <el-input v-model="editFormInfo['xzqh']" suffix-icon="xxx" readonly
+                    @focus="openTree('xzqh')"></el-input>
+        </el-form-item>
+        <el-form-item label="权限范围描述" class="texArea">
+          <el-input v-model="editFormInfo.describe" type="textarea" :autosize="{ minRows: 4, maxRows: 4}"></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
         <el-button type="primary" size="small"
@@ -122,13 +147,25 @@
                @opened="dialogOpened">
       <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
       <el-tree show-checkbox class="filter-tree" :data="permissionData" :props="defaultProps2" node-key="id"
-               :filter-node-method="filterNode" ref="tree" @check="checkChange">
+               :filter-node-method="filterNode" ref="tree" @check="checkChange('permission')">
       </el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="selectPermission = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="treeConfirm">确 定</el-button>
+        <el-button type="primary" size="small" @click="treeConfirm('permission')">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="选择部门" width="700px" append-to-body :before-close="handleClose" :visible="departmentTree"
+               @opened="dialogOpened">
+      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
+      <el-tree show-checkbox class="filter-tree" :data="dialogTreeData" :props="defaultProps3" node-key="id"
+               :filter-node-method="filterNode" ref="departmentTree" @check="checkChange('department')">
+      </el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="departmentTree = false" size="small">取 消</el-button>
+        <el-button type="primary" size="small" @click="treeConfirm('department')">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -164,10 +201,20 @@ export default {
         children: 'children',
         label: 'label'
       },
+      defaultProps3: {
+        children: 'children',
+        label: 'name'
+      },
       controlList: [],
       fieldList: [],
       allMenuTree: [],
-      postList: []
+      postList: [],
+      rangeDialogVisible: false,
+      departmentTree: false,
+      dialogTreeData: [],
+      checkedDepartment: [],
+      departmentIds:[],
+      xzqhIds:[],
     }
   },
   watch: {
@@ -208,8 +255,8 @@ export default {
 //根据部门查岗位
     selectDepartment() {
       this.axios.get('department/selectRoleById', {params: {id: this.searchData.departmentId}})
-          .then(res=>{
-            if (res.data.code.toString()==='200'){
+          .then(res => {
+            if (res.data.code.toString() === '200') {
               this.postList = res.data.data
             }
           })
@@ -277,14 +324,28 @@ export default {
       if (!value) return true
       return data && data.label && data.label.indexOf(value) !== -1
     },
-    openTree() {
-      this.selectPermission = true
-      this.axios.get('/permission/selectAll')
-          .then(res => {
-            if (res.data.code.toString() === '200') {
-              this.permissionData = res.data.data
-            }
-          }).catch()
+    openTree(type) {
+      switch (type) {
+        case 'permission':
+          this.selectPermission = true
+          this.axios.get('/permission/selectAll')
+              .then(res => {
+                if (res.data.code.toString() === '200') {
+                  this.permissionData = res.data.data
+                }
+              }).catch()
+          break
+        case 'department':
+          this.departmentTree = true
+          this.axios.get('/department/selectDepartmentTree')
+              .then(res => {
+                if (res.data.code.toString() === '200') {
+                  this.dialogTreeData = res.data.data
+                }
+              }).catch()
+          break
+      }
+
     },
     dialogOpened() {
       if (this.permissionIds.length) {
@@ -295,19 +356,51 @@ export default {
         this.checkedPermission = []
       }
     },
-    checkChange() {
-      this.checkedPermission = this.$refs.tree.getCheckedNodes()
+    checkChange(type) {
+      switch (type) {
+        case 'permission':
+          this.checkedPermission = this.$refs.tree.getCheckedNodes()
+          break
+        case 'department':
+          this.checkedDepartment = this.$refs.departmentTree.getCheckedNodes()
+          break
+      }
+
     },
-    treeConfirm() {
-      this.selectPermission = false
+    treeConfirm(type) {
+      switch (type) {
+        case 'permission':
+          this.selectPermission = false
+          this.permissionIds = this.getCheckedTree('permission',this.checkedPermission,'permissionNameList')
+          break
+        case 'department':
+          this.departmentTree = false
+          this.departmentIds = this.getCheckedTree('department',this.checkedDepartment,'departmentNames')
+          break
+      }
+    },
+    getCheckedTree(type,checked,editName){
       let labels = []
       let ids = []
-      this.checkedPermission.forEach(item => {
-        ids.push(item.id)
-        labels.push(item.label)
+      checked.forEach(item => {
+        switch (type) {
+          case 'permission':
+            ids.push(item.id)
+            labels.push(item.label)
+            break
+          case 'department':
+            ids.push(item.id)
+            labels.push(item.name)
+            break
+        }
       })
-      this.permissionIds = ids
-      this.$set(this.editFormInfo, 'permissionNameList', labels)
+      this.$set(this.editFormInfo, editName, labels.join(','))
+      return ids
+    },
+//设置权限范围
+    setRange() {
+      this.dialogTitle = '设置权限范围'
+      this.updateRow2('permissionId', '/permission-range/selectPermissionRangeInfo')
     },
 //表格增删改查
     selectRow(val) {
