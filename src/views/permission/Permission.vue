@@ -103,19 +103,45 @@
                    @click="confirmEdit">{{ dialogType !== 'view' ? '确 定' : '关 闭' }}</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="550px" :before-close="handleClose"
+    <el-dialog :title="dialogTitle" :visible.sync="editDialogVisible" width="1085px"  top="10vh" :before-close="handleClose" class="editDialog"
                v-if="activeName === 'third'" @closed="closedDialog">
-      <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"
-               class="addForm permissionTeam" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">
-        <el-form-item label="设置部门">
-          <el-input v-model="editFormInfo['departmentNames']" suffix-icon="xxx" readonly
-                    @focus="openTree('department')"></el-input>
-        </el-form-item>
-        <el-form-item label="设置行政区划">
-          <el-input v-model="editFormInfo['xzqh']" suffix-icon="xxx" readonly
-                    @focus="openTree('xzqh')"></el-input>
-        </el-form-item>
-      </el-form>
+      <!--      <el-form label-position="right" label-width="110px" :inline="true" :model="editFormInfo" size="small"-->
+      <!--               class="addForm permissionTeam" :disabled="editDialogDisabled" :rules="rules" ref="editDialog">-->
+      <!--        <el-form-item label="设置部门">-->
+      <!--          <el-input v-model="editFormInfo['departmentNames']" suffix-icon="xxx" readonly-->
+      <!--                    @focus="openTree('department')"></el-input>-->
+      <!--        </el-form-item>-->
+      <!--        <el-form-item label="设置行政区划">-->
+      <!--          <el-input v-model="editFormInfo['xzqh']" suffix-icon="xxx" readonly-->
+      <!--                    @focus="openTree('xzqh')"></el-input>-->
+      <!--        </el-form-item>-->
+      <!--      </el-form>-->
+      <div class="settings">
+        <div class="department-wrap wrap">
+          <el-form label-width="70px" :inline="true" :model="editFormInfo" size="small"
+                   class="addForm permissionTeam" ref="editDialog">
+            <el-form-item label="设置部门">
+              <el-input v-model="editFormInfo['departmentNames']" suffix-icon="xxx"></el-input>
+            </el-form-item>
+          </el-form>
+          <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px;width:440px"></el-input>
+          <el-tree show-checkbox class="filter-tree" :data="departmentTreeData" :props="defaultProps3" node-key="id"
+                   :filter-node-method="filterNode" ref="departmentTree" @check="checkChange('department')">
+          </el-tree>
+        </div>
+        <div class="xzqh-wrap wrap">
+          <el-form label-width="100px" :inline="true" :model="editFormInfo" size="small"
+                   class="addForm permissionTeam" ref="editDialog">
+            <el-form-item label="设置行政区划">
+              <el-input v-model="editFormInfo['xzqh']" suffix-icon="xxx"></el-input>
+            </el-form-item>
+          </el-form>
+          <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px;width: 470px"></el-input>
+          <el-tree show-checkbox class="filter-tree xzqhTree" :data="xzqhTreeData" :props="defaultProps2" node-key="id"
+                   :filter-node-method="filterNode" ref="xzqhTree" @check="checkChange('xzqh')">
+          </el-tree>
+        </div>
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false" size="small" v-if="dialogType!=='view'">取 消</el-button>
         <el-button type="primary" size="small"
@@ -151,28 +177,29 @@
         <el-button type="primary" size="small" @click="treeConfirm('permission')">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择部门" width="700px" append-to-body :before-close="handleClose" :visible="departmentTree"
-               @opened="dialogOpened('department')">
-      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
-      <el-tree show-checkbox class="filter-tree" :data="dialogTreeData" :props="defaultProps3" node-key="id"
-               :filter-node-method="filterNode" ref="departmentTree" @check="checkChange('department')">
-      </el-tree>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="departmentTree = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="treeConfirm('department')">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog title="选择行政区划" width="700px" append-to-body :before-close="handleClose" :visible="xzqhTree" class="editDialog"
-               top="10vh" @opened="dialogOpened('xzqh')">
-      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>
-      <el-tree show-checkbox class="filter-tree" :data="dialogTreeData" :props="defaultProps2" node-key="id"
-               :filter-node-method="filterNode" ref="xzqhTree" @check="checkChange('xzqh')">
-      </el-tree>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="xzqhTree = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="treeConfirm('xzqh')">确 定</el-button>
-      </span>
-    </el-dialog>
+<!--    <el-dialog title="选择部门" width="700px" append-to-body :before-close="handleClose" :visible="departmentTree"-->
+<!--               @opened="dialogOpened('department')">-->
+<!--      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>-->
+<!--      <el-tree show-checkbox class="filter-tree" :data="dialogTreeData" :props="defaultProps3" node-key="id"-->
+<!--               :filter-node-method="filterNode" ref="departmentTree" @check="checkChange('department')">-->
+<!--      </el-tree>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="departmentTree = false" size="small">取 消</el-button>-->
+<!--        <el-button type="primary" size="small" @click="treeConfirm('department')">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
+<!--    <el-dialog title="选择行政区划" width="700px" append-to-body :before-close="handleClose" :visible="xzqhTree"-->
+<!--               class="editDialog"-->
+<!--               top="10vh" @opened="dialogOpened('xzqh')">-->
+<!--      <el-input placeholder="输入关键字进行过滤" v-model="filterText" size="small" style="margin-bottom: 15px"></el-input>-->
+<!--      <el-tree show-checkbox class="filter-tree" :data="dialogTreeData" :props="defaultProps2" node-key="id"-->
+<!--               :filter-node-method="filterNode" ref="xzqhTree" @check="checkChange('xzqh')">-->
+<!--      </el-tree>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="xzqhTree = false" size="small">取 消</el-button>-->
+<!--        <el-button type="primary" size="small" @click="treeConfirm('xzqh')">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -217,13 +244,13 @@ export default {
       allMenuTree: [],
       postList: [],
       rangeDialogVisible: false,
-      departmentTree: false,
-      dialogTreeData: [],
+      departmentTreeData: [],
+      // dialogTreeData: [],
       checkedDepartment: [],
-      departmentIds:[],
-      xzqhTree:false,
+      departmentIds: [],
+      xzqhTreeData: [],
       checkedXzqh: [],
-      xzqhIds:[],
+      xzqhIds: [],
     }
   },
   watch: {
@@ -345,20 +372,19 @@ export default {
               }).catch()
           break
         case 'department':
-          this.departmentTree = true
           this.axios.get('/department/selectDepartmentTree')
               .then(res => {
                 if (res.data.code.toString() === '200') {
-                  this.dialogTreeData = res.data.data
+                  this.departmentTreeData = res.data.data
+                  console.log(this.departmentTreeData)
                 }
               }).catch()
           break
         case 'xzqh':
-          this.xzqhTree = true
           this.axios.get('/xzqh/selectXzqhTree')
               .then(res => {
                 if (res.data.code.toString() === '200') {
-                  this.dialogTreeData = res.data.data
+                  this.xzqhTreeData = res.data.data
                 }
               }).catch()
           break
@@ -366,17 +392,7 @@ export default {
 
     },
     dialogOpened(type) {
-      switch (type){
-        case 'permission':
-          this.setDefaultChecked(this.permissionIds,'tree')
-          break
-        case 'department':
-          this.setDefaultChecked(this.departmentIds,'departmentTree')
-          break
-        case 'xzqh':
-          this.setDefaultChecked(this.xzqhIds,'xzqhTree')
-          break
-      }
+      this.setDefaultChecked(type)
     },
     checkChange(type) {
       switch (type) {
@@ -385,9 +401,11 @@ export default {
           break
         case 'department':
           this.checkedDepartment = this.$refs.departmentTree.getCheckedNodes()
+          this.getCheckedTree('department', this.checkedDepartment, 'departmentNames')
           break
         case 'xzqh':
           this.checkedXzqh = this.$refs.xzqhTree.getCheckedNodes()
+          this.getCheckedTree('xzqh', this.checkedXzqh, 'xzqh')
           break
       }
     },
@@ -395,26 +413,26 @@ export default {
       switch (type) {
         case 'permission':
           this.selectPermission = false
-          this.permissionIds = this.getCheckedTree('permission',this.checkedPermission,'permissionNameList')
+          this.getCheckedTree('permission', this.checkedPermission, 'permissionNameList')
           break
         case 'department':
           this.departmentTree = false
-          this.departmentIds = this.getCheckedTree('department',this.checkedDepartment,'departmentNames')
+          this.departmentIds = this.getCheckedTree('department', this.checkedDepartment, 'departmentNames')
           break
         case 'xzqh':
           this.xzqhTree = false
-          this.xzqhIds = this.getCheckedTree('xzqh',this.checkedXzqh,'xzqh')
+          this.xzqhIds = this.getCheckedTree('xzqh', this.checkedXzqh, 'xzqh')
           break
       }
     },
-    getCheckedTree(type,checked,editName){
+    getCheckedTree(type, checked, editName) {
       let labels = []
       let ids = []
       checked.forEach(item => {
-        if (type === 'department'){
+        if (type === 'department') {
           ids.push(item.id)
           labels.push(item.name)
-        }else {
+        } else {
           ids.push(item.id)
           labels.push(item.label)
         }
@@ -422,40 +440,67 @@ export default {
       this.$set(this.editFormInfo, editName, labels.join(','))
       return ids
     },
-    setDefaultChecked(ids,treeName){
-      let checkedData = []
-      if (ids.length) {
-        this.$refs[treeName].setCheckedKeys(this.permissionIds)
-        checkedData = this.$refs.tree.getCheckedNodes()
-        // this.checkedPermission =
-      } else {
-        this.$refs[treeName].setCheckedKeys([])
-        checkedData = []
-        // this.checkedPermission = []
+    setDefaultChecked(type) {
+      switch (type) {
+        case 'permission':
+          this.$refs.tree.setCheckedKeys(this.permissionIds)
+          setTimeout(()=>{
+            this.checkedPermission = this.$refs.tree.getCheckedNodes()
+          },10)
+          break
+        case 'department':
+          this.$refs.departmentTree.setCheckedKeys(this.departmentIds)
+          setTimeout(()=>{
+            this.checkedDepartment = this.$refs.departmentTree.getCheckedNodes()
+          },10)
+          break
+        case 'xzqh':
+          this.$refs.xzqhTree.setCheckedKeys(this.xzqhIds)
+          setTimeout(()=>{
+            this.checkedXzqh = this.$refs.xzqhTree.getCheckedNodes()
+          },10)
+          break
       }
-      return checkedData
+      // if (ids.length) {
+      //   this.$refs[treeName].setCheckedKeys(this.permissionIds)
+      //   setTimeout(()=>{
+      //     checkedData = this.$refs.tree.getCheckedNodes()
+      //     console.log(this.$refs.tree.getCheckedNodes())
+      //   },10)
+      // } else {
+      //   this.$refs[treeName].setCheckedKeys([])
+      //   checkedData = []
+      //   // this.checkedPermission = []
+      // }
+      // return checkedData
     },
 //设置权限范围
     setRange() {
-      if (this.selectedRow.length===1){
+      if (this.selectedRow.length === 1) {
         this.dialogTitle = '设置权限范围'
         this.editFormInfo = {}
         this.editDialogVisible = true
         this.dialogType = 'update'
         this.editDialogDisabled = false
+        this.openTree('department')
+        this.openTree('xzqh')
         this.axios.get('/permission-range/selectPermissionRangeInfo', {
           params: {
-            roleId:this.selectedRow[0].roleId,
-            permissionId:this.selectedRow[0].id,
+            roleId: this.selectedRow[0].roleId,
+            permissionId: this.selectedRow[0].id,
           }
         }).then(res => {
           if (res.data.code.toString() === '200') {
             this.departmentIds = res.data.data['checkDepartmentList']
             this.xzqhIds = res.data.data['checkXzqhList']
+            this.$set(this.editFormInfo, 'departmentNames', res.data.data['checkDepartmentNames'].join(','))
+            this.$set(this.editFormInfo, 'xzqh', res.data.data['checkXzqhNames'].join(','))
+            this.dialogOpened('departmentNames')
+            this.dialogOpened('xzqh')
           }
         })
             .catch()
-      }else {
+      } else {
         this.$message.error('请选择一行数据')
       }
       // this.updateRow2('permissionId', '/permission-range/selectPermissionRangeInfo')
@@ -665,12 +710,34 @@ export default {
     }
   }
 }
-.editDialog ::v-deep{
-  .el-dialog__body{
+
+.editDialog ::v-deep {
+  .el-dialog__body {
     max-height: 650px;
     overflow: auto;
+    padding-bottom: 10px;
   }
 }
+
+.settings {
+  display: flex;
+
+  > .wrap {
+    width: 48%;
+
+    &.department-wrap {
+      border-right: 1px solid #dcdfe6;
+    }
+    &.xzqh-wrap {
+      padding-left: 20px;
+      .xzqhTree{
+        height: 450px;
+        overflow: auto;
+      }
+    }
+  }
+}
+
 .relatedDialog::v-deep {
   .el-transfer {
     display: flex;
